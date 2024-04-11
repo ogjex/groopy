@@ -1,6 +1,5 @@
-from person import Person
-from group import Group
 from grouping_module import GroupingModule
+from person import Person
 
 def main():
     # Sample data representing people with their attributes

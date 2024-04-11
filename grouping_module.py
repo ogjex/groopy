@@ -1,6 +1,4 @@
 from collections import defaultdict
-from group import Group
-from person import Person
 import itertools
 
 class GroupingModule:
@@ -29,7 +27,7 @@ class GroupingModule:
     def sort_by_undesirables(self, people):
         return sorted(people, key=lambda x: len(x.undesirables), reverse=True)
 
-def assign_groups(self):
+    def assign_groups(self):
         gender_groups = self.group_by_gender()
         for gender, people_group in gender_groups.items():
             people_group = self.sort_by_experience(people_group)
