@@ -1,6 +1,7 @@
 from collections import defaultdict
+from person import Person
+from group import Group
 import itertools
-
 class GroupingModule:
     def __init__(self, people, min_group_size, max_group_size, max_groups_per_person):
         self.people = people
