@@ -6,5 +6,6 @@ class Group:
     def add_member(self, person):
         self.members.append(person)
 
-    def __str__(self):
-        return ', '.join(str(member) for member in self.members)
+def __str__(self):
+        member_info = "\n".join([f"{person.name} - {person.university}" for person in self.members])
+        return f"Group Members:\n{member_info}"

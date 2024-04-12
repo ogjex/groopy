@@ -1,3 +1,4 @@
+import random
 from collections import defaultdict
 from itertools import combinations
 from person import Person
@@ -17,6 +18,29 @@ class GroupingModule:
         for person in self.people:
             gender_groups[person.gender].append(person)
         return gender_groups
+    
+    def group_people_by_university(people, num_groups):
+        # Create a dictionary to store people based on their university
+        university_groups = defaultdict(list)
+        for person in people:
+            university_groups[person.university].append(person)
+
+        # Calculate the number of people per group
+        num_people_per_group = len(people) // num_groups
+
+        # Shuffle the order of people within each university group
+        for university, group in university_groups.items():
+            random.shuffle(group)
+
+        # Initialize the groups list
+        groups = [[] for _ in range(num_groups)]
+
+        # Assign people to groups based on university background
+        for university, group in university_groups.items():
+            for i, person in enumerate(group):
+                groups[i % num_groups].append(person)
+
+        return groups
 
     def sort_people_by_undesirables(self, people):
         # Sort people based on the number of undesirables
