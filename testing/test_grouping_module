@@ -1,0 +1,52 @@
+import sys
+import unittest
+# setting path
+sys.path.append('../groopy')
+from grouping_module import GroupingModule
+from person import Person
+
+class TestGroupingModule(unittest.TestCase):
+    def setUp(self):
+        # Initialize test data
+        people = [
+            Person("Alice", "Female", 5, "Engineering", ["Bob", "Charlie"], ["David", "Eve"], "Harvard"),
+            Person("Bob", "Male", 4, "Engineering", ["Alice", "David"], ["Eve"], "MIT"),
+            Person("Charlie", "Male", 3, "Marketing", ["Alice", "Eve"], ["David"], "Stanford"),
+            Person("David", "Male", 5, "Marketing", ["Bob", "Alice"], ["Charlie"], "Stanford"),
+            Person("Eve", "Female", 4, "Engineering", ["Charlie", "Alice"], ["Bob"], "MIT"),
+            Person("Frank", "Male", 3, "Marketing", [], ["Alice"], "Stanford"),
+            Person("Grace", "Female", 2, "Engineering", [], ["Bob"], "Harvard"),
+            Person("Harry", "Male", 4, "Engineering", [], ["Alice", "Charlie"], "MIT"),
+            Person("Ivy", "Female", 5, "Marketing", ["Frank", "Grace"], ["Bob", "Charlie"], "Stanford"),
+            Person("Jack", "Male", 3, "Engineering", ["Harry"], ["Eve"], "Harvard"),
+            Person("Kate", "Female", 4, "Engineering", ["Grace"], [], "MIT"),
+            Person("Larry", "Male", 2, "Marketing", [], [], "Stanford"),
+            Person("Mia", "Female", 3, "Marketing", ["Ivy"], [], "Harvard"),
+            Person("Noah", "Male", 4, "Engineering", [], [], "MIT"),
+            Person("Olivia", "Female", 5, "Engineering", [], [], "Stanford"),
+            Person("Paul", "Male", 2, "Marketing", [], [], "Harvard"),
+            Person("Quinn", "Female", 3, "Engineering", [], [], "MIT"),
+            Person("Ryan", "Male", 4, "Engineering", [], [], "Stanford"),
+            Person("Sara", "Female", 5, "Marketing", [], [], "Harvard"),
+            Person("Tom", "Male", 2, "Marketing", [], [], "MIT"),
+            Person("Aaron", "Male", 3, "Engineering", [], [], "Harvard")
+        ]
+        self.min_group_size = 3
+        self.max_group_size = 5
+        self.max_groups_per_person = 2
+        self.max_total_groups = 10
+
+    def test_sort_people(self):
+        # Test sorting function with mock data
+        grouping_module = GroupingModule(self.people, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
+        sorted_people = grouping_module.sort_people(self.people, "Male", "University B")
+        # Add assertions to verify sorting order
+
+    def test_assign_groups(self):
+        # Test assigning groups with mock data
+        grouping_module = GroupingModule(self.people, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
+        groups = grouping_module.assign_groups()
+        # Add assertions to verify group formation
+
+if __name__ == '__main__':
+    unittest.main()
