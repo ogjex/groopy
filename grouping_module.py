@@ -18,6 +18,16 @@ class GroupingModule:
             gender_groups[person.gender].append(person)
         return gender_groups
 
+    def sort_people_by_undesirables(self, people):
+        # Sort people based on the number of undesirables
+        sorted_people = sorted(people, key=lambda x: len(x.undesirables), reverse=True)
+
+        # Ensure that sorting does not exceed the maximum number of groups
+        max_groups_needed = max(len(people) // len(set(len(person.undesirables) for person in people)), 1)
+        sorted_people = sorted_people[:max_groups_needed * self.max_total_groups]
+
+        return sorted_people
+
     def sort_people(self, people, gender, university):
         # Sort people based on undesirables first
         sorted_people = sorted(people, key=lambda x: len(x.undesirables), reverse=True)

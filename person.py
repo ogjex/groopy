@@ -7,3 +7,6 @@ class Person:
         self.desirables = desirables
         self.undesirables = undesirables
         self.university = university
+
+    def __str__(self):
+        return f"Name: {self.name}, Gender: {self.gender}, University: {self.university}, Experience: {self.experience}, Career Preference: {self.career_preference}"
