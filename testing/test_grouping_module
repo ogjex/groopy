@@ -35,11 +35,11 @@ class TestGroupingModule(unittest.TestCase):
         self.max_group_size = 5
         self.max_groups_per_person = 1
         self.max_total_groups = 10
-        self.test_grouping_module = GroupingModule(self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
+        self.test_grouping_module = GroupingModule(self.people, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
 
     def test_group_people_by_education(self):
         # Test grouping people by education
-        num_groups = 2
+        num_groups = 4
         groups = self.test_grouping_module.group_people_by_education(self.people, num_groups)
         
         # Assert that the number of resulting groups is correct
