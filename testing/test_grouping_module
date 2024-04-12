@@ -33,51 +33,26 @@ class TestGroupingModule(unittest.TestCase):
         ]
         self.min_group_size = 3
         self.max_group_size = 5
-        self.max_groups_per_person = 2
+        self.max_groups_per_person = 1
         self.max_total_groups = 10
+        self.test_grouping_module = GroupingModule(self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
 
-    def test_sort_people_by_undesirables(self):
-        grouping_module = GroupingModule(self.people, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
+    def test_group_people_by_education(self):
+        # Test grouping people by education
+        num_groups = 2
+        groups = self.test_grouping_module.group_people_by_education(self.people, num_groups)
         
-        # Test sorting function with mock data
-        sorted_people = grouping_module.sort_people_by_undesirables(self.people)
-        
-        # Assert that the sorted list is not empty
-        self.assertTrue(sorted_people)
-        
-        # Assert that the length of the sorted list does not exceed the maximum number of groups
-        max_groups_needed = max(len(self.people) // len(set(len(person.undesirables) for person in self.people)), 1)
-        self.assertLessEqual(len(sorted_people), max_groups_needed * self.max_total_groups)
-        
-        # Assert that people are sorted based on the number of undesirables
-        prev_num_undesirables = float('inf')
-        for person in sorted_people:
-            num_undesirables = len(person.undesirables)
-            self.assertGreaterEqual(prev_num_undesirables, num_undesirables)
-            prev_num_undesirables = num_undesirables
-        print(max_groups_needed)
-''' 
-    def test_sort_people(self):
-        # Test sorting function with mock data
-        grouping_module = GroupingModule(self.people, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
-        sorted_people = grouping_module.sort_people(self.people, "Male", "University B")
-        print("Sorted People:")
-        for person in sorted_people:
-            print(person)
-        # Add assertions to verify sorting order
-'''
-'''    
-    def test_assign_groups(self):
-        # Test assigning groups with mock data
-        grouping_module = GroupingModule(self.people, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
-        groups = grouping_module.assign_groups()
-        print("Groups:")
+        # Assert that the number of resulting groups is correct
+        self.assertEqual(len(groups), num_groups)
+
+        # Assert that each group contains people from different educations
         for group in groups:
-            print("Group Members:")
-            for member in group.members:
-                print(member)
-'''
-        # Add assertions to verify group formation
+            educations_in_group = set(person.education for person in group)
+            self.assertEqual(len(educations_in_group), 1)
+    
+        # Print the groups using the __str__ method of the Group class
+            for i, group in enumerate(groups):
+                print(f"Group {i + 1}:\n{group}")
 
 if __name__ == '__main__':
     unittest.main()
