@@ -19,6 +19,22 @@ class GroupingModule:
         min_num_groups_needed = total_people // max_group_size
         return min(min_num_groups_needed, max_possible_num_groups) if total_people % max_group_size == 0 else min(min_num_groups_needed + 1, max_possible_num_groups)
 
+    def count_most_frequent_parameter_value(self, people_list, target_parameter) -> tuple[int, str]:
+        parameter_counts = {}
+        for person in people_list:
+            param_value = getattr(person, target_parameter)  # Get the value of the target parameter for the current person
+            if param_value in parameter_counts:
+                parameter_counts[param_value] += 1
+            else:
+                parameter_counts[param_value] = 1
+        
+        if not parameter_counts:  # If the parameter_counts dictionary is empty
+            return 0, None
+        
+        most_frequent_param_value = max(parameter_counts, key=parameter_counts.get)  # Get the most frequent parameter value
+        most_frequent_count = parameter_counts[most_frequent_param_value]  # Get the count of the most frequent parameter value
+        return most_frequent_count, most_frequent_param_value
+    
     def group_by_gender(self):
         gender_groups = defaultdict(list)
         for person in self.people:

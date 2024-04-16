@@ -51,6 +51,12 @@ class TestGroupingModule(unittest.TestCase):
         self.max_total_groups = 10
         self.test_grouping_module = GroupingModule(self.people, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
 
+    def test_count_parameter_occurrences_in_people(self):
+        target_parameter = "education"
+        [count, most_frequent_param_value] =  self.test_grouping_module.count_most_frequent_parameter_value(self.people, target_parameter)
+        
+        print(f"Most frequent parameter '{target_parameter}': {most_frequent_param_value}, Count: {count}")
+
     def test_group_people_by_education(self):
         # Test grouping into 3 groups
         num_groups = 5
