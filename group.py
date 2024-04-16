@@ -20,18 +20,18 @@ class Group:
         self.gender_is_balanced = gender_balance >= gender_threshold
         return self.gender_is_balanced
 
-    def calculate_university_diversity(self, university_threshold=0.5):
+    def calculate_education_diversity(self, education_threshold=0.5):
         if not self.members:
             return False
 
         # Count the number of unique universities in the group
-        universities = set(person.university for person in self.members)
+        educations = set(person.education for person in self.members)
 
         # Check university diversity
-        university_diversity = len(universities) / len(self.members)
-        self.university_is_diverse = university_diversity >= university_threshold
+        education_diversity = len(educations) / len(self.members)
+        self.university_is_diverse = education_diversity >= education_diversity
         return self.university_is_diverse
 
-def __str__(self):
-        member_info = "\n".join([f"{person.name} - {person.university}" for person in self.members])
+    def __str__(self):
+        member_info = "\n".join([f"{person.name} - {person.education}" for person in self.members])
         return f"Group Members:\n{member_info}"

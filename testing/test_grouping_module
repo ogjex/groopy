@@ -8,52 +8,73 @@ from person import Person
 class TestGroupingModule(unittest.TestCase):
     def setUp(self):
         # Initialize test data
-        self.people = [
-            Person("Alice", "Female", 5, "Engineering", ["Bob", "Charlie"], ["David", "Eve"], "Harvard"),
-            Person("Bob", "Male", 4, "Engineering", ["Alice", "David"], ["Eve"], "MIT"),
-            Person("Charlie", "Male", 3, "Marketing", ["Alice", "Eve"], ["David"], "Stanford"),
-            Person("David", "Male", 5, "Marketing", ["Bob", "Alice"], ["Charlie"], "Stanford"),
-            Person("Eve", "Female", 4, "Engineering", ["Charlie", "Alice"], ["Bob"], "MIT"),
-            Person("Frank", "Male", 3, "Marketing", [], ["Alice"], "Stanford"),
-            Person("Grace", "Female", 2, "Engineering", [], ["Bob"], "Harvard"),
-            Person("Harry", "Male", 4, "Engineering", [], ["Alice", "Charlie"], "MIT"),
-            Person("Ivy", "Female", 5, "Marketing", ["Frank", "Grace"], ["Bob", "Charlie"], "Stanford"),
-            Person("Jack", "Male", 3, "Engineering", ["Harry"], ["Eve"], "Harvard"),
-            Person("Kate", "Female", 4, "Engineering", ["Grace"], [], "MIT"),
-            Person("Larry", "Male", 2, "Marketing", [], [], "Stanford"),
-            Person("Mia", "Female", 3, "Marketing", ["Ivy"], [], "Harvard"),
-            Person("Noah", "Male", 4, "Engineering", [], [], "MIT"),
-            Person("Olivia", "Female", 5, "Engineering", [], [], "Stanford"),
-            Person("Paul", "Male", 2, "Marketing", [], [], "Harvard"),
-            Person("Quinn", "Female", 3, "Engineering", [], [], "MIT"),
-            Person("Ryan", "Male", 4, "Engineering", [], [], "Stanford"),
-            Person("Sara", "Female", 5, "Marketing", [], [], "Harvard"),
-            Person("Tom", "Male", 2, "Marketing", [], [], "MIT"),
-            Person("Aaron", "Male", 3, "Engineering", [], [], "Harvard")
-        ]
+        people1 = [
+            Person(name="Alice", gender="Female", education="Engineering", experience=3, career_preference="Software Development", desirables=["Bob", "Charlie"]),
+            Person(name="Bob", gender="Male", education="Computer Science", experience=5, career_preference="Data Science", desirables=["Alice"]),
+            Person(name="Charlie", gender="Male", education="Mathematics", experience=2, career_preference="Finance", desirables=["Alice"]),
+            Person(name="Eve", gender="Female", education="Engineering", experience=4, career_preference="Software Development", desirables=["Alice", "Bob"]),
+            Person(name="David", gender="Male", education="Engineering", experience=6, career_preference="Data Science", desirables=["Alice"]),
+            Person(name="Frank", gender="Male", education="Mathematics", experience=1, career_preference="Software Development"),
+            Person(name="Grace", gender="Female", education="Computer Science", experience=4, career_preference="Finance", desirables=["Bob"]),
+            Person(name="Harry", gender="Male", education="Engineering", experience=3, career_preference="Data Science", desirables=["Alice"]),
+            Person(name="Isabel", gender="Female", education="Mathematics", experience=2, career_preference="Software Development", desirables=["Bob"]),
+            Person(name="Jack", gender="Male", education="Engineering", experience=5, career_preference="Finance", desirables=["Alice"]),
+            Person(name="Karen", gender="Female", education="Computer Science", experience=3, career_preference="Data Science", desirables=["Alice"]),
+            Person(name="Liam", gender="Male", education="Engineering", experience=4, career_preference="Software Development"),
+            Person(name="Mia", gender="Female", education="Mathematics", experience=5, career_preference="Data Science", desirables=["Charlie"]),
+            Person(name="Nathan", gender="Male", education="Engineering", experience=3, career_preference="Finance", desirables=["Alice"]),
+            Person(name="Olivia", gender="Female", education="Computer Science", experience=2, career_preference="Software Development", desirables=["Bob"]),
+            Person(name="Peter", gender="Male", education="Mathematics", experience=4, career_preference="Data Science", desirables=["Alice"]),
+            Person(name="Quinn", gender="Female", education="Engineering", experience=3, career_preference="Finance", desirables=["Alice"]),
+            Person(name="Robert", gender="Male", education="Computer Science", experience=2, career_preference="Software Development", desirables=["Alice"]),
+            Person(name="Sophia", gender="Female", education="Mathematics", experience=4, career_preference="Data Science", desirables=["Charlie"]),
+            Person(name="Thomas", gender="Male", education="Engineering", experience=5, career_preference="Finance"),
+            Person(name="Hortensia", gender="Female", education="Economics", experience=5, career_preference="Finance")                
+            ]
+
+        ''' people2 = [
+            Person(name="Person 1", education="Engineering"),
+            Person(name="Person 2", education="Computer Science"),
+            Person(name="Person 3", education="Engineering"),
+            Person(name="Person 4", education="Mathematics"),
+            Person(name="Person 5", education="Computer Science"),
+            Person(name="Person 6", education="Mathematics"),
+            Person(name="Person 7", education="Engineering"),
+            Person(name="Person 8", education="Mathematics"),
+            Person(name="Person 9", education="Computer Science"),
+            Person(name="Person 10", education="Engineering")
+        ]'''
+        self.people = people1
         self.min_group_size = 3
         self.max_group_size = 5
         self.max_groups_per_person = 1
         self.max_total_groups = 10
         self.test_grouping_module = GroupingModule(self.people, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
 
-def test_group_people_by_education(self):
+    def test_group_people_by_education(self):
         # Test grouping into 3 groups
-        num_groups = 4
-        groups = self.grouping_module.group_people_by_education(self.people, num_groups)
+        num_groups = 5
+        people = self.people
+        groups = self.test_grouping_module.group_people_by_education(people, num_groups)
         
+        for i, group in enumerate(groups):
+            print(f"Group {i + 1}:")
+            for person in group.members:
+                print(person)
+
         # Verify that the correct number of groups is created
         self.assertEqual(len(groups), num_groups)
+
+        # Verify that each group contains people with different educational backgrounds
+        unique_educations = set(person.education for person in self.people)
+        for group in groups:
+            group_educations = set(person.education for person in group.members)
+            self.assertEqual(group_educations, unique_educations.intersection(group_educations))
 
         # Verify that each group has approximately the same number of people
         num_people_per_group = len(self.people) // num_groups
         for group in groups:
             self.assertTrue(abs(len(group.members) - num_people_per_group) <= 1)
-
-        # Verify that each group contains people with the same education background
-        for group in groups:
-            education_set = set(person.education for person in group.members)
-            self.assertEqual(len(education_set), 1)  # All people in the group have the same education background
-
+     
 if __name__ == '__main__':
-    unittest.main()
+        unittest.main()

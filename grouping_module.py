@@ -1,6 +1,5 @@
 import random
 from collections import defaultdict
-from itertools import combinations
 from person import Person
 from group import Group
 
@@ -26,29 +25,33 @@ class GroupingModule:
             gender_groups[person.gender].append(person)
         return gender_groups
     
-    def calculate_people_per_group(self, people: list[Person], num_groups) -> int:
+    def calculate_people_per_group(self, people: list[Person], num_groups: int) -> int:
         num_people_per_group = len(people) // num_groups
         return num_people_per_group
 
-    def group_people_by_education(self, people, num_groups) -> list[Group]:
-        # Create a dictionary to store people based on their education
-        education_groups = defaultdict(list)
-        for person in people:
-            education_groups[person.education].append(person)
+    def group_people_by_education(self, people: list[Person], num_groups: int) -> list[Group]:
+        # Create a list of all unique educational backgrounds
+        unique_educations = set(person.education for person in people)
 
         # Calculate the number of people per group
         num_people_per_group = self.calculate_people_per_group(people, num_groups)
 
-        # Shuffle the order of people within each university group
-        for group in education_groups.values():
-            random.shuffle(group)
+        # Shuffle the list of people to introduce randomness
+        random.shuffle(people)
 
         # Initialize the groups list
         groups = [Group() for _ in range(num_groups)]
 
-        # Assign people to groups based on university background
-        for education, group in education_groups.items():
-            for person_index, person in enumerate(group):
-                groups[person_index // num_people_per_group].add_member(person)
+        # Assign people to groups based on education background
+        group_index = 0
+        for education in unique_educations:
+            # Filter people with the current education background
+            people_with_education = [person for person in people if person.education == education]
+
+            # Assign people to groups, ensuring each group receives people with different educational backgrounds
+            for person in people_with_education:
+                groups[group_index].add_member(person)
+                if len(groups[group_index].members) >= num_people_per_group:
+                    group_index = (group_index + 1) % num_groups
 
         return groups
