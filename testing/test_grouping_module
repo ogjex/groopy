@@ -37,22 +37,23 @@ class TestGroupingModule(unittest.TestCase):
         self.max_total_groups = 10
         self.test_grouping_module = GroupingModule(self.people, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
 
-    def test_group_people_by_education(self):
-        # Test grouping people by education
+def test_group_people_by_education(self):
+        # Test grouping into 3 groups
         num_groups = 4
-        groups = self.test_grouping_module.group_people_by_education(self.people, num_groups)
+        groups = self.grouping_module.group_people_by_education(self.people, num_groups)
         
-        # Assert that the number of resulting groups is correct
+        # Verify that the correct number of groups is created
         self.assertEqual(len(groups), num_groups)
 
-        # Assert that each group contains people from different educations
+        # Verify that each group has approximately the same number of people
+        num_people_per_group = len(self.people) // num_groups
         for group in groups:
-            educations_in_group = set(person.education for person in group)
-            self.assertEqual(len(educations_in_group), 1)
-    
-        # Print the groups using the __str__ method of the Group class
-            for i, group in enumerate(groups):
-                print(f"Group {i + 1}:\n{group}")
+            self.assertTrue(abs(len(group.members) - num_people_per_group) <= 1)
+
+        # Verify that each group contains people with the same education background
+        for group in groups:
+            education_set = set(person.education for person in group.members)
+            self.assertEqual(len(education_set), 1)  # All people in the group have the same education background
 
 if __name__ == '__main__':
     unittest.main()
