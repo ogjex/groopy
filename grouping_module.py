@@ -30,7 +30,7 @@ class GroupingModule:
         num_people_per_group = len(people) // num_groups
         return num_people_per_group
 
-    def group_people_by_education(self, people, num_groups):
+    def group_people_by_education(self, people, num_groups) -> list[Group]:
         # Create a dictionary to store people based on their education
         education_groups = defaultdict(list)
         for person in people:
@@ -40,19 +40,15 @@ class GroupingModule:
         num_people_per_group = self.calculate_people_per_group(people, num_groups)
 
         # Shuffle the order of people within each university group
-        for education, group in education_groups.items():
+        for group in education_groups.values():
             random.shuffle(group)
 
         # Initialize the groups list
         groups = [Group() for _ in range(num_groups)]
 
         # Assign people to groups based on university background
-        for group_index, (university, group) in enumerate(education_groups.items()):
+        for education, group in education_groups.items():
             for person_index, person in enumerate(group):
                 groups[person_index // num_people_per_group].add_member(person)
-
-        # Print the groups
-        for i, group in enumerate(groups):
-            print(f"Group {i + 1}:\n{group}")
 
         return groups
