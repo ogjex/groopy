@@ -35,6 +35,32 @@ class GroupingModule:
         most_frequent_count = parameter_counts[most_frequent_param_value]  # Get the count of the most frequent parameter value
         return most_frequent_count, most_frequent_param_value
     
+    def filter_people_by_parameter(self, people:list[Person], parameter:str, value:str) -> list[Person]:
+        """
+        Filters a list of Person objects based on the specified parameter and value.
+
+        Args:
+            people (list[Person]): List of Person objects.
+            parameter (str): The parameter to filter by (e.g., 'education', 'experience', etc.).
+            value: The desired value for the specified parameter.
+
+        Returns:
+            list[Person]: Filtered list of Person objects.
+        """
+        filtered_people = []  # Initialize an empty list to store the filtered people
+
+        # Iterate through each person in the input list
+        for person in people:
+            # Get the value of the specified parameter for the current person
+            person_value = getattr(person, parameter)
+
+            # Check if the person's parameter value matches the desired value
+            if person_value == value:
+                # If it matches, add the person to the filtered list
+                filtered_people.append(person)
+
+        return filtered_people
+        
     def group_by_gender(self):
         gender_groups = defaultdict(list)
         for person in self.people:

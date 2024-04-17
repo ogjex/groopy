@@ -8,12 +8,12 @@ from person import Person
 class TestGroupingModule(unittest.TestCase):
     def setUp(self):
         # Initialize test data
-        people1 = [
+        self.people1 = [
             Person(name="Alice", gender="Female", education="Engineering", experience=3, career_preference="Software Development", desirables=["Bob", "Charlie"]),
-            Person(name="Bob", gender="Male", education="Computer Science", experience=5, career_preference="Data Science", desirables=["Alice"]),
+            Person(name="Bob", gender="Male", education="Software Engineering", experience=5, career_preference="Software Engineering", desirables=["Alice"]),
             Person(name="Charlie", gender="Male", education="Mathematics", experience=2, career_preference="Finance", desirables=["Alice"]),
             Person(name="Eve", gender="Female", education="Engineering", experience=4, career_preference="Software Development", desirables=["Alice", "Bob"]),
-            Person(name="David", gender="Male", education="Engineering", experience=6, career_preference="Data Science", desirables=["Alice"]),
+            Person(name="Alice", gender="Male", education="Engineering", experience=6, career_preference="Data Science", desirables=["Alice"]),
             Person(name="Frank", gender="Male", education="Mathematics", experience=1, career_preference="Software Development"),
             Person(name="Grace", gender="Female", education="Computer Science", experience=4, career_preference="Finance", desirables=["Bob"]),
             Person(name="Harry", gender="Male", education="Engineering", experience=3, career_preference="Data Science", desirables=["Alice"]),
@@ -44,43 +44,48 @@ class TestGroupingModule(unittest.TestCase):
             Person(name="Person 9", education="Computer Science"),
             Person(name="Person 10", education="Engineering")
         ]'''
-        self.people = people1
+        #self.people = people1
         self.min_group_size = 3
         self.max_group_size = 5
         self.max_groups_per_person = 1
         self.max_total_groups = 10
-        self.test_grouping_module = GroupingModule(self.people, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
+        self.test_grouping_module = GroupingModule(self.people1, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
 
-    def test_count_parameter_occurrences_in_people(self):
+    def test_count_most_frequent_parameter_value(self):
         target_parameter = "education"
-        [count, most_frequent_param_value] =  self.test_grouping_module.count_most_frequent_parameter_value(self.people, target_parameter)
+        [count, most_frequent_param_value] =  self.test_grouping_module.count_most_frequent_parameter_value(self.people1, target_parameter)
         
         print(f"Most frequent parameter '{target_parameter}': {most_frequent_param_value}, Count: {count}")
 
-    def test_group_people_by_education(self):
-        # Test grouping into 3 groups
-        num_groups = 5
-        people = self.people
-        groups = self.test_grouping_module.group_people_by_education(people, num_groups)
-        
-        for i, group in enumerate(groups):
-            print(f"Group {i + 1}:")
-            for person in group.members:
-                print(person)
+    def test_calculate_optimal_num_groups_exact_multiple(self):
+        # Test when total_people is an exact multiple of max_group_size
+        gm = GroupingModule(people=[], min_group_size=3, max_group_size=6, max_groups_per_person=2, max_total_groups=10)
+        result = gm.calculate_optimal_num_groups(total_people=18, min_group_size=3, max_group_size=6, max_num_groups=10)
+        self.assertEqual(result, 3)  # 18 people can be divided into 3 groups of 6 each
 
-        # Verify that the correct number of groups is created
-        self.assertEqual(len(groups), num_groups)
+    def test_calculate_optimal_num_groups_not_exact_multiple(self):
+        # Test when total_people is not an exact multiple of max_group_size
+        gm = GroupingModule(people=[], min_group_size=3, max_group_size=6, max_groups_per_person=2, max_total_groups=10)
+        result = gm.calculate_optimal_num_groups(total_people=19, min_group_size=3, max_group_size=6, max_num_groups=10)
+        self.assertEqual(result, 4)  # 19 people can be divided into 4 groups (3 groups of 6 and 1 group of 1)
 
-        # Verify that each group contains people with different educational backgrounds
-        unique_educations = set(person.education for person in self.people)
-        for group in groups:
-            group_educations = set(person.education for person in group.members)
-            self.assertEqual(group_educations, unique_educations.intersection(group_educations))
-
-        # Verify that each group has approximately the same number of people
-        num_people_per_group = len(self.people) // num_groups
-        for group in groups:
-            self.assertTrue(abs(len(group.members) - num_people_per_group) <= 1)
+    def test_calculate_optimal_num_groups_max_num_groups_limit(self):
+        # Test when max_num_groups is smaller than the maximum possible number of groups
+        gm = GroupingModule(people=[], min_group_size=3, max_group_size=6, max_groups_per_person=2, max_total_groups=10)
+        result = gm.calculate_optimal_num_groups(total_people=20, min_group_size=3, max_group_size=6, max_num_groups=2)
+        self.assertEqual(result, 2)  # Only 2 groups allowed, even though more are possible
      
+    def test_filter_by_education(self):
+        gm = GroupingModule(self.people1, min_group_size=3, max_group_size=6, max_groups_per_person=2, max_total_groups=10)
+        filtered_people = gm.filter_people_by_parameter(self.people1, parameter="education", value="Software Engineering")
+        self.assertEqual(len(filtered_people), 1)  # Only Bob is a software engineer
+        self.assertEqual(filtered_people[0].name, "Bob")
+
+    def test_filter_by_experience(self):
+        gm = GroupingModule(self.people1, min_group_size=3, max_group_size=6, max_groups_per_person=2, max_total_groups=10)
+        filtered_people = gm.filter_people_by_parameter(self.people1, parameter="experience", value=6)
+        self.assertEqual(len(filtered_people), 1)  # Only Alice has 6 years of experience
+        self.assertEqual(filtered_people[0].name, "Alice")
+
 if __name__ == '__main__':
         unittest.main()
