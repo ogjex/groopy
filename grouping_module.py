@@ -9,13 +9,13 @@ class GroupingModule:
         self.min_group_size = min_group_size
         self.max_group_size = max_group_size
         self.max_groups_per_person = max_groups_per_person
+        self.max_total_groups = max_total_groups
         self.groups = []
 
-    def calculate_optimal_num_groups(self, total_people, max_group_size, max_num_groups) -> int:
-        max_possible_num_groups = total_people / self.min_group_size
+    def calculate_optimal_num_groups(self, total_people, min_group_size, max_group_size, max_num_groups) -> int:
+        max_possible_num_groups = total_people / min_group_size
         if max_num_groups < max_possible_num_groups:
             max_possible_num_groups = max_num_groups
-        max_people_allowed = max_group_size * max_num_groups
         min_num_groups_needed = total_people // max_group_size
         return min(min_num_groups_needed, max_possible_num_groups) if total_people % max_group_size == 0 else min(min_num_groups_needed + 1, max_possible_num_groups)
 
