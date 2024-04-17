@@ -4,6 +4,7 @@ from group import Group
 
 def main():
     # Sample data representing people with their attributes
+    # needs updated.
     people = [
         Person("Alice", "Female", 3, "Engineering", ["Bob", "Charlie"], ["David", "Eve"], "Harvard"),
         Person("Bob", "Male", 2, "Engineering", ["Alice", "David"], ["Eve"], "MIT"),
@@ -16,9 +17,9 @@ def main():
     min_group_size = 3
     max_group_size = 5
     max_groups_per_person = 2
+    max_total_groups = 10
 
-    grouping_module = GroupingModule(people, min_group_size, max_group_size, max_groups_per_person)
-    grouping_module.assign_groups()
+    grouping_module = GroupingModule(people, min_group_size, max_group_size, max_groups_per_person, max_total_groups)
 
     # Print groups
     for i, group in enumerate(grouping_module.groups):
