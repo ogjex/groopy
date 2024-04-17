@@ -4,6 +4,7 @@ import unittest
 sys.path.append('../groopy')
 from grouping_module import GroupingModule
 from person import Person
+from group import Group
 
 class TestGroupingModule(unittest.TestCase):
     def setUp(self):
@@ -86,6 +87,53 @@ class TestGroupingModule(unittest.TestCase):
         filtered_people = gm.filter_people_by_parameter(self.people1, parameter="experience", value=6)
         self.assertEqual(len(filtered_people), 1)  # Only Alice has 6 years of experience
         self.assertEqual(filtered_people[0].name, "Alice")
+
+    def test_find_remainder(self):        
+        # Define two lists of Person objects
+        self.person1 = Person("Alice", "Female", "Masters", "5 years", "Engineering")
+        self.person2 = Person("Bob", "Male", "Bachelor", "3 years", "Finance")
+        self.person3 = Person("Charlie", "Male", "PhD", "10 years", "Research")
+        self.person4 = Person("Diana", "Female", "Masters", "8 years", "Marketing")
+
+        list1 = [self.person1, self.person2, self.person3]
+        list2 = [self.person2, self.person3, self.person4]
+
+        # Call the find_remainder method
+        remainder = self.test_grouping_module.find_remainder(list1, list2)
+        
+        # Assert that the length of the remainder list is 2 (person1 and person4)
+        self.assertEqual(len(remainder), 2)
+        
+        # Assert that person1 and person4 are in the remainder list
+        self.assertIn(self.person1, remainder)
+        self.assertIn(self.person4, remainder)
+
+    def test_distribute_people_to_groups(self):
+        self.person1 = Person("Alice", "Female", "Masters", "5 years", "Engineering")
+        self.person2 = Person("Bob", "Male", "Bachelor", "3 years", "Finance")
+        self.person3 = Person("Charlie", "Male", "PhD", "10 years", "Research")
+        self.person4 = Person("Diana", "Female", "Masters", "8 years", "Marketing")
+
+        # Create some sample Group objects for testing
+        self.group1 = Group("Group 1")
+        self.group2 = Group("Group 2")
+        self.group3 = Group("Group 3")
+        # Create an instance of GroupingModule
+
+        grouping_module = GroupingModule([], 2, 5, 3, 10)
+
+        # Define a list of people and groups
+        people_list = [self.person1, self.person2, self.person3, self.person4]
+        group_list = [self.group1, self.group2, self.group3]
+
+        # Call the distribute_people_to_groups method
+        updated_group_list = grouping_module.distribute_people_to_groups(people_list, group_list)
+
+        # Print out the participants in each group for verification
+        for group in updated_group_list:
+            print(f"Participants in {group.name}:")
+            for person in group.members:
+                print(person.name)
 
 if __name__ == '__main__':
         unittest.main()

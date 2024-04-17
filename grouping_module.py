@@ -35,6 +35,17 @@ class GroupingModule:
         most_frequent_count = parameter_counts[most_frequent_param_value]  # Get the count of the most frequent parameter value
         return most_frequent_count, most_frequent_param_value
     
+    def create_groups(self, groups_to_create:int) -> list[Group]:
+        """Creates a list of groups based on the specified input parameter
+
+        Args:
+            groups_to_create (int): the amount of groups to create
+
+        Returns:
+            list[Group]: the list of groups that people can be added to
+        """ 
+        return [Group] * groups_to_create
+
     def filter_people_by_parameter(self, people:list[Person], parameter:str, value:str) -> list[Person]:
         """
         Filters a list of Person objects based on the specified parameter and value.
@@ -60,16 +71,72 @@ class GroupingModule:
                 filtered_people.append(person)
 
         return filtered_people
+            
+    def find_remainder(self, list1: list[Person], list2: list[Person]) -> list[Person]:
+        """
+        Find the remainder of Person objects not present in both lists.
+
+        Args:
+            list1 (list): The first list of Person objects.
+            list2 (list): The second list of Person objects.
+
+        Returns:
+            list: A list containing Person objects that are not present in both lists.
+        """
+        names1 = {person.name for person in list1}
+        names2 = {person.name for person in list2}
+
+        unique_names = (names1 ^ names2)
+
+        remainder = []
+        for person in list1 + list2:
+            if person.name in unique_names:
+                remainder.append(person)
+        return remainder
+
+    def calculate_people_per_group(self, people: list[Person], num_groups: int) -> int:
+        num_people_per_group = len(people) // num_groups
+        return num_people_per_group
+
+    def distribute_people_to_groups(self, people_list: list[Person], group_list: list[Group]) -> list[Group]:
+        """
+        Distribute people to groups iteratively and incrementally.
+
+        This method iterates through the list of people and assigns each person to a group.
+        When reaching the end of the group list, it starts over from the beginning.
+
+        Args:
+            people_list (list[Person]): List of Person objects.
+            group_list (list[Group]): List of Group objects.
+
+        Returns:
+            list[Group]: The updated list of groups after distributing people.
+        """
+        num_people = len(people_list)
+        num_groups = len(group_list)
+
+        person_index = 0
+        for person in people_list:
+            group_index = person_index % num_groups  # Calculate the index of the group for the current person
+            current_group = group_list[group_index]  # Get the current group
+
+            # Add the person to the current group
+            current_group.add_member(person)
+
+            # Update the group in the list of groups
+            group_list[group_index] = current_group
+
+            person_index += 1
+            if person_index >= num_people:
+                break
         
+        return group_list
+
     def group_by_gender(self):
         gender_groups = defaultdict(list)
         for person in self.people:
             gender_groups[person.gender].append(person)
         return gender_groups
-    
-    def calculate_people_per_group(self, people: list[Person], num_groups: int) -> int:
-        num_people_per_group = len(people) // num_groups
-        return num_people_per_group
 
     def group_people_by_education(self, people: list[Person], num_groups: int) -> list[Group]:
         # Create a list of all unique educational backgrounds

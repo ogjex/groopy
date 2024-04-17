@@ -1,5 +1,6 @@
 class Group:
-    def __init__(self):
+    def __init__(self, name:str):
+        self.name = name
         self.members = []
         self.gender_is_balanced = False
         self.university_is_diverse = False
