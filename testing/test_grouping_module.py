@@ -157,16 +157,17 @@ class TestGroupingModule(unittest.TestCase):
         self.person8 = Person("John", "Female", "Masters", "8 years", "Marketing")
 
         # Create some sample Group objects for testing
-        self.group1 = Group("Group 1")
-        self.group2 = Group("Group 2")
-        self.group3 = Group("Group 3")
+        group_list = self.test_grouping_module.create_groups(4)
+        #self.group1 = Group("Group 1")
+        #self.group2 = Group("Group 2")
+        #self.group3 = Group("Group 3")
         # Create an instance of GroupingModule
 
         grouping_module = GroupingModule([], 2, 5, 3, 10)
 
         # Define a list of people and groups
         people_list = self.people1#[self.person1, self.person2, self.person3, self.person4]
-        group_list = [self.group1, self.group2, self.group3]
+        #group_list = [self.group1, self.group2, self.group3]
 
         # Call the distribute_people_to_groups method
         updated_group_list = grouping_module.distribute_people_to_groups(people_list, group_list)

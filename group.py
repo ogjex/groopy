@@ -32,7 +32,8 @@ class Group:
         education_diversity = len(educations) / len(self.members)
         self.education_is_diverse = education_diversity >= education_diversity
         return self.education_is_diverse
-
+    
     def __str__(self):
-        member_info = "\n".join([f"{person.name} - {person.education}" for person in self.members])
-        return f"Group Members:\n{member_info}"
+        group_info = f"Group Name: {self.name}\n"
+        members_info = "\n".join(str(person) for person in self.members)
+        return group_info + members_info
