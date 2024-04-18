@@ -19,24 +19,40 @@ class GroupingModule:
         min_num_groups_needed = total_people // max_group_size
         return min(min_num_groups_needed, max_possible_num_groups) if total_people % max_group_size == 0 else min(min_num_groups_needed + 1, max_possible_num_groups)
 
-    def count_most_frequent_parameter_value(self, people_list, target_parameter) -> tuple[int, str]:
+    def count_parameter_occurrences(self, people_list:list[Person], target_parameter:str)->dict:
+        """Count the number of paramater and its value occurrences
+
+        Args:
+            people_list (Person): takes a list of Person objects
+            target_parameter (str): searches for the parameter string
+
+        Returns:
+            dict: a dictionary of counts of each parameter
+        """
         parameter_counts = {}
         for person in people_list:
-            param_value = getattr(person, target_parameter)  # Get the value of the target parameter for the current person
+            param_value = getattr(person, target_parameter)
             if param_value in parameter_counts:
                 parameter_counts[param_value] += 1
             else:
                 parameter_counts[param_value] = 1
-        
-        if not parameter_counts:  # If the parameter_counts dictionary is empty
-            return 0, None
-        
-        most_frequent_param_value = max(parameter_counts, key=parameter_counts.get)  # Get the most frequent parameter value
-        most_frequent_count = parameter_counts[most_frequent_param_value]  # Get the count of the most frequent parameter value
-        return most_frequent_count, most_frequent_param_value
+        return parameter_counts
     
+    def find_most_frequent_parameter_value(self, parameter_counts:dict)->str:        
+        """finds and returns the most frequent value in a dict 
+
+        Args:
+            parameter_counts (dict): takes a dictionary as argument
+
+        Returns:
+            str: the value of the parameter that occurs the most
+        """
+        most_frequent_param_value = max(parameter_counts, key=parameter_counts.get)
+        return most_frequent_param_value
+
     def create_groups(self, groups_to_create:int) -> list[Group]:
-        """Creates a list of groups based on the specified input parameter
+        """
+        Creates a list of groups based on the specified input parameter
 
         Args:
             groups_to_create (int): the amount of groups to create
@@ -95,6 +111,16 @@ class GroupingModule:
         return remainder
 
     def calculate_people_per_group(self, people: list[Person], num_groups: int) -> int:
+        """
+        Generalised function that calculates people per group and returns the number
+
+        Args:
+            people (list[Person]): The list of people to be distributed in groups
+            num_groups (int): The number of groups
+
+        Returns:
+            int: the number of people to aim for per group
+        """
         num_people_per_group = len(people) // num_groups
         return num_people_per_group
 
