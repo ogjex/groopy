@@ -50,16 +50,16 @@ class TestGroupingModule(unittest.TestCase):
         self.max_group_size = 5
         self.max_groups_per_person = 1
         self.max_total_groups = 10
-        self.test_grouping_module = GroupingModule(self.people1, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)
-
+        self.test_grouping_module = GroupingModule(self.people1, self.min_group_size, self.max_group_size, self.max_groups_per_person, self.max_total_groups)   
+        
     def test_count_parameter_occurrences(self):
         # Create a list of Person objects for testing
         people_list = [
-            Person("John", "Male", "Engineering"),
-            Person("Alice", "Female", "Science"),
-            Person("Bob", "Male", "Engineering"),
-            Person("Carol", "Female", "Science"),
-            Person("David", "Male", "Engineering")
+            Person("John", "Male", "Engineering", 5, "Software Developer", ["Alice", "Bob"], ["Carol"]),
+            Person("Alice", "Female", "Science", 4, "Data Analyst", ["John"], ["Bob"]),
+            Person("Bob", "Male", "Engineering", 3, "Web Developer", ["John"], ["Alice"]),
+            Person("Carol", "Female", "Science", 6, "Research Scientist", ["David"], ["John"]),
+            Person("David", "Male", "Engineering", 7, "Data Scientist", ["Carol"], ["Alice"])
         ]
 
         # Test counting occurrences of gender
@@ -82,7 +82,7 @@ class TestGroupingModule(unittest.TestCase):
         parameter_counts = {"Engineering": 3, "Science": 2}
 
         # Test finding the most frequent parameter value
-        most_frequent_education = self.grouping_module.find_most_frequent_parameter_value(parameter_counts)
+        most_frequent_education = self.test_grouping_module.find_most_frequent_parameter_value(parameter_counts)
         self.assertEqual(most_frequent_education, "Engineering")
 
     def test_calculate_optimal_num_groups_exact_multiple(self):
@@ -102,7 +102,18 @@ class TestGroupingModule(unittest.TestCase):
         gm = GroupingModule(people=[], min_group_size=3, max_group_size=6, max_groups_per_person=2, max_total_groups=10)
         result = gm.calculate_optimal_num_groups(total_people=20, min_group_size=3, max_group_size=6, max_num_groups=2)
         self.assertEqual(result, 2)  # Only 2 groups allowed, even though more are possible
-     
+
+    def test_create_groups(self):
+        groups_to_create = 5
+        created_groups = self.test_grouping_module.create_groups(groups_to_create)
+
+        # Check if the number of created groups matches the specified input parameter
+        self.assertEqual(len(created_groups), groups_to_create)
+
+        # Check if each element in the created_groups list is an instance of the Group class
+        for group in created_groups:
+            self.assertIsInstance(group, Group)
+    
     def test_filter_by_education(self):
         gm = GroupingModule(self.people1, min_group_size=3, max_group_size=6, max_groups_per_person=2, max_total_groups=10)
         filtered_people = gm.filter_people_by_parameter(self.people1, parameter="education", value="Software Engineering")
@@ -140,6 +151,10 @@ class TestGroupingModule(unittest.TestCase):
         self.person2 = Person("Bob", "Male", "Bachelor", "3 years", "Finance")
         self.person3 = Person("Charlie", "Male", "PhD", "10 years", "Research")
         self.person4 = Person("Diana", "Female", "Masters", "8 years", "Marketing")
+        self.person5 = Person("Diana", "Female", "Masters", "8 years", "Marketing")
+        self.person6 = Person("Diana", "Female", "Masters", "8 years", "Marketing")
+        self.person7 = Person("Diana", "Female", "Masters", "8 years", "Marketing")
+        self.person8 = Person("John", "Female", "Masters", "8 years", "Marketing")
 
         # Create some sample Group objects for testing
         self.group1 = Group("Group 1")
@@ -150,7 +165,7 @@ class TestGroupingModule(unittest.TestCase):
         grouping_module = GroupingModule([], 2, 5, 3, 10)
 
         # Define a list of people and groups
-        people_list = [self.person1, self.person2, self.person3, self.person4]
+        people_list = self.people1#[self.person1, self.person2, self.person3, self.person4]
         group_list = [self.group1, self.group2, self.group3]
 
         # Call the distribute_people_to_groups method
