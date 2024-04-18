@@ -59,9 +59,13 @@ class GroupingModule:
 
         Returns:
             list[Group]: the list of groups that people can be added to
-        """ 
-        return [Group] * groups_to_create
-
+        """
+        created_groups = []
+        for i in range(1, groups_to_create + 1):
+            group_name = f"Group {i}"
+            created_groups.append(Group(group_name))
+        return created_groups
+    
     def filter_people_by_parameter(self, people:list[Person], parameter:str, value:str) -> list[Person]:
         """
         Filters a list of Person objects based on the specified parameter and value.
