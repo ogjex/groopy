@@ -30,8 +30,8 @@ class Group:
 
         # Check university diversity
         education_diversity = len(educations) / len(self.members)
-        self.university_is_diverse = education_diversity >= education_diversity
-        return self.university_is_diverse
+        self.education_is_diverse = education_diversity >= education_diversity
+        return self.education_is_diverse
 
     def __str__(self):
         member_info = "\n".join([f"{person.name} - {person.education}" for person in self.members])
