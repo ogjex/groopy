@@ -26,16 +26,40 @@ class MainWindow(QMainWindow):
         content = QFrame()
         content.setStyleSheet("background-color: blue;")
         
-        menubar_layout = QVBoxLayout()
-        menubar_layout.addWidget(menu_bar)
-        
-        workspace_content_layout = QHBoxLayout()
-        workspace_content_layout.addWidget(workspace)
-        workspace_content_layout.addWidget(content)
+        # Filter bar
 
+        filter_bar = QFrame()
+        filter_bar.setStyleSheet("background-color: gray;")
+        filter_bar.setMaximumWidth(300)
+
+        # Details window
+        details_window = QFrame()
+        details_window.setStyleSheet("background-color: lightgreen;")
+
+        menubar_layout = QVBoxLayout()
+        menubar_layout.addWidget(menu_bar)        
+        
         main_layout = QVBoxLayout()
         main_layout.addLayout(menubar_layout)
-        main_layout.addLayout(workspace_content_layout)
+        content_layout = QHBoxLayout()
+        content_layout.addWidget(workspace)
+
+        main_content_layout = QVBoxLayout()
+        
+        overview_filter_layout = QHBoxLayout()
+        overview_filter_layout.addWidget(content)
+        overview_filter_layout.addWidget(filter_bar)
+
+        main_content_layout.addLayout(overview_filter_layout)
+        details_window_layout = QVBoxLayout()
+        details_window_layout.addWidget(QLabel("Details"))
+        details_window_layout.addWidget(details_window)
+
+        main_content_layout.addLayout(overview_filter_layout)
+        main_content_layout.addLayout(details_window_layout)
+        
+        content_layout.addLayout(main_content_layout)
+        main_layout.addLayout(content_layout)
         main_widget.setLayout(main_layout)
 
         '''window = QWidget()
@@ -75,21 +99,6 @@ class MainWindow(QMainWindow):
         group_overview = QTabWidget()
         content_filter.addWidget(group_overview)
         main_layout.addLayout(workspace_content_layout)
-
-        # Filter bar
-        filter_bar = QFrame()
-        filter_bar.setStyleSheet("background-color: gray;")
-        filter_bar.setMaximumWidth(300)
-        content_filter.addWidget(filter_bar)
-
-
-        # Details window
-        details_window = QFrame()
-        details_window.setStyleSheet("background-color: lightgreen;")
-        details_window_layout = QVBoxLayout()
-        details_window.setLayout(details_window_layout)
-        details_window_layout.addWidget(QLabel("Details"))
-        content_layout.addWidget(details_window)
 
         # Add tabs to main content
         tab1 = QWidget()
