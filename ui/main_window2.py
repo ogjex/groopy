@@ -12,35 +12,76 @@ class MainWindow(QMainWindow):
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
 
-        main_layout = QVBoxLayout()
-        main_widget.setLayout(main_layout)
-
         # Menu bar
         menu_bar = QMenuBar()
         file_menu = menu_bar.addMenu("File")
         view_menu = menu_bar.addMenu("View")
-        main_layout.addWidget(menu_bar)
 
         # Workspace
         workspace = QFrame()
         workspace.setStyleSheet("background-color: lightblue;")
         workspace.setMaximumWidth(300)
+
+        # Content
+        content = QFrame()
+        content.setStyleSheet("background-color: blue;")
+        
+        menubar_layout = QVBoxLayout()
+        menubar_layout.addWidget(menu_bar)
+        
+        workspace_content_layout = QHBoxLayout()
+        workspace_content_layout.addWidget(workspace)
+        workspace_content_layout.addWidget(content)
+
+        main_layout = QVBoxLayout()
+        main_layout.addLayout(menubar_layout)
+        main_layout.addLayout(workspace_content_layout)
+        main_widget.setLayout(main_layout)
+
+        '''window = QWidget()
+        queryLabel = QLabel(()
+            QApplication.translate("nestedlayouts", "Query:"))
+        queryEdit = QLineEdit()
+        resultView = QTableView()
+        queryLayout = QHBoxLayout()
+        queryLayout.addWidget(queryLabel)
+        queryLayout.addWidget(queryEdit)
+        mainLayout = QVBoxLayout()
+        mainLayout.addLayout(queryLayout)
+        mainLayout.addWidget(resultView)
+        window.setLayout(mainLayout)'''
+
+        '''# Create the nested layouts
+        main_layout = QVBoxLayout()
+        content_layout = QVBoxLayout()
+        content_filter = QHBoxLayout()
+
+
+        main_layout.addWidget(menu_bar)
+
+
+        # Add widgets to layouts
         workspace_layout = QVBoxLayout()
-        workspace.setLayout(workspace_layout)
         workspace_layout.addWidget(QLabel("Workspace"))
         workspace_layout.addWidget(QPushButton("Button 1"))
         workspace_layout.addWidget(QPushButton("Button 2"))
-        main_layout.addWidget(workspace)
+        workspace.setLayout(workspace_layout)
+        
+                
 
-        # Vertical bar
-        vertical_bar = QFrame()
-        vertical_bar.setStyleSheet("background-color: gray;")
-        vertical_bar.setMaximumWidth(300)
-        main_layout.addWidget(vertical_bar)
+        workspace_content_layout.addWidget(workspace)
 
         # Main content
-        main_content = QTabWidget()
-        main_layout.addWidget(main_content)
+        group_overview = QTabWidget()
+        content_filter.addWidget(group_overview)
+        main_layout.addLayout(workspace_content_layout)
+
+        # Filter bar
+        filter_bar = QFrame()
+        filter_bar.setStyleSheet("background-color: gray;")
+        filter_bar.setMaximumWidth(300)
+        content_filter.addWidget(filter_bar)
+
 
         # Details window
         details_window = QFrame()
@@ -48,13 +89,22 @@ class MainWindow(QMainWindow):
         details_window_layout = QVBoxLayout()
         details_window.setLayout(details_window_layout)
         details_window_layout.addWidget(QLabel("Details"))
-        main_layout.addWidget(details_window)
+        content_layout.addWidget(details_window)
 
         # Add tabs to main content
         tab1 = QWidget()
         tab2 = QWidget()
-        main_content.addTab(tab1, "Tab 1")
-        main_content.addTab(tab2, "Tab 2")
+        group_overview.addTab(tab1, "Tab 1")
+        group_overview.addTab(tab2, "Tab 2")
+
+        # Add the layouts to the main layout
+        '''
+
+        '''main_layout.addLayout(workspace_content_layout)
+        main_layout.addLayout(content_layout)
+        main_layout.addLayout(content_filter)
+        main_widget.setLayout(main_layout)'''
+        
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
