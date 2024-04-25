@@ -14,6 +14,10 @@ class MainWindow(QMainWindow):
 
         # Menu bar
         menu_bar = QMenuBar()
+        font = menu_bar.font()
+        font.setPointSize(10)  # Adjust the font size as needed
+        menu_bar.setFont(font)
+
         file_menu = menu_bar.addMenu("File")
         view_menu = menu_bar.addMenu("View")
 
@@ -23,43 +27,52 @@ class MainWindow(QMainWindow):
         workspace.setMaximumWidth(300)
         # Add widgets to layouts
         workspace_layout = QVBoxLayout()
-        workspace_layout.addWidget(QLabel("Workspace"))
+        
+        workspace_label = QLabel("Workspace")
+        workspace_label.setMaximumHeight(30)
+        workspace_layout.addWidget(workspace_label)
         workspace_layout.addWidget(QPushButton("Button 1"))
         workspace_layout.addWidget(QPushButton("Button 2"))
         workspace.setLayout(workspace_layout)
 
-
         # Content
-        content = QFrame()
-        content.setStyleSheet("background-color: blue;")
+        group_content = QTabWidget()
+        # Add tabs to the main content as needed
+        tab1 = QWidget()
+        tab2 = QWidget()
+        group_content.addTab(tab1, "Tab 1")
+        group_content.addTab(tab2, "Tab 2")
+        group_content.setStyleSheet("background-color: blue;")
         
         # Filter bar
-
         filter_bar = QFrame()
         filter_bar.setStyleSheet("background-color: gray;")
+        filter_bar.setMinimumWidth(300) 
         filter_bar.setMaximumWidth(300)
 
         # Details window
+        details_label = QLabel("Details")
         details_window = QFrame()
         details_window.setStyleSheet("background-color: lightgreen;")
+        details_window.setMinimumHeight(100)         
 
         menubar_layout = QVBoxLayout()
         menubar_layout.addWidget(menu_bar)        
         
         main_layout = QVBoxLayout()
         main_layout.addLayout(menubar_layout)
+
         content_layout = QHBoxLayout()
         content_layout.addWidget(workspace)
 
         main_content_layout = QVBoxLayout()
         
         overview_filter_layout = QHBoxLayout()
-        overview_filter_layout.addWidget(content)
+        overview_filter_layout.addWidget(group_content)
         overview_filter_layout.addWidget(filter_bar)
 
-        main_content_layout.addLayout(overview_filter_layout)
         details_window_layout = QVBoxLayout()
-        details_window_layout.addWidget(QLabel("Details"))
+        details_window_layout.addWidget(details_label)
         details_window_layout.addWidget(details_window)
 
         main_content_layout.addLayout(overview_filter_layout)
