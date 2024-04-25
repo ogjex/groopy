@@ -21,6 +21,13 @@ class MainWindow(QMainWindow):
         workspace = QFrame()
         workspace.setStyleSheet("background-color: lightblue;")
         workspace.setMaximumWidth(300)
+        # Add widgets to layouts
+        workspace_layout = QVBoxLayout()
+        workspace_layout.addWidget(QLabel("Workspace"))
+        workspace_layout.addWidget(QPushButton("Button 1"))
+        workspace_layout.addWidget(QPushButton("Button 2"))
+        workspace.setLayout(workspace_layout)
+
 
         # Content
         content = QFrame()
@@ -62,57 +69,14 @@ class MainWindow(QMainWindow):
         main_layout.addLayout(content_layout)
         main_widget.setLayout(main_layout)
 
-        '''window = QWidget()
-        queryLabel = QLabel(()
-            QApplication.translate("nestedlayouts", "Query:"))
-        queryEdit = QLineEdit()
-        resultView = QTableView()
-        queryLayout = QHBoxLayout()
-        queryLayout.addWidget(queryLabel)
-        queryLayout.addWidget(queryEdit)
-        mainLayout = QVBoxLayout()
-        mainLayout.addLayout(queryLayout)
-        mainLayout.addWidget(resultView)
-        window.setLayout(mainLayout)'''
 
-        '''# Create the nested layouts
-        main_layout = QVBoxLayout()
-        content_layout = QVBoxLayout()
-        content_filter = QHBoxLayout()
-
-
-        main_layout.addWidget(menu_bar)
-
-
-        # Add widgets to layouts
-        workspace_layout = QVBoxLayout()
-        workspace_layout.addWidget(QLabel("Workspace"))
-        workspace_layout.addWidget(QPushButton("Button 1"))
-        workspace_layout.addWidget(QPushButton("Button 2"))
-        workspace.setLayout(workspace_layout)
-        
-                
-
-        workspace_content_layout.addWidget(workspace)
-
-        # Main content
-        group_overview = QTabWidget()
-        content_filter.addWidget(group_overview)
-        main_layout.addLayout(workspace_content_layout)
-
+        '''        
         # Add tabs to main content
         tab1 = QWidget()
         tab2 = QWidget()
         group_overview.addTab(tab1, "Tab 1")
         group_overview.addTab(tab2, "Tab 2")
-
-        # Add the layouts to the main layout
         '''
-
-        '''main_layout.addLayout(workspace_content_layout)
-        main_layout.addLayout(content_layout)
-        main_layout.addLayout(content_filter)
-        main_widget.setLayout(main_layout)'''
         
 
     def keyPressEvent(self, event):
