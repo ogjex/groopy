@@ -1,51 +1,112 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMenuBar, QAction, QVBoxLayout, QHBoxLayout, QTabWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QFrame, QPushButton, QLabel, QMenuBar, QAction
+from PyQt5.QtCore import Qt
 
-class MyWindow(QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # Create the central widget
-        central_widget = QWidget()
-        self.setCentralWidget(central_widget)
+        self.setMinimumSize(1366, 768)
+        self.setWindowTitle("Resizable Window")
 
-        # Create the menu bar
-        menu_bar = QMenuBar(self)
+        main_widget = QWidget()
+        self.setCentralWidget(main_widget)
+
+        # Menu bar
+        menu_bar = QMenuBar()
+        font = menu_bar.font()
+        font.setPointSize(10)  # Adjust the font size as needed
+        menu_bar.setFont(font)
+
         file_menu = menu_bar.addMenu("File")
         view_menu = menu_bar.addMenu("View")
-        self.setMenuBar(menu_bar)
 
-        # Create the workspace (left side)
-        workspace = QWidget()
-        workspace.setMaximumWidth(300)  # Set maximum width
-        # Add text and buttons to the workspace as needed
+        # Workspace
+        workspace = QFrame()
+        workspace.setStyleSheet("background-color: lightblue;")
+        workspace.setMaximumWidth(300)
+        # Add widgets to layouts
+        workspace_layout = QVBoxLayout()
+        
+        workspace_label = QLabel("Workspace")
+        workspace_label.setMaximumHeight(30)
+        workspace_layout.addWidget(workspace_label)
+        workspace_layout.addWidget(QPushButton("Button 1"))
+        workspace_layout.addWidget(QPushButton("Button 2"))
+        workspace.setLayout(workspace_layout)
 
-        # Create the vertical bar (right side)
-        vertical_bar = QWidget()
-        vertical_bar.setMaximumWidth(300)  # Set maximum width
-        # Add any widgets you need for the vertical bar
-
-        # Create the main content (center)
-        main_content = QTabWidget()
+        # Content
+        group_content = QTabWidget()
         # Add tabs to the main content as needed
         tab1 = QWidget()
         tab2 = QWidget()
-        main_content.addTab(tab1, "Tab 1")
-        main_content.addTab(tab2, "Tab 2")
+        group_content.addTab(tab1, "Tab 1")
+        group_content.addTab(tab2, "Tab 2")
+        group_content.setStyleSheet("background-color: blue;")
+        
+        # Filter bar
+        filter_bar = QFrame()
+        filter_bar.setStyleSheet("background-color: gray;")
+        filter_bar.setMinimumWidth(300) 
+        filter_bar.setMaximumWidth(300)
 
-        # Create the details window (bottom)
-        details_window = QWidget()
-        # Add any widgets you need for the details window
+        # Details window
+        details_label = QLabel("Details")
+        details_window = QFrame()
+        details_window.setStyleSheet("background-color: lightgreen;")
+        details_window.setMinimumHeight(100)         
 
-        # Set up the main layout
-        main_layout = QVBoxLayout(central_widget)
-        main_layout.addWidget(workspace)
-        main_layout.addWidget(main_content)
-        main_layout.addWidget(vertical_bar)
-        main_layout.addWidget(details_window)
+        menubar_layout = QVBoxLayout()
+        menubar_layout.addWidget(menu_bar)        
+        
+        main_layout = QVBoxLayout()
+        main_layout.addLayout(menubar_layout)
 
-if __name__ == "__main__":
+        content_layout = QHBoxLayout()
+        content_layout.addWidget(workspace)
+
+        main_content_layout = QVBoxLayout()
+        
+        overview_filter_layout = QHBoxLayout()
+        overview_filter_layout.addWidget(group_content)
+        overview_filter_layout.addWidget(filter_bar)
+
+        details_window_layout = QVBoxLayout()
+        details_window_layout.addWidget(details_label)
+        details_window_layout.addWidget(details_window)
+
+        main_content_layout.addLayout(overview_filter_layout)
+        main_content_layout.addLayout(details_window_layout)
+        
+        content_layout.addLayout(main_content_layout)
+        main_layout.addLayout(content_layout)
+        main_widget.setLayout(main_layout)
+
+
+        '''        
+        # Add tabs to main content
+        tab1 = QWidget()
+        tab2 = QWidget()
+        group_overview.addTab(tab1, "Tab 1")
+        group_overview.addTab(tab2, "Tab 2")
+        '''
+        
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.close()
+
+if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = MyWindow()
+    window = MainWindow()
+    
+    # Center the window on the screen
+    window_width = window.frameGeometry().width()
+    window_height = window.frameGeometry().height()
+    screen = app.primaryScreen()
+    screen_width = screen.size().width()
+    screen_height = screen.size().height()
+    window.move((screen_width - window_width) // 2, (screen_height - window_height) // 2)
+    
     window.show()
     sys.exit(app.exec_())
