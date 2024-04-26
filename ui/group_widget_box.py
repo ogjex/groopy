@@ -74,38 +74,20 @@ class GroupWidget(QWidget):
     def dropEvent(self, event):
         if event.mimeData().hasText():
             text = event.mimeData().text()
-            sender = self.sender()
-
-            # Check if the drop event occurred within any group widget
-            group_widgets = self.window().findChildren(GroupWidget)
-            for group_widget in group_widgets:
-                if group_widget.geometry().contains(event.pos()):
-                    # If the sender is not a GroupWidget or it's not the parent of the event source,
-                    # then the participant is being dragged from outside this group widget
-                    if not isinstance(sender, GroupWidget) or sender.parent() != group_widget:
-                        # Add the participant only if it's not already in this group
-                        if text not in group_widget.participants:
-                            label = DraggableLabel(text)
-                            label.setFrameStyle(QFrame.Panel | QFrame.Sunken)
-                            label.setMargin(2)
-                            label.setAlignment(Qt.AlignCenter)
-                            label.setFixedSize(100, 20)
-                            label.setScaledContents(True)
-                            label.setContentsMargins(5, 0, 5, 0)
-                            label.setAutoFillBackground(True)
-                            label.dragged.connect(group_widget.removeParticipant)  # Connect signal to removeParticipant slot
-                            group_widget.participants_layout.addWidget(label)
-                            group_widget.participants.append(text)
-                        event.setDropAction(Qt.MoveAction)
-                        event.accept()
-                    return  # Exit the loop if a group widget contains the drop event
-
-            # If the drop event didn't occur within any group widget, ignore it
-            event.ignore()
+            label = DraggableLabel(text)
+            label.setFrameStyle(QFrame.Panel | QFrame.Sunken)
+            label.setMargin(2)
+            label.setAlignment(Qt.AlignCenter)
+            label.setFixedSize(100, 20)
+            label.setScaledContents(True)
+            label.setContentsMargins(5, 0, 5, 0)
+            label.setAutoFillBackground(True)
+            label.dragged.connect(self.removeParticipant)  # Connect signal to removeParticipant slot
+            self.participants_layout.addWidget(label)
+            event.setDropAction(Qt.MoveAction)
+            event.accept()
         else:
             event.ignore()
-
-
 
     def removeParticipant(self, participant):
         sender = self.sender()
