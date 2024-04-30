@@ -18,6 +18,37 @@ class DraggableLabel(QLabel):
             drag.exec_(Qt.MoveAction)
             self.dragged.emit(self.text())  # Emit signal indicating item is being dragged
 
+class DragDropController:
+    def __init__(self, app_window, group_widgets):
+        self.app_window = app_window
+        self.group_widgets = group_widgets
+
+    def handleDropEvent(self, event):
+        print("handledropevent called")
+        if self.isInsideApp(event):
+            self.handleDropInsideApp(event)
+        else:
+            self.handleDropOutsideApp(event)
+
+    def isInsideApp(self, event):
+        if not event or not self.app_window:            
+            return False
+        drop_pos = event.pos()
+        app_geom = self.app_window.geometry()
+        return app_geom.contains(drop_pos)
+
+    def handleDropInsideApp(self, event):
+        for group_widget in self.group_widgets:
+            if group_widget.geometry().contains(group_widget.mapFromGlobal(event.pos())):
+                group_widget.addParticipant(event.mimeData().text())
+                event.setDropAction(Qt.MoveAction)
+                event.accept()                
+                return
+        event.ignore()
+
+    def handleDropOutsideApp(self, event):
+        event.ignore()
+
 class GroupWidget(QWidget):
     def __init__(self, title, participants, parent=None):
         super().__init__(parent)
@@ -49,9 +80,6 @@ class GroupWidget(QWidget):
         # Populate participants
         self.populateParticipants()
         
-        # Enable drag and drop
-        self.setAcceptDrops(True)
-        
     def populateParticipants(self):
         for participant in self.participants:
             label = DraggableLabel(participant)
@@ -62,42 +90,29 @@ class GroupWidget(QWidget):
             label.setScaledContents(True)
             label.setContentsMargins(5, 0, 5, 0)
             label.setAutoFillBackground(True)
-            label.dragged.connect(self.removeParticipant)  # Connect signal to removeParticipant slot
             self.participants_layout.addWidget(label)
         
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasText():
-            event.accept()
-        else:
-            event.ignore()
-            
-    def dropEvent(self, event):
-        if event.mimeData().hasText():
-            text = event.mimeData().text()
-            label = DraggableLabel(text)
-            label.setFrameStyle(QFrame.Panel | QFrame.Sunken)
-            label.setMargin(2)
-            label.setAlignment(Qt.AlignCenter)
-            label.setFixedSize(100, 20)
-            label.setScaledContents(True)
-            label.setContentsMargins(5, 0, 5, 0)
-            label.setAutoFillBackground(True)
-            label.dragged.connect(self.removeParticipant)  # Connect signal to removeParticipant slot
-            self.participants_layout.addWidget(label)
-            event.setDropAction(Qt.MoveAction)
-            event.accept()
-        else:
-            event.ignore()
+    def addParticipant(self, participant):
+        label = DraggableLabel(participant)
+        label.setFrameStyle(QFrame.Panel | QFrame.Sunken)
+        label.setMargin(2)
+        label.setAlignment(Qt.AlignCenter)
+        label.setFixedSize(100, 20)
+        label.setScaledContents(True)
+        label.setContentsMargins(5, 0, 5, 0)
+        label.setAutoFillBackground(True)
+        self.participants_layout.addWidget(label)
+        self.participants.append(participant)
 
     def removeParticipant(self, participant):
-        sender = self.sender()
-        if sender and isinstance(sender, DraggableLabel):
-            # Remove the dragged label from the layout
-            sender.deleteLater()
-
-            # Remove the participant from the list only if it exists in the list
-            if participant in self.participants:
+        # Find the label associated with the participant and remove it
+        for index in range(self.participants_layout.count()):
+            label = self.participants_layout.itemAt(index).widget()
+            if label and label.text() == participant:
+                label.deleteLater()
                 self.participants.remove(participant)
+                break  # Break out of the loop once the participant is removed
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -110,13 +125,6 @@ class MainWindow(QMainWindow):
         
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
-        
-        '''layout = QVBoxLayout(central_widget)
-        
-        # Create a button to toggle visibility of all participants
-        self.toggle_button = QPushButton("Hide Participants")
-        self.toggle_button.clicked.connect(self.toggleParticipants)
-        layout.addWidget(self.toggle_button)'''
 
         layout = QGridLayout()
         central_widget.setLayout(layout)
@@ -131,26 +139,15 @@ class MainWindow(QMainWindow):
             ("Group 6", ["Peter", "Queen", "Robert"])
         ]
         
-        # Populate the grid with GroupWidgets
-        row, col = 0, 0
-        for title, participants in groups_data:
+        self.group_widgets = []
+        for row, (title, participants) in enumerate(groups_data):
             group_widget = GroupWidget(title, participants)
-            layout.addWidget(group_widget, row, col)
-            col += 1
-            if col == 3:
-                row += 1
-                col = 0
-    
-    def toggleParticipants(self):
-        # Toggle visibility of all participants in all groups
-        if self.toggle_button.text() == "Hide Participants":
-            self.toggle_button.setText("Show Participants")
-            for widget in self.findChildren(GroupWidget):
-                widget.participants_frame.hide()
-        else:
-            self.toggle_button.setText("Hide Participants")
-            for widget in self.findChildren(GroupWidget):
-                widget.participants_frame.show()
+            layout.addWidget(group_widget, row // 3, row % 3)
+            self.group_widgets.append(group_widget)
+        
+        # Create DragDropController and connect dropEvent of the app window
+        self.controller = DragDropController(self, self.group_widgets)
+        central_widget.dropEvent = self.controller.handleDropEvent
     
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
