@@ -155,6 +155,10 @@ class GroupWidget(QWidget):
 
         return n
 
+    def dragLeaveEvent(self, e):
+        self._drag_target_indicator.hide()
+        e.accept()
+
     def add_item(self, item):
         self.participants_layout.addWidget(item)
 
