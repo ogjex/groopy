@@ -5,6 +5,7 @@ from PyQt5.QtGui import QDrag
 
 class DraggableLabel(QLabel):
     dragged = pyqtSignal(str)
+    dropped = pyqtSignal()
 
     def __init__(self, text):
         super().__init__(text)
@@ -17,6 +18,9 @@ class DraggableLabel(QLabel):
             drag.setMimeData(mime_data)
             drag.exec_(Qt.MoveAction)
             self.dragged.emit(self.text())  # Emit signal indicating item is being dragged
+
+    def dropEvent(self, event):
+        self.dropped.emit()
 
 class DragDropController:
     def __init__(self, app_window, group_widgets):
