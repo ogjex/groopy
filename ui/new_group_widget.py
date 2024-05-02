@@ -37,7 +37,8 @@ class GroupWidget(QWidget):
         
         # Create a frame for participants
         self.participants_frame = QFrame()
-        self.participants_frame.setFrameShape(QFrame.StyledPanel)
+        self.participants_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.participants_frame.setFrameShadow(QFrame.Shadow.Sunken)  # Set the shadow of the frame
         self.participants_layout = QVBoxLayout(self.participants_frame)
         layout.addWidget(self.participants_frame)
         
@@ -58,15 +59,17 @@ class GroupWidget(QWidget):
 
     def addParticipant(self, participant):
         label = DragItem(participant)
-        label.setFrameStyle(QFrame.Panel | QFrame.Sunken)
+        label.setFrameStyle(QFrame.Shape.Panel | QFrame.Shadow.Sunken)
         label.setMargin(2)
-        label.setAlignment(Qt.AlignCenter)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         label.setFixedSize(100, 20)
         label.setScaledContents(True)
         label.setContentsMargins(5, 0, 5, 0)
         label.setAutoFillBackground(True)
         self.participants_layout.addWidget(label)
         
+    def dragEnterEvent(self, e):
+        e.accept()
 class DragItem(QLabel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -182,6 +185,7 @@ class DragWidgetController(QWidget):
     def add_item(self, item):
         self.blayout.addWidget(item)
 
+
     def get_item_data(self):
         data = []
         for n in range(self.blayout.count()):
@@ -195,8 +199,7 @@ class DragWidgetController(QWidget):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.dragController = DragWidgetController(orientation=Qt.Orientation.Vertical)
-
+        
         # Create GroupWidgets
         groups_data = [
             ("Group 1", ["Alice", "Bob", "Charlie"]),
@@ -206,7 +209,10 @@ class MainWindow(QMainWindow):
             ("Group 5", ["Mary", "Nathan", "Olivia"]),
             ("Group 6", ["Peter", "Queen", "Robert"])
         ]
+        self.dragController = DragWidgetController(groups_data, orientation=Qt.Orientation.Vertical)
 
+        # the following loop needs to go through the groups_data and add the titles 
+        # to the group widgets and also add the correct data.
         for n, l in enumerate(["A", "B", "C", "D"]):
             item = DragItem(l)
             item.set_data(n)  # Store the data.
