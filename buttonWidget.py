@@ -65,15 +65,16 @@ class ColorButtonWidget(QWidget):
         color = self.colors[self.current_color_index]
         sender.setStyleSheet("background-color: {}".format(color))
 
-    def setButtonColors(self, colors_list=None):
-        # If colors_list is provided, set button colors from the list
-        if colors_list is not None:
-            for i, color in enumerate(colors_list):
-                self.colors[i] = color
-            self.setButtonColors()
-        else:
-            for button, color in zip(self.buttons, self.colors):
-                button.setStyleSheet("background-color: {}".format(color))    
+    def loadButtonColors(self, color_list):
+        for button, color in zip(self.buttons, color_list):
+            self.setButtonColor(button, color)
+
+    def setButtonColors(self):
+        for button, color in zip(self.buttons, self.colors):
+            self.setButtonColor(button, color)
+
+    def setButtonColor(self, button, color):
+        button.setStyleSheet("background-color: {}".format(color))    
 
     def getColors(self):
         # Get and return the color values of the buttons

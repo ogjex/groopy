@@ -20,7 +20,7 @@ class Presenter(object):
         
     def handle_open_csv_file(self, filename):
         self.button_editor.read_csv_file(filename)
-        self.main_gui.setButtonColors(self.button_editor.get_button_colors())
+        self.main_gui.loadButtonColors(self.button_editor.get_button_colors())
 
     def handle_save_csv_file(self, filename, button_colors):
         self.button_editor.save_csv_file(filename, button_colors)
