@@ -1,13 +1,14 @@
 GETTING GROOPY
-THE BIG FAT BACKLOG
+# THE BIG FAT BACKLOG
 
-backend:
+## backend:
 
 - set up MVP
 - 
 - set up testing folder for unit tests
 
-frontend:
+## frontend:
+
 - sketch gui
 - set up template for gui
 - 
