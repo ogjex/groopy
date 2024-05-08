@@ -1,50 +1,12 @@
-from PyQt6.QtCore import QMimeData, Qt, pyqtSignal
-from PyQt6.QtGui import QDrag, QPixmap
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
-    QApplication,
-    QHBoxLayout,
     QLabel,
     QFrame,
-    QPushButton,
-    QMainWindow,
     QVBoxLayout,
     QWidget,
 )
+from drag_widget import DragLabel, DragTargetIndicator
 
-
-class Window(QWidget):
-    def __init__(self):
-        super().__init__()
-
-        groups_data = [
-            ("Group 1", ["Alice", "Bob", "Charlie"]),
-            ("Group 2", ["David", "Eve", "Frank"]),
-            ("Group 3", ["Grace", "Henry", "Ivy"]),
-            ("Group 4", ["Jack", "Kate", "Liam"]),
-            ("Group 5", ["Mary", "Nathan", "Olivia"]),
-            ("Group 6", ["Peter", "Queen", "Robert"])
-        ]
-
-
-        self.blayout = QHBoxLayout()
-        
-        for l in groups_data:
-            new_group = GroupWidget(l[0],l[1])
-            self.blayout.addWidget(new_group)
-
-        self.setLayout(self.blayout)
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key.Key_Escape:
-            self.close()
-
-class DragTargetIndicator(QLabel):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setContentsMargins(25, 5, 25, 5)
-        self.setStyleSheet(
-            "QLabel { background-color: #ccc; border: 1px solid black; }"
-        )
 class GroupWidget(QWidget):
 
     orderChanged = pyqtSignal(list)
@@ -92,7 +54,7 @@ class GroupWidget(QWidget):
            self.addParticipant(participant) 
 
     def addParticipant(self, participant):
-        label = DragItem(participant)
+        label = DragLabel(participant)
         label.setFrameStyle(QFrame.Shape.Panel | QFrame.Shadow.Sunken)
         label.setMargin(2)
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -171,36 +133,3 @@ class GroupWidget(QWidget):
                 # The target indicator has no data.
                 data.append(w.data)
         return data
-
-class DragItem(QLabel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.setContentsMargins(25, 5, 25, 5)
-        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.setStyleSheet("border: 1px solid black;")
-        # Store data separately from display label, but use label for default.
-        self.data = self.text()
-
-    def set_data(self, data):
-        self.data = data
-
-    def mouseMoveEvent(self, e):
-        if e.buttons() == Qt.MouseButton.LeftButton:
-            drag = QDrag(self)
-            mime = QMimeData()
-            drag.setMimeData(mime)
-
-            # Render at x2 pixel ratio to avoid blur on Retina screens.
-            pixmap = QPixmap(self.size().width() * 2, self.size().height() * 2)
-            pixmap.setDevicePixelRatio(2)
-            self.render(pixmap)
-            drag.setPixmap(pixmap)
-
-            drag.exec(Qt.DropAction.MoveAction)
-            self.show() # Show this widget again, if it's dropped outside.
-        
-app = QApplication([])
-w = Window()
-w.show()
-
-app.exec()
