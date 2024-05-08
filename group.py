@@ -7,6 +7,10 @@ class Group:
 
     def add_member(self, person):
         self.members.append(person)
+    
+    def remove_member(self, person):
+        if person in self.members:
+            self.members.remove(person)
 
     def calculate_gender_balance(self, gender_threshold=0.4):
         if not self.members:
