@@ -21,17 +21,19 @@ class Window(QWidget):
 
 
         self.blayout = QHBoxLayout()
-        
+        self.group_widgets = [] 
+
         for l in groups_data:
             new_group = GroupWidget(l[0],l[1])
             self.blayout.addWidget(new_group)
+            self.group_widgets.append(new_group)
 
         self.setLayout(self.blayout)
 
     def keyPressEvent(self, event):
         key_actions = {
             Qt.Key.Key_Escape: self.close,
-            Qt.Key.Key_P: self.printData,
+            Qt.Key.Key_P: self.printGroupsData,
             # Add more key-function mappings as needed
         }
 
@@ -40,11 +42,12 @@ class Window(QWidget):
             if callable(action):
                 action()
 
-    def printData(self):
+    def printGroupsData(self):
         """
-        Print data using the getData method.
+        Print data using the getData method of each GroupWidget.
         """
-        print(self.getData())
+        for group_widget in self.group_widgets:
+            print(group_widget.get_item_data())
         
 app = QApplication([])
 w = Window()
