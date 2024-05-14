@@ -1,6 +1,11 @@
 import unittest
 import json
+import sys
+
+# setting path
+sys.path.append('../groopy')
 from group_editor import GroupEditor
+from group import Group
 
 class TestGroupEditor(unittest.TestCase):
     def setUp(self):

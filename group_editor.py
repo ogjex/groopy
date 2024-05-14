@@ -8,7 +8,7 @@ class GroupEditor:
     def __init__(self):
         self.groups = []
     
-    def load_group(group_info):
+    def load_group(self, group_info):
         """
         Load a group from JSON data.
         
@@ -22,7 +22,7 @@ class GroupEditor:
         participants = group_info["participants"]
         return [group_name, participants]
 
-    def read_groups_from_json(filename):
+    def read_groups_from_json(self, filename):
         """
         Read the list of groups from a JSON file.
         
@@ -35,7 +35,7 @@ class GroupEditor:
         with open(filename, 'r') as json_file:
             data = json.load(json_file)
 
-        groups = [load_group(group_info) for group_info in data["groups"].values()]
+        groups = [self.load_group(group_info) for group_info in data["groups"].values()]
 
         return groups
 
