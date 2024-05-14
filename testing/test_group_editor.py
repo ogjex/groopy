@@ -1,12 +1,12 @@
 import unittest
 import json
 import sys
+import os
 
 # setting path
 sys.path.append('../groopy')
 from group_editor import GroupEditor
 from group import Group
-
 class TestGroupEditor(unittest.TestCase):
     def setUp(self):
         self.editor = GroupEditor()
@@ -16,8 +16,8 @@ class TestGroupEditor(unittest.TestCase):
 
     def test_get_group_names(self):
         self.editor.groups = [
-            Group("Group 1", ["Alice", "Bob"]),
-            Group("Group 2", ["Charlie", "David"])
+            Group("Group 1"),
+            Group("Group 2")
         ]
         self.assertEqual(self.editor.get_group_names(), ["Group 1", "Group 2"])
 
@@ -41,7 +41,10 @@ class TestGroupEditor(unittest.TestCase):
             json_file.write(json_data)
 
         groups = self.editor.read_groups_from_json("test_groups.json")
-        self.assertEqual(groups, [("Group 1", ["Alice", "Bob"]), ("Group 2", ["Charlie", "David"])])
+        self.assertEqual(groups, [["Group 1", ["Alice", "Bob"]], ["Group 2", ["Charlie", "David"]]])
+
+        # Cleanup
+        os.remove("test_groups.json")
 
     def tearDown(self):
         pass
