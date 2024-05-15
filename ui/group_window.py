@@ -11,7 +11,7 @@ from ui.group_widget import GroupWidget
 class Presenter(Protocol):
     def handle_open_group_file(self, filename) -> None:
         ...
-    def handle_save_group_file(self, filename) -> None:
+    def handle_save_group_file(self, filename, groups_data) -> None:
         ...
 class GroupWindow(QWidget):
     def __init__(self):

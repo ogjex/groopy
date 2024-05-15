@@ -7,6 +7,8 @@ class MainWindow(Protocol):
         ...
     def show(self) -> None:
         ...
+    def import_group_widgets(self, groups) -> None:
+        ...
 
 class Presenter(object):
     def __init__(self, group_editor: GroupEditor, main_window: MainWindow):
@@ -17,9 +19,9 @@ class Presenter(object):
         new_groups = self.group_editor.read_groups_from_json(filename)
         self.main_window.import_group_widgets(new_groups)
 
-    def handle_save_group_file(self, filename):
-        save_groups = self.main_window.get_groups_data()
-        self.group_editor.create_groups_from_data(save_groups)
+    def handle_save_group_file(self, filename, groups_data):
+        #save_groups = self.main_window.get_groups_data()
+        self.group_editor.create_groups_from_data(groups_data)
         self.group_editor.save_groups_to_json(filename)
 
     def run(self) -> None:
