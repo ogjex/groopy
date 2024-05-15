@@ -4,9 +4,15 @@ from PyQt6.QtWidgets import (
     QFileDialog,
     QWidget
 )
-from typing import List
+from typing import Protocol, List
 
 from ui.group_widget import GroupWidget
+
+class Presenter(Protocol):
+    def handle_open_group_file(self, filename) -> None:
+        ...
+    def handle_save_group_file(self, filename) -> None:
+        ...
 class GroupWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -31,14 +37,14 @@ class GroupWindow(QWidget):
             group_widget.deleteLater()  # Optional: Ensure proper cleanup of the widget
         self.group_widgets.clear()  # Clear the list to prevent memory leaks
 
-    def save_groups_file(self, presenter):
+    def save_groups_file(self, presenter: Presenter):
         # Open file dialog to select a json file        
         fileName, _ = QFileDialog.getSaveFileName(self,"Save Json File", "","Json Files (*.json)")
         if fileName:
             groups_data = self.get_groups_data()
             presenter.handle_save_group_file(fileName, groups_data)
 
-    def load_groups_file(self, presenter):
+    def load_groups_file(self, presenter: Presenter):
         # Open file dialog to select a json file
         fileName, _ = QFileDialog.getOpenFileName(self, "Open Json File", "", "Json Files (*.json)")
         if fileName:

@@ -4,12 +4,7 @@ from PyQt5.QtCore import Qt
 
 from typing import Protocol
 from ui.group_window import GroupWindow
-
-class Presenter(Protocol):
-    def handle_open_group_file(self, filename) -> None:
-        ...
-    def handle_save_group_file(self, filename) -> None:
-        ...
+from presenter import Presenter
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -102,6 +97,9 @@ class MainWindow(QMainWindow):
         main_widget.setLayout(main_layout)
 
     # Define functions for group_window
+    def import_group_widgets(self, groups_data):
+        self.group_window.import_group_widgets(groups_data)
+    
     def save_groups_file(self, presenter):
         self.group_window.save_groups_file(presenter)
 
@@ -116,14 +114,6 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
-    
-    # Center the window on the screen
-    window_width = window.frameGeometry().width()
-    window_height = window.frameGeometry().height()
-    screen = app.primaryScreen()
-    screen_width = screen.size().width()
-    screen_height = screen.size().height()
-    window.move((screen_width - window_width) // 2, (screen_height - window_height) // 2)
     
     window.show()
     sys.exit(app.exec_())

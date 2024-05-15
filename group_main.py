@@ -8,11 +8,19 @@ def main():
     app = QApplication([])
     
     main_window = MainWindow()
+    # Center the window on the screen
+    window_width = main_window.frameGeometry().width()
+    window_height = main_window.frameGeometry().height()
+    screen = app.primaryScreen()
+    screen_width = screen.size().width()
+    screen_height = screen.size().height()
+    main_window.move((screen_width - window_width) // 2, (screen_height - window_height) // 2)
+    
     group_editor = GroupEditor()
     presenter = Presenter(group_editor, main_window)
     presenter.run()
 
-    group_data = [
+    groups_data = [
         ("Group 1", ["Alice", "Bob", "Charlie"]),
         ("Group 2", ["David", "Eve", "Frank"]),
         ("Group 3", ["Grace", "Henry", "Ivy"]),
@@ -20,7 +28,7 @@ def main():
         ("Group 5", ["Mary", "Nathan", "Olivia"]),
         ("Group 6", ["Peter", "Queen", "Robert"])
     ]
-    main_window.import_group_widgets(group_data)
+    main_window.import_group_widgets(groups_data)
 
     app.exec()
 
