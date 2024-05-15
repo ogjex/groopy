@@ -1,6 +1,5 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
-    QApplication,
     QHBoxLayout,
     QPushButton,
     QFileDialog,
@@ -97,9 +96,3 @@ class GroupWindow(QWidget):
         """
         for group_widget in self.group_widgets:
             print(group_widget.get_item_data())
-        
-app = QApplication([])
-w = Window()
-w.show()
-
-app.exec()
