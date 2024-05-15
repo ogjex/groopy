@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
     QWidget
 )
 from group_widget import GroupWidget
-from typing import Protocol
+from typing import Protocol, List
 
 class Presenter(Protocol):
     def handle_open_group_file(self, filename) -> None:
@@ -69,11 +69,15 @@ class GroupWindow(QWidget):
         if fileName:
             self.presenter.handle_open_group_file(fileName)
 
-### stopped here for today
-    def get_groups_data(self) -> list:
-        groups_data = list
+    def get_groups_data(self) -> List[list]:
+        """
+        Get the data of all group widgets.
+        """
+        groups_data = []
         for group_widget in self.group_widgets:
-            print(group_widget.get_item_data())
+            group_data = group_widget.get_group_data()
+            groups_data.append(group_data)
+        return groups_data
 
     def keyPressEvent(self, event):
         key_actions = {

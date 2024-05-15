@@ -1,4 +1,3 @@
-import csv
 import json
 from typing import List
 
@@ -67,6 +66,21 @@ class GroupEditor:
 
         with open(filename, 'w') as json_file:
             json.dump(data, json_file, indent=4)
+
+    def create_groups_from_data(self, groups_data: List[list]) -> None:
+        """
+        Create Group objects from the provided data and add them to the editor.
+        
+        Args:
+        - groups_data: A list of lists where each inner list contains group data.
+        """
+        self.groups.clear()  # Clear existing groups
+        for group_info in groups_data:
+            group_name, participants = group_info
+            group = Group(group_name)
+            for participant in participants:
+                group.add_member(participant)
+            self.groups.append(group)
 
     def find_group(self, group_name: str) -> Group:
         """_summary_

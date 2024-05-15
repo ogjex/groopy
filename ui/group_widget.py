@@ -124,6 +124,12 @@ class GroupWidget(QWidget):
     def add_item(self, item):
         self.participants_layout.addWidget(item)
 
+    def get_group_data(self) -> list:
+        """
+        Get the data of this group widget.
+        """
+        return [self.title, self.get_item_data()]
+
     def get_item_data(self):
         data = []
         for n in range(self.participants_layout.count()):
