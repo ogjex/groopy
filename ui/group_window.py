@@ -16,7 +16,7 @@ class Presenter(Protocol):
 class GroupWindow(QWidget):
     def __init__(self):
         super().__init__()
-        
+
         self.blayout = QHBoxLayout()
         self.group_widgets = [] 
         self.setLayout(self.blayout)
@@ -60,19 +60,7 @@ class GroupWindow(QWidget):
             group_data = group_widget.get_group_data()
             groups_data.append(group_data)
         return groups_data
-
-    def keyPressEvent(self, event):
-        key_actions = {
-            Qt.Key.Key_Escape: self.close,
-            Qt.Key.Key_P: self.printGroupsData,
-            # Add more key-function mappings as needed
-        }
-
-        if event.key() in key_actions:
-            action = key_actions[event.key()]
-            if callable(action):
-                action()
-
+    
     def printGroupsData(self):
         """
         Print data using the getData method of each GroupWidget.
