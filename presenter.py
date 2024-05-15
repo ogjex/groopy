@@ -13,20 +13,16 @@ class Presenter(object):
     def __init__(self, group_editor: GroupEditor, main_window: GroupWindow):
         self.main_window = main_window
         self.group_editor = group_editor
-
-    def handle_save_colors(self):
-        pass
-        #button_colors = self.main_gui.getColors()
-        #self.button_editor.saveColors(button_colors)
         
-    def handle_open_csv_file(self, filename):
-        pass
-        #self.button_editor.read_csv_file(filename)
-        #self.main_gui.loadButtonColors(self.button_editor.get_button_colors())
+    def handle_open_group_file(self, filename):
+        new_groups = self.group_editor.read_groups_from_json(filename)
+        self.main_window.clear_group_widgets()
+        self.main_window.import_group_widgets(new_groups)
 
-    def handle_save_csv_file(self, filename, button_colors):
-        pass
-        #self.button_editor.save_csv_file(filename, button_colors)
+    def handle_save_group_file(self, filename, groups_data):
+        save_groups = self.main_window.get_groups_data()
+        self.group_editor.create_groups_from_data(save_groups)
+        self.group_editor.save_groups_to_json(filename)
 
     def run(self) -> None:
         self.main_window.initUI(self)

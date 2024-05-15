@@ -20,23 +20,14 @@ class GroupWindow(QWidget):
     def initUI(self, presenter:Presenter):
         self.presenter = presenter
 
-        groups_data = [
-            ("Group 1", ["Alice", "Bob", "Charlie"]),
-            ("Group 2", ["David", "Eve", "Frank"]),
-            ("Group 3", ["Grace", "Henry", "Ivy"]),
-            ("Group 4", ["Jack", "Kate", "Liam"]),
-            ("Group 5", ["Mary", "Nathan", "Olivia"]),
-            ("Group 6", ["Peter", "Queen", "Robert"])
-        ]
-
         self.blayout = QHBoxLayout()
         self.group_widgets = [] 
 
-        save_button = QPushButton(self)
+        save_button = QPushButton("Save", self)
         save_button.setFixedSize(50, 50)  # Set fixed size for buttons
         self.blayout.addWidget(save_button)
         
-        load_button = QPushButton(self)
+        load_button = QPushButton("Open", self)
         load_button.setFixedSize(50, 50)  # Set fixed size for buttons
         self.blayout.addWidget(load_button)
         
@@ -52,8 +43,11 @@ class GroupWindow(QWidget):
             self.group_widgets.append(new_group)
 
     def clear_group_widgets(self):
-        for l in self.group_widgets:
-            self.blayout.removeWidget(l)
+        # Remove all GroupWidget instances from the layout
+        for group_widget in self.group_widgets:
+            self.blayout.removeWidget(group_widget)
+            group_widget.deleteLater()  # Optional: Ensure proper cleanup of the widget
+        self.group_widgets.clear()  # Clear the list to prevent memory leaks
 
     def save_groups_file(self):
         # Open file dialog to select a json file        
@@ -63,9 +57,13 @@ class GroupWindow(QWidget):
             self.presenter.handle_save_group_file(fileName, groups_data)
 
     def load_groups_file(self):
-                # Open file dialog to select a json file
-        fileName, _ = QFileDialog.getOpenFileName(self,"Open Json File", "","Json Files (*.json)")
+        # Open file dialog to select a json file
+        fileName, _ = QFileDialog.getOpenFileName(self, "Open Json File", "", "Json Files (*.json)")
         if fileName:
+            # Clear existing group widgets
+            self.clear_group_widgets()
+            
+            # Load new groups from file
             self.presenter.handle_open_group_file(fileName)
 
     def get_groups_data(self) -> List[list]:

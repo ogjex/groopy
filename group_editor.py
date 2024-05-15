@@ -44,30 +44,39 @@ class GroupEditor:
         """
         return [group.name for group in self.groups]
     
-    def save_groups_to_json(groups, filename):
+    def save_groups_to_json(self, filename):
         """
         Write the list of groups to a JSON file.
         
         Args:
-        - groups: A list of tuples where each tuple contains the group name and a list of participants.
         - filename: The filename for the JSON file.
         """
+        # Ensure that the list of groups is created before saving
+        if not self.groups:
+            raise ValueError("No groups to save.")
+
+        # Create a list of lists containing group name and participants
+        groups_data = [[group.name, group.members] for group in self.groups]
+
+        # Create a dictionary to store the number of groups and the groups' data
         data = {
-            "number_of_groups": len(groups),
+            "number_of_groups": len(groups_data),
             "groups": {}
         }
 
-        for i, (group_name, participants) in enumerate(groups, start=1):
+        # Populate the dictionary with group data
+        for i, (group_name, participants) in enumerate(groups_data, start=1):
             group_key = f"group{i}"
             data["groups"][group_key] = {
                 "name": group_name,
                 "participants": participants
             }
 
+        # Save the groups to JSON file
         with open(filename, 'w') as json_file:
             json.dump(data, json_file, indent=4)
 
-    def create_groups_from_data(self, groups_data: List[list]) -> None:
+    def create_groups_from_data(self, groups_data: List[list]) -> List[Group]:
         """
         Create Group objects from the provided data and add them to the editor.
         
