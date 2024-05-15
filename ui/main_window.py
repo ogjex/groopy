@@ -2,12 +2,24 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QFrame, QPushButton, QLabel, QMenuBar, QAction
 from PyQt5.QtCore import Qt
 
+from typing import Protocol
+from ui.group_window import GroupWindow
+
+class Presenter(Protocol):
+    def handle_open_group_file(self, filename) -> None:
+        ...
+    def handle_save_group_file(self, filename) -> None:
+        ...
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-
+    
+    def initUI(self, presenter: Presenter):
+        self.presenter:Presenter
+            
         self.setMinimumSize(1366, 768)
-        self.setWindowTitle("Resizable Window")
+        self.setWindowTitle("Gettin' Groopy")
 
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
@@ -31,18 +43,25 @@ class MainWindow(QMainWindow):
         workspace_label = QLabel("Workspace")
         workspace_label.setMaximumHeight(30)
         workspace_layout.addWidget(workspace_label)
-        workspace_layout.addWidget(QPushButton("Button 1"))
-        workspace_layout.addWidget(QPushButton("Button 2"))
+        
+        save_button = QPushButton("Save", self)
+        save_button.setFixedSize(50, 50)  # Set fixed size for buttons
+        workspace_layout.addWidget(save_button)
+        
+        load_button = QPushButton("Open", self)
+        load_button.setFixedSize(50, 50)  # Set fixed size for buttons
+        workspace_layout.addWidget(load_button)
+
+        # Connect button click signal to color change function
+        save_button.clicked.connect(self.save_groups_file)
+        load_button.clicked.connect(self.load_groups_file)
+        
         workspace.setLayout(workspace_layout)
 
         # Content
-        group_content = QTabWidget()
+        # Create the window for groups
+        self.group_window = GroupWindow()
         # Add tabs to the main content as needed
-        tab1 = QWidget()
-        tab2 = QWidget()
-        group_content.addTab(tab1, "Tab 1")
-        group_content.addTab(tab2, "Tab 2")
-        group_content.setStyleSheet("background-color: blue;")
         
         # Filter bar
         filter_bar = QFrame()
@@ -68,7 +87,7 @@ class MainWindow(QMainWindow):
         main_content_layout = QVBoxLayout()
         
         overview_filter_layout = QHBoxLayout()
-        overview_filter_layout.addWidget(group_content)
+        overview_filter_layout.addWidget(self.group_window)
         overview_filter_layout.addWidget(filter_bar)
 
         details_window_layout = QVBoxLayout()
@@ -82,16 +101,14 @@ class MainWindow(QMainWindow):
         main_layout.addLayout(content_layout)
         main_widget.setLayout(main_layout)
 
+    # Define functions for group_window
+    def save_groups_file(self, presenter):
+        self.group_window.save_groups_file(presenter)
 
-        '''        
-        # Add tabs to main content
-        tab1 = QWidget()
-        tab2 = QWidget()
-        group_overview.addTab(tab1, "Tab 1")
-        group_overview.addTab(tab2, "Tab 2")
-        '''
-        
+    def load_groups_file(self, presenter):
+        self.group_window.load_groups_file(presenter)
 
+    # Define keypress events globally
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             self.close()

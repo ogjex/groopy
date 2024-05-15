@@ -10,7 +10,7 @@ class GroupWindow(Protocol):
         ...
 
 class Presenter(object):
-    def __init__(self, group_editor: GroupEditor, main_window: GroupWindow):
+    def __init__(self, group_editor: GroupEditor, main_window: MainWindow):
         self.main_window = main_window
         self.group_editor = group_editor
         

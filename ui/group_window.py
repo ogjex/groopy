@@ -5,36 +5,19 @@ from PyQt6.QtWidgets import (
     QFileDialog,
     QWidget
 )
-from ui.group_widget import GroupWidget
-from typing import Protocol, List
+from typing import List
 
-class Presenter(Protocol):
-    def handle_open_group_file(self, filename) -> None:
-        ...
-    def handle_save_group_file(self, filename) -> None:
-        ...
+from ui.group_widget import GroupWidget
 class GroupWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-    def initUI(self, presenter:Presenter):
-        self.presenter = presenter
+    def initUI(self):
 
         self.blayout = QHBoxLayout()
         self.group_widgets = [] 
-
-        save_button = QPushButton("Save", self)
-        save_button.setFixedSize(50, 50)  # Set fixed size for buttons
-        self.blayout.addWidget(save_button)
-        
-        load_button = QPushButton("Open", self)
-        load_button.setFixedSize(50, 50)  # Set fixed size for buttons
-        self.blayout.addWidget(load_button)
         
         self.setLayout(self.blayout)
-        # Connect button click signal to color change function
-        save_button.clicked.connect(self.save_groups_file)
-        load_button.clicked.connect(self.load_groups_file)
 
     def import_group_widgets(self, groups_data):
         for l in groups_data:
@@ -49,14 +32,14 @@ class GroupWindow(QWidget):
             group_widget.deleteLater()  # Optional: Ensure proper cleanup of the widget
         self.group_widgets.clear()  # Clear the list to prevent memory leaks
 
-    def save_groups_file(self):
+    def save_groups_file(self, presenter):
         # Open file dialog to select a json file        
         fileName, _ = QFileDialog.getSaveFileName(self,"Save Json File", "","Json Files (*.json)")
         if fileName:
             groups_data = self.get_groups_data()
-            self.presenter.handle_save_group_file(fileName, groups_data)
+            presenter.handle_save_group_file(fileName, groups_data)
 
-    def load_groups_file(self):
+    def load_groups_file(self, presenter):
         # Open file dialog to select a json file
         fileName, _ = QFileDialog.getOpenFileName(self, "Open Json File", "", "Json Files (*.json)")
         if fileName:
@@ -64,7 +47,7 @@ class GroupWindow(QWidget):
             self.clear_group_widgets()
             
             # Load new groups from file
-            self.presenter.handle_open_group_file(fileName)
+            presenter.handle_open_group_file(fileName)
 
     def get_groups_data(self) -> List[list]:
         """
