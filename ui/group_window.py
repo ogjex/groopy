@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (
     QFileDialog,
     QWidget
 )
-from group_widget import GroupWidget
+from ui.group_widget import GroupWidget
 from typing import Protocol, List
 
 class Presenter(Protocol):

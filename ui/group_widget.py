@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from drag_widget import DragLabel, DragTargetIndicator
+from ui.drag_widget import DragLabel, DragTargetIndicator
 
 class GroupWidget(QWidget):
 

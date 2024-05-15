@@ -3,14 +3,14 @@ from typing import Protocol
 from group_editor import GroupEditor
 from PyQt6.QtWidgets import *
 
-class MainWindow(Protocol):
+class GroupWindow(Protocol):
     def initUI(self, presenter: Presenter) -> None:
         ...
     def show(self) -> None:
         ...
 
 class Presenter(object):
-    def __init__(self, group_editor: GroupEditor, main_window: MainWindow):
+    def __init__(self, group_editor: GroupEditor, main_window: GroupWindow):
         self.main_window = main_window
         self.group_editor = group_editor
 

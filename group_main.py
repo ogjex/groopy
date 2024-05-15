@@ -1,13 +1,16 @@
+
 from PyQt6.QtWidgets import QApplication
 from ui.group_window import GroupWindow
+from group_editor import GroupEditor
 from presenter import Presenter
 
 def main():
     app = QApplication([])
     
     group_window = GroupWindow()
-    presenter = Presenter()
-    group_window.initUI(presenter)
+    group_editor = GroupEditor()
+    presenter = Presenter(group_editor, group_window)
+    presenter.run()
 
     group_data = [
         ("Group 1", ["Alice", "Bob", "Charlie"]),
@@ -19,7 +22,6 @@ def main():
     ]
     group_window.import_group_widgets(group_data)
 
-    group_window.show()
     app.exec()
 
 if __name__ == "__main__":
