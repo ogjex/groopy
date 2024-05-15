@@ -16,12 +16,9 @@ class Presenter(Protocol):
 class GroupWindow(QWidget):
     def __init__(self):
         super().__init__()
-
-    def initUI(self):
-
+        
         self.blayout = QHBoxLayout()
         self.group_widgets = [] 
-        
         self.setLayout(self.blayout)
 
     def import_group_widgets(self, groups_data):

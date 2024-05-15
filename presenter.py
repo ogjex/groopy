@@ -1,9 +1,8 @@
 from __future__ import annotations
 from typing import Protocol
 from group_editor import GroupEditor
-from PyQt6.QtWidgets import *
 
-class GroupWindow(Protocol):
+class MainWindow(Protocol):
     def initUI(self, presenter: Presenter) -> None:
         ...
     def show(self) -> None:

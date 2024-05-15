@@ -1,6 +1,5 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QFrame, QPushButton, QLabel, QMenuBar, QAction
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QFrame, QPushButton, QLabel, QMenuBar
+from PyQt6.QtCore import Qt
 
 from typing import Protocol
 from ui.group_window import GroupWindow
@@ -9,16 +8,15 @@ from presenter import Presenter
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-    
-    def initUI(self, presenter: Presenter):
-        self.presenter = presenter
-            
         self.setMinimumSize(1366, 768)
         self.setWindowTitle("Gettin' Groopy")
 
-        main_widget = QWidget()
-        self.setCentralWidget(main_widget)
+        self.main_widget = QWidget()
+        self.setCentralWidget(self.main_widget)
 
+    def initUI(self, presenter: Presenter):
+        self.presenter = presenter
+            
         # Menu bar
         menu_bar = QMenuBar()
         font = menu_bar.font()
@@ -94,7 +92,7 @@ class MainWindow(QMainWindow):
         
         content_layout.addLayout(main_content_layout)
         main_layout.addLayout(content_layout)
-        main_widget.setLayout(main_layout)
+        self.main_widget.setLayout(main_layout)
 
     # Define functions for group_window
     def import_group_widgets(self, groups_data):
@@ -105,15 +103,8 @@ class MainWindow(QMainWindow):
 
     def load_groups_file(self, presenter):
         self.group_window.load_groups_file(presenter)
-
+    
     # Define keypress events globally
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             self.close()
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    
-    window.show()
-    sys.exit(app.exec_())

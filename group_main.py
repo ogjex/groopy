@@ -1,13 +1,16 @@
-
+import sys
 from PyQt6.QtWidgets import QApplication
 from ui.main_window import MainWindow
 from group_editor import GroupEditor
 from presenter import Presenter
 
 def main():
-    app = QApplication([])
+    app = QApplication(sys.argv)
     
     main_window = MainWindow()
+    
+    group_editor = GroupEditor()
+
     # Center the window on the screen
     window_width = main_window.frameGeometry().width()
     window_height = main_window.frameGeometry().height()
@@ -16,10 +19,9 @@ def main():
     screen_height = screen.size().height()
     main_window.move((screen_width - window_width) // 2, (screen_height - window_height) // 2)
     
-    group_editor = GroupEditor()
     presenter = Presenter(group_editor, main_window)
     presenter.run()
-
+    
     groups_data = [
         ("Group 1", ["Alice", "Bob", "Charlie"]),
         ("Group 2", ["David", "Eve", "Frank"]),
@@ -28,9 +30,11 @@ def main():
         ("Group 5", ["Mary", "Nathan", "Olivia"]),
         ("Group 6", ["Peter", "Queen", "Robert"])
     ]
+    
     main_window.import_group_widgets(groups_data)
+    
 
-    app.exec()
+    sys.exit(app.exec())
 
 if __name__ == "__main__":
     main()
