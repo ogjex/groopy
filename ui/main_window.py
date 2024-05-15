@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         super().__init__()
     
     def initUI(self, presenter: Presenter):
-        self.presenter:Presenter
+        self.presenter = presenter
             
         self.setMinimumSize(1366, 768)
         self.setWindowTitle("Gettin' Groopy")
