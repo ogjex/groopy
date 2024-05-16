@@ -4,7 +4,8 @@ from PyQt6.QtWidgets import (
     QLabel,
     QHBoxLayout,
     QVBoxLayout,
-    QWidget
+    QWidget,
+    QSizePolicy
 )
 from typing import Protocol, List
 
@@ -25,6 +26,8 @@ class DetailsWindow(QWidget):
 
         # Create a horizontal layout for headers
         self.headers_layout = QHBoxLayout()
+        self.headers_layout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
+        self.headers_layout.setSpacing(0)  # Set spacing between labels to 0
 
         # Create labels for CSV structure fields
         self.field_names = ['Name', 'Gender', 'Education', 'Experience', 'Career Preference', 'Desirables', 'Undesirables']
@@ -42,6 +45,7 @@ class DetailsWindow(QWidget):
             label.setPalette(palette)
             label.setStyleSheet("color: rgb({}, {}, {});".format(header_font_color.red(), header_font_color.green(), header_font_color.blue()))
             label.setFont(QFont("Arial", 10, QFont.Weight.Bold))  # Adjust font weight if necessary
+            label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)  # Set label size policy
             self.field_labels.append(label)
             self.headers_layout.addWidget(label)
 
@@ -51,11 +55,15 @@ class DetailsWindow(QWidget):
     def set_field_values(self, persons_data: List[dict]):
         # Create a vertical layout for values
         values_layout = QVBoxLayout()
+        values_layout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
+        values_layout.setSpacing(0)  # Set spacing between layouts to 0
 
         # Iterate over each person's data
         for index, person_data in enumerate(persons_data):
             # Create a horizontal layout for each person's data
             person_layout = QHBoxLayout()
+            person_layout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
+            person_layout.setSpacing(0)  # Set spacing between labels to 0
 
             # Set background color for alternating rows
             if index % 2 == 0:
@@ -69,11 +77,13 @@ class DetailsWindow(QWidget):
                 value = person_data.get(field_name.lower(), "")
                 # Create a label for the value
                 label = QLabel(str(value))
+                label.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
                 # Set background color for the label
                 label.setAutoFillBackground(True)
                 palette = label.palette()
                 palette.setColor(label.backgroundRole(), row_color)
                 label.setPalette(palette)
+                label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)  # Set label size policy
                 # Add the label to the person layout
                 person_layout.addWidget(label)
 
