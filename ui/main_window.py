@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 
 from typing import Protocol
 from ui.group_window import GroupWindow
+from ui.details_window import DetailsWindow
 from presenter import Presenter
 
 class MainWindow(QMainWindow):
@@ -54,6 +55,7 @@ class MainWindow(QMainWindow):
         # Content
         # Create the window for groups
         self.group_window = GroupWindow()
+        self.details_window = DetailsWindow()
         # Add tabs to the main content as needed
         
         # Filter bar
@@ -63,10 +65,7 @@ class MainWindow(QMainWindow):
         filter_bar.setMaximumWidth(300)
 
         # Details window
-        details_label = QLabel("Details")
-        details_window = QFrame()
-        details_window.setStyleSheet("background-color: lightgreen;")
-        details_window.setMinimumHeight(100)         
+        details_label = QLabel("Details")      
 
         menubar_layout = QVBoxLayout()
         menubar_layout.addWidget(menu_bar)        
@@ -85,7 +84,7 @@ class MainWindow(QMainWindow):
 
         details_window_layout = QVBoxLayout()
         details_window_layout.addWidget(details_label)
-        details_window_layout.addWidget(details_window)
+        details_window_layout.addWidget(self.details_window)
 
         main_content_layout.addLayout(overview_filter_layout)
         main_content_layout.addLayout(details_window_layout)

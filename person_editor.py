@@ -49,6 +49,23 @@ class PersonEditor:
     def get_persons(self) -> List[Person]:
         return self.persons
     
+    def get_persons_data_as_dict(self, persons: List[Person]) -> List[dict]:
+        """
+        Convert a list of Person objects into a list of dictionaries.
+
+        Args:
+        - persons: A list of Person objects.
+
+        Returns:
+        A list of dictionaries containing person data.
+        """
+        fieldnames = self._get_csv_fieldnames()
+        persons_data = []
+        for person in persons:
+            person_data = {fieldname: getattr(person, fieldname.lower(), "") for fieldname in fieldnames}
+            persons_data.append(person_data)
+        return persons_data
+
     def save_csv(self, persons=None, filename='persons.csv'):
         if persons is not None:
             self._save_persons_to_csv(persons, filename)
