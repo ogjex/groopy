@@ -44,8 +44,9 @@ GETTING GROOPY
 - ~~add group_widget~~
     - ~~save groups~~
 - add group_window
-    - add groups as boxes
-    - add persons to groups
+    - add hover function 
+    - ~~add groups as boxes~~
+    - ~~add persons to groups~~
     - show flags if set in sorting_window
     - add drag and drop for csv
     - make persons draggable
