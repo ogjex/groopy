@@ -39,20 +39,35 @@ GETTING GROOPY
     -
 
 ## view:
-- set size to 1920x1080
+- ~~set size to 1920x1080~~
+- fix drop down size (too high)
 - ~~add group_widget~~
     - ~~save groups~~
-- add details_window
-    - show csv file into rows and columns
+- add group_window
+    - add groups as boxes
+    - add persons to groups
+    - show flags if set in sorting_window
     - add drag and drop for csv
-    - add drag 
+    - make persons draggable
+        - ~~from group to group~~
+        - from details_window to group
+            - do not add if person already in group
+    - add + tab for additional group layouts
+- add details_window
+    - ~~show csv file into rows and columns~~
+    - add drag and drop for csv
+    - add drag from participant to other places
+    - make scrollable vertically and horisontally
 - add workspace_window
     - import people
-    - open groups
+    - ~~open groups~~
     - save (only if save as filename have been set)
-    - save as
+        - save groups
+        - save workspace file
+    - ~~save as~~
     - sort into groups? (maybe move this to sorter_window)
 - add sorter_window
+
 
 ## presenter:
 - add save csv file (use shuffled group)

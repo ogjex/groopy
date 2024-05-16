@@ -9,7 +9,7 @@ from presenter import Presenter
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setMinimumSize(1366, 768)
+        self.setMinimumSize(1680, 1050)
         self.setWindowTitle("Gettin' Groopy")
 
         self.main_widget = QWidget()
