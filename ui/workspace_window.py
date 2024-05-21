@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import (
     QFrame,
     QPushButton
 )
+from typing import Protocol, List
 class Presenter(Protocol):
     pass
 class WorkspaceWindow(QWidget):
