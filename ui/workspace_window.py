@@ -8,10 +8,12 @@ from PyQt6.QtWidgets import (
     QFrame,
     QPushButton
 )
-
+class Presenter(Protocol):
+    pass
 class WorkspaceWindow(QWidget):
-    def __init__(self):
+    def __init__(self, presenter = Presenter):
         super().__init__()
+        self.presenter = presenter
         self.setGeometry(100, 100, 100, 300)
 
         workspace_layout = QVBoxLayout()

@@ -35,12 +35,11 @@ class MainWindow(QMainWindow):
         #save_button.clicked.connect(self.save_groups_file)
         #load_button.clicked.connect(self.load_groups_file)
         
-
         # Content
         # Create the window for groups
-        self.group_window = GroupWindow()
-        self.details_window = DetailsWindow()
-        self.workspace_window = WorkspaceWindow()
+        self.group_window = GroupWindow(self.presenter)
+        self.details_window = DetailsWindow(self.presenter)
+        self.workspace_window = WorkspaceWindow(self.presenter)
         # Add tabs to the main content as needed
         
         # Filter bar

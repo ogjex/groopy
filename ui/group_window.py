@@ -13,9 +13,9 @@ class Presenter(Protocol):
     def handle_save_group_file(self, filename, groups_data) -> None:
         ...
 class GroupWindow(QWidget):
-    def __init__(self):
+    def __init__(self, presenter: Presenter):
         super().__init__()
-
+        self.presenter = presenter
         self.blayout = QHBoxLayout()
         self.group_widgets = [] 
         self.setLayout(self.blayout)
@@ -33,14 +33,14 @@ class GroupWindow(QWidget):
             group_widget.deleteLater()  # Optional: Ensure proper cleanup of the widget
         self.group_widgets.clear()  # Clear the list to prevent memory leaks
 
-    def save_groups_file(self, presenter: Presenter):
+    def save_groups_file(self):
         # Open file dialog to select a json file        
         fileName, _ = QFileDialog.getSaveFileName(self,"Save Json File", "","Json Files (*.json)")
         if fileName:
             groups_data = self.get_groups_data()
-            presenter.handle_save_group_file(fileName, groups_data)
+            self.presenter.handle_save_group_file(fileName, groups_data)
 
-    def load_groups_file(self, presenter: Presenter):
+    def load_groups_file(self):
         # Open file dialog to select a json file
         fileName, _ = QFileDialog.getOpenFileName(self, "Open Json File", "", "Json Files (*.json)")
         if fileName:
@@ -48,7 +48,7 @@ class GroupWindow(QWidget):
             self.clear_group_widgets()
             
             # Load new groups from file
-            presenter.handle_open_group_file(fileName)
+            self.presenter.handle_open_group_file(fileName)
 
     def get_groups_data(self) -> List[list]:
         """

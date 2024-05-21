@@ -16,8 +16,9 @@ class Presenter(Protocol):
         ...
     
 class DetailsWindow(QWidget):
-    def __init__(self):
+    def __init__(self, presenter = Presenter):
         super().__init__()
+        self.presenter = presenter
         self.setWindowTitle("CSV Structure Details")
         self.setGeometry(100, 100, 600, 400)
 
