@@ -1,9 +1,11 @@
+
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QFrame, QPushButton, QLabel, QMenuBar
 from PyQt6.QtCore import Qt
 
 from typing import Protocol
 from ui.group_window import GroupWindow
 from ui.details_window import DetailsWindow
+from ui.workspace_window import WorkspaceWindow
 from presenter import Presenter
 
 class MainWindow(QMainWindow):
@@ -57,6 +59,7 @@ class MainWindow(QMainWindow):
         # Create the window for groups
         self.group_window = GroupWindow()
         self.details_window = DetailsWindow()
+        self.workspace_window = WorkspaceWindow()
         # Add tabs to the main content as needed
         
         # Filter bar
@@ -75,7 +78,7 @@ class MainWindow(QMainWindow):
         main_layout.addLayout(menubar_layout)
 
         content_layout = QHBoxLayout()
-        content_layout.addWidget(workspace)
+        content_layout.addWidget(self.workspace_window)
 
         main_content_layout = QVBoxLayout()
         
