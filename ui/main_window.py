@@ -20,6 +20,7 @@ class MainWindow(QMainWindow):
             
         # Menu bar
         menu_bar = QMenuBar()
+        menu_bar.setMaximumHeight(50)
         font = menu_bar.font()
         font.setPointSize(10)  # Adjust the font size as needed
         menu_bar.setFont(font)
