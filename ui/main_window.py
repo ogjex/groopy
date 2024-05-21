@@ -30,30 +30,11 @@ class MainWindow(QMainWindow):
         file_menu = menu_bar.addMenu("File")
         view_menu = menu_bar.addMenu("View")
 
-        # Workspace
-        workspace = QFrame()
-        workspace.setStyleSheet("background-color: lightblue;")
-        workspace.setMaximumWidth(300)
-        # Add widgets to layouts
-        workspace_layout = QVBoxLayout()
         
-        workspace_label = QLabel("Workspace")
-        workspace_label.setMaximumHeight(30)
-        workspace_layout.addWidget(workspace_label)
-        
-        save_button = QPushButton("Save", self)
-        save_button.setFixedSize(50, 50)  # Set fixed size for buttons
-        workspace_layout.addWidget(save_button)
-        
-        load_button = QPushButton("Open", self)
-        load_button.setFixedSize(50, 50)  # Set fixed size for buttons
-        workspace_layout.addWidget(load_button)
-
         # Connect button click signal to color change function
-        save_button.clicked.connect(self.save_groups_file)
-        load_button.clicked.connect(self.load_groups_file)
+        #save_button.clicked.connect(self.save_groups_file)
+        #load_button.clicked.connect(self.load_groups_file)
         
-        workspace.setLayout(workspace_layout)
 
         # Content
         # Create the window for groups
@@ -67,9 +48,6 @@ class MainWindow(QMainWindow):
         filter_bar.setStyleSheet("background-color: gray;")
         filter_bar.setMinimumWidth(300) 
         filter_bar.setMaximumWidth(300)
-
-        # Details window
-        details_label = QLabel("Details")      
 
         menubar_layout = QVBoxLayout()
         menubar_layout.addWidget(menu_bar)        
@@ -87,6 +65,7 @@ class MainWindow(QMainWindow):
         overview_filter_layout.addWidget(filter_bar)
 
         details_window_layout = QVBoxLayout()
+        details_label = QLabel("Details")
         details_window_layout.addWidget(details_label)
         details_window_layout.addWidget(self.details_window)
 
@@ -110,6 +89,10 @@ class MainWindow(QMainWindow):
     def get_groups_data(self) -> list:
         groups_data = self.group_window.get_groups_data()
         return groups_data
+
+    # Define functions for details_window
+    def update_details_window(self, data) -> None:
+        self.details_window.set_field_values(data)
 
     # Define Keypress events
     def keyPressEvent(self, event):
