@@ -3,6 +3,8 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QLabel,
     QHBoxLayout,
+    QSpacerItem,
+    QSizePolicy,
     QFileDialog,
     QVBoxLayout,
     QWidget,
@@ -49,29 +51,39 @@ class WorkspaceWindow(QWidget):
         workspace_label.setMaximumHeight(30)
         workspace_layout.addWidget(workspace_label)
         
+# Create a vertical layout for the buttons
+        buttons_layout = QVBoxLayout()
+        buttons_layout.setSpacing(10)  # Set vertical spacing between buttons
+
         open_button = QPushButton("Open", self)
-        open_button.setFixedSize(workspace_button_width, workspace_button_height)  # Set fixed size for buttons
-        workspace_layout.addWidget(open_button)
-        
+        open_button.setFixedSize(workspace_button_width, workspace_button_height)
+        buttons_layout.addWidget(open_button)
+
         save_button = QPushButton("Save", self)
         save_button.setFixedSize(workspace_button_width, workspace_button_height)
-        workspace_layout.addWidget(save_button)
-        
+        buttons_layout.addWidget(save_button)
+
         save_as_button = QPushButton("Save as", self)
         save_as_button.setFixedSize(workspace_button_width, workspace_button_height)
-        workspace_layout.addWidget(save_as_button)
+        buttons_layout.addWidget(save_as_button)
 
         import_group_button = QPushButton("Import group", self)
         import_group_button.setFixedSize(workspace_button_width, workspace_button_height)
-        workspace_layout.addWidget(import_group_button)
+        buttons_layout.addWidget(import_group_button)
 
         clear_group_layout_button = QPushButton("Clear layout", self)
         clear_group_layout_button.setFixedSize(workspace_button_width, workspace_button_height)
-        workspace_layout.addWidget(clear_group_layout_button)
-        
+        buttons_layout.addWidget(clear_group_layout_button)
+
         new_group_layout_button = QPushButton("New layout", self)
         new_group_layout_button.setFixedSize(workspace_button_width, workspace_button_height)
-        workspace_layout.addWidget(new_group_layout_button)
+        buttons_layout.addWidget(new_group_layout_button)
+
+        # Add a spacer item at the bottom to keep buttons at the top
+        buttons_layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
+
+        # Add the buttons layout to the main layout
+        workspace_layout.addLayout(buttons_layout)
 
         # Connect button click signals to change functions
         open_button.clicked.connect(self.open_workspace)
