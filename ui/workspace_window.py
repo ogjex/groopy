@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QLabel,
     QHBoxLayout,
+    QFileDialog,
     QVBoxLayout,
     QWidget,
     QFrame,
@@ -10,7 +11,21 @@ from PyQt6.QtWidgets import (
 )
 from typing import Protocol, List
 class Presenter(Protocol):
-    pass
+    def handle_open_workspace(self, filename):
+        ...
+
+    def handle_save_workspace(self):
+        ...
+
+    def handle_save_as_workspace(self, filename):
+        ...
+
+    def handle_open_group_file(self, filename):
+        ...
+    
+    def handle_new_group_layout():
+        raise NotImplementedError("This function is not yet implemented.")
+
 class WorkspaceWindow(QWidget):
     def __init__(self, presenter = Presenter):
         super().__init__()
@@ -55,3 +70,28 @@ class WorkspaceWindow(QWidget):
         new_group_layout_button = QPushButton("New layout", self)
         new_group_layout_button.setFixedSize(workspace_button_width, workspace_button_height)
         workspace_layout.addWidget(new_group_layout_button)
+
+        # Connect button click signals to change functions
+        open_button.clicked.connect(self.open_workspace)
+        save_button.clicked.connect(self.save_workspace)
+        save_as_button.clicked.connect(self.save_as_workspace)
+        import_group_button.clicked.connect(self.open_group)        
+        new_group_layout_button.clicked.connect(self.new_group_layout)
+
+    def open_workspace(self):
+        raise NotImplementedError("This function is not yet implemented.")
+
+    def save_workspace(self):
+        raise NotImplementedError("This function is not yet implemented.")
+
+    def save_as_workspace(self):
+        raise NotImplementedError("This function is not yet implemented.")
+
+    def open_group(self) ->str:
+        fileName, _ = QFileDialog.getOpenFileName(self, "Open Json File", "", "Json Files (*.json)")
+        if fileName:
+            # Load new groups from file
+            self.presenter.handle_open_group_file(fileName)
+    
+    def new_group_layout():
+        raise NotImplementedError("This function is not yet implemented.")
