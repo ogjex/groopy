@@ -30,28 +30,34 @@ class Presenter(Protocol):
         ...
 
 class WorkspaceWindow(QWidget):
-    def __init__(self, presenter = Presenter):
+    def __init__(self, presenter=None):
         super().__init__()
         self.presenter = presenter
         self.workspace_path = ""
-        self.setGeometry(100, 100, 100, 300)
+        self.setGeometry(100, 100, 400, 300)
 
         workspace_layout = QVBoxLayout()
         self.setLayout(workspace_layout)
-                # Workspace
+
+        # Workspace
         workspace = QFrame()
         workspace.setStyleSheet("background-color: lightblue;")
         workspace.setMaximumWidth(300)
-        
+
+        # Add the frame to the main layout
+        workspace_layout.addWidget(workspace)
+
         workspace_button_width = 100
         workspace_button_height = 50
-        # Add widgets to layouts
-        
+
+        # Create a layout for the frame
+        frame_layout = QVBoxLayout(workspace)
+
         workspace_label = QLabel("Workspace")
         workspace_label.setMaximumHeight(30)
-        workspace_layout.addWidget(workspace_label)
-        
-# Create a vertical layout for the buttons
+        frame_layout.addWidget(workspace_label)
+
+        # Create a vertical layout for the buttons
         buttons_layout = QVBoxLayout()
         buttons_layout.setSpacing(10)  # Set vertical spacing between buttons
 
@@ -82,8 +88,8 @@ class WorkspaceWindow(QWidget):
         # Add a spacer item at the bottom to keep buttons at the top
         buttons_layout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
 
-        # Add the buttons layout to the main layout
-        workspace_layout.addLayout(buttons_layout)
+        # Add the buttons layout to the frame layout
+        frame_layout.addLayout(buttons_layout)
 
         # Connect button click signals to change functions
         open_button.clicked.connect(self.open_workspace)
