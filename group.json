@@ -5,7 +5,7 @@
             "name": "Group 1",
             "participants": [
                 "Alice",
-                "Frank"
+                "Bob"
             ]
         },
         "group2": {
@@ -13,7 +13,7 @@
             "participants": [
                 "David",
                 "Eve",
-                "Bob",
+                "Frank",
                 "Charlie"
             ]
         },

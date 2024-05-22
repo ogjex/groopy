@@ -79,8 +79,8 @@ class WorkspaceWindow(QWidget):
         import_group_button.clicked.connect(self.open_group)        
         new_group_layout_button.clicked.connect(self.new_group_layout)
 
-    def set_workspace_path(self, filename_path: str):
-        self.workspace_path = filename_path
+    def set_workspace_path(self, file_path: str):
+        self.workspace_path = file_path
 
     def open_workspace(self):
         raise NotImplementedError("This function is not yet implemented.")
@@ -90,15 +90,17 @@ class WorkspaceWindow(QWidget):
 
     def save_as_workspace(self):
         # currently calls save group but needs to fuse with a future workspace_handler
-        fileName, _ = QFileDialog.getSaveFileName(self,"Save Json File", "","Json Files (*.json)")
-        if fileName:
-            self.presenter.handle_save_group_file(fileName)
+        file_path, _ = QFileDialog.getSaveFileName(self,"Save Json File", "","Json Files (*.json)")
+        if file_path:
+            self.presenter.handle_save_group_file(file_path )
+            self.set_workspace_path(file_path)
+            print(f"filepath set to: {self.workspace_path}")
 
     def open_group(self) -> None:
-        fileName, _ = QFileDialog.getOpenFileName(self, "Open Json File", "", "Json Files (*.json)")
-        if fileName:
+        file_path, _ = QFileDialog.getOpenFileName(self, "Open Json File", "", "Json Files (*.json)")
+        if file_path:
             # Load new groups from file
-            self.presenter.handle_open_group_file(fileName)
+            self.presenter.handle_open_group_file(file_path)
     
     def new_group_layout():
         raise NotImplementedError("This function is not yet implemented.")
