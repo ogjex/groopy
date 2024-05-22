@@ -28,14 +28,18 @@ class Presenter(object):
         self.main_window.import_group_widgets(new_groups)
 
     def handle_save_workspace(self, file_path):
-        groups_data = self.main_window.get_groups_data()
-        self.group_editor.create_groups_from_data(groups_data)
-        self.group_editor.save_groups_to_json(file_path)
+        raise NotImplementedError("This function is not yet implemented.")
+        #groups_data = self.main_window.get_groups_data()
+        #self.group_editor.create_groups_from_data(groups_data)
+        #self.group_editor.save_groups_to_json(file_path)
 
     def handle_save_group_file(self, file_path):
         groups_data = self.main_window.get_groups_data()
         self.group_editor.create_groups_from_data(groups_data)
         self.group_editor.save_groups_to_json(file_path)
+
+    def handle_clear_group_layout(self):
+        self.main_window.clear_group_widgets()
 
     def handle_set_field_values(self, data):
         self.main_window.update_details_window(data)

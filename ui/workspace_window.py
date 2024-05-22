@@ -13,18 +13,17 @@ from typing import Protocol, List
 class Presenter(Protocol):
     def handle_open_workspace(self, filename):
         ...
-
     def handle_save_workspace(self):
         ...
-
     def handle_save_as_workspace(self, filename):
         ...
-
     def handle_open_group_file(self, filename):
         ...
     def handle_save_group_file(self, filename):
         ...
-    def handle_new_group_layout():
+    def handle_clear_group_layout(self):
+        ...
+    def handle_new_group_layout(self):
         ...
 
 class WorkspaceWindow(QWidget):
@@ -78,6 +77,7 @@ class WorkspaceWindow(QWidget):
         save_button.clicked.connect(self.save_workspace)
         save_as_button.clicked.connect(self.save_as_workspace)
         import_group_button.clicked.connect(self.open_group)        
+        clear_group_layout_button.clicked.connect(self.presenter.handle_clear_group_layout)
         new_group_layout_button.clicked.connect(self.new_group_layout)
 
     def set_workspace_path(self, file_path: str):
@@ -94,7 +94,6 @@ class WorkspaceWindow(QWidget):
             self.save_as_workspace()
         else:
             self.presenter.handle_save_group_file(self.workspace_path)
-            print(f"saved to: {self.workspace_path}")
 
     def save_as_workspace(self):
         # currently calls save group but needs to fuse with a future workspace_handler
@@ -102,7 +101,6 @@ class WorkspaceWindow(QWidget):
         if file_path:
             self.presenter.handle_save_group_file(file_path)
             self.set_workspace_path(file_path)
-            print(f"filepath set to: {self.workspace_path}")
 
     def open_group(self) -> None:
         file_path, _ = QFileDialog.getOpenFileName(self, "Open Json File", "", "Json Files (*.json)")
