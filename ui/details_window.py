@@ -5,7 +5,8 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QVBoxLayout,
     QWidget,
-    QSizePolicy
+    QSizePolicy,
+    QScrollArea
 )
 from typing import Protocol, List
 
@@ -16,13 +17,24 @@ class Presenter(Protocol):
         ...
     
 class DetailsWindow(QWidget):
-    def __init__(self, presenter = Presenter):
+    def __init__(self, presenter=None):
         super().__init__()
         self.presenter = presenter
-        self.setWindowTitle("CSV Structure Details")
         self.setGeometry(100, 100, 600, 400)
 
-        self.main_layout = QVBoxLayout()
+        # Create a scroll area
+        self.scroll_area = QScrollArea(self)
+        self.scroll_area.setWidgetResizable(True)  # Make the widget inside the scroll area resizable
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)  # Ensure vertical scrollbar is always shown
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)  # Ensure horizontal scrollbar is always shown
+
+        # Create a widget to contain the main layout
+        content_widget = QWidget()
+        self.scroll_area.setWidget(content_widget)
+
+        self.main_layout = QVBoxLayout(content_widget)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
+        self.main_layout.setSpacing(0)  # Set spacing between layouts to 0
         self.setLayout(self.main_layout)
 
         # Create a horizontal layout for headers
@@ -94,6 +106,10 @@ class DetailsWindow(QWidget):
         # Add the vertical layout for values to the main layout
         self.main_layout.addLayout(values_layout)
     
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.scroll_area.setGeometry(0, 0, self.width(), self.height())
+
     def keyPressEvent(self, event):
         key_actions = {
             Qt.Key.Key_Escape: self.close,
