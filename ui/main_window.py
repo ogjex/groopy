@@ -35,6 +35,7 @@ class MainWindow(QMainWindow):
         self.group_window = GroupWindow(self.presenter)
         self.details_window = DetailsWindow(self.presenter)
         self.workspace_window = WorkspaceWindow(self.presenter)
+        self.workspace_window.setMaximumWidth(150)
         # Add tabs to the main content as needed
         
         # Filter bar
@@ -60,6 +61,7 @@ class MainWindow(QMainWindow):
 
         details_window_layout = QVBoxLayout()
         details_label = QLabel("Details")
+        details_label.setMaximumHeight(50)
         details_window_layout.addWidget(details_label)
         details_window_layout.addWidget(self.details_window)
 

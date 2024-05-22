@@ -24,6 +24,7 @@ class GroupWidget(QWidget):
         
         # Create a title label
         self.title_label = QLabel(self.title)
+        self.title_label.setMaximumHeight(50)
         layout.addWidget(self.title_label)
         
         # Create a frame for participants
@@ -45,6 +46,7 @@ class GroupWidget(QWidget):
         
         # Populate participants
         self.populateParticipants()
+        self.update_height()
         
         # Enable drag and drop
         self.setAcceptDrops(True)
@@ -63,6 +65,14 @@ class GroupWidget(QWidget):
         label.setContentsMargins(5, 0, 5, 0)
         label.setAutoFillBackground(True)
         self.participants_layout.addWidget(label)
+
+    def update_height(self):
+        # Calculate the new height based on the number of participants
+        new_height = self.title_label.height() + self.participants_frame.contentsMargins().top() + self.participants_frame.contentsMargins().bottom()
+        for i in range(self.participants_layout.count()):
+            widget = self.participants_layout.itemAt(i).widget()
+            new_height += widget.height() + self.participants_layout.spacing()
+        self.setFixedHeight(new_height)
 
     def dragEnterEvent(self, e):
         e.accept()
@@ -119,6 +129,7 @@ class GroupWidget(QWidget):
 
     def dragLeaveEvent(self, e):
         self._drag_target_indicator.hide()
+        self.update_height()
         e.accept()
 
     def add_item(self, item):

@@ -37,7 +37,9 @@ def main():
         ("Group 3", ["Grace", "Henry", "Ivy"]),
         ("Group 4", ["Jack", "Kate", "Liam"]),
         ("Group 5", ["Mary", "Nathan", "Olivia"]),
-        ("Group 6", ["Peter", "Queen", "Robert"])
+        ("Group 6", ["Peter", "Queen", "Robert"]),
+        ("Group 7", ["Henry", "Norton", "Moose"]),
+        ("Group 8", ["Stan", "Chao", "Missy"])
     ]
     
     main_window.import_group_widgets(groups_data)

@@ -8,7 +8,6 @@ class DetailsWindow(QWidget):
     def __init__(self, presenter=None):
         super().__init__()
         self.presenter = presenter
-        self.setWindowTitle("CSV Structure Details")
         self.setGeometry(100, 100, 600, 400)
 
         # Create a scroll area
