@@ -30,11 +30,6 @@ class MainWindow(QMainWindow):
         file_menu = menu_bar.addMenu("File")
         view_menu = menu_bar.addMenu("View")
 
-        
-        # Connect button click signal to color change function
-        #save_button.clicked.connect(self.save_groups_file)
-        #load_button.clicked.connect(self.load_groups_file)
-        
         # Content
         # Create the window for groups
         self.group_window = GroupWindow(self.presenter)
@@ -76,6 +71,9 @@ class MainWindow(QMainWindow):
         self.main_widget.setLayout(main_layout)
 
     # Define functions for group_window
+    def clear_group_widgets(self):
+        self.group_window.clear_group_widgets()
+
     def import_group_widgets(self, groups_data):
         self.group_window.import_group_widgets(groups_data)
     
@@ -93,7 +91,7 @@ class MainWindow(QMainWindow):
     def update_details_window(self, data) -> None:
         self.details_window.set_field_values(data)
 
-    # Define Keypress events
+    # Define global Keypress events
     def keyPressEvent(self, event):
         key_actions = {
             Qt.Key.Key_Escape: self.close,

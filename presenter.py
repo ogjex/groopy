@@ -20,6 +20,7 @@ class Presenter(object):
         
     def handle_open_group_file(self, filename):
         new_groups = self.group_editor.read_groups_from_json(filename)
+        self.main_window.clear_group_widgets()
         self.main_window.import_group_widgets(new_groups)
 
     def handle_save_group_file(self, filename, groups_data):
