@@ -31,6 +31,7 @@ class WorkspaceWindow(QWidget):
     def __init__(self, presenter = Presenter):
         super().__init__()
         self.presenter = presenter
+        self.workspace_path = ""
         self.setGeometry(100, 100, 100, 300)
 
         workspace_layout = QVBoxLayout()
@@ -82,17 +83,24 @@ class WorkspaceWindow(QWidget):
     def set_workspace_path(self, file_path: str):
         self.workspace_path = file_path
 
+    def is_workspace_path_set(self) -> bool:
+        return bool(self.workspace_path)
+
     def open_workspace(self):
         raise NotImplementedError("This function is not yet implemented.")
 
     def save_workspace(self):
-        raise NotImplementedError("This function is not yet implemented.")
+        if not self.is_workspace_path_set():
+            self.save_as_workspace()
+        else:
+            self.presenter.handle_save_group_file(self.workspace_path)
+            print(f"saved to: {self.workspace_path}")
 
     def save_as_workspace(self):
         # currently calls save group but needs to fuse with a future workspace_handler
         file_path, _ = QFileDialog.getSaveFileName(self,"Save Json File", "","Json Files (*.json)")
         if file_path:
-            self.presenter.handle_save_group_file(file_path )
+            self.presenter.handle_save_group_file(file_path)
             self.set_workspace_path(file_path)
             print(f"filepath set to: {self.workspace_path}")
 
