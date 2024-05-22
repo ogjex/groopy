@@ -1,25 +1,14 @@
-from PyQt6.QtGui import QColor, QFont
-from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
-    QLabel,
-    QHBoxLayout,
-    QVBoxLayout,
-    QWidget,
-    QSizePolicy,
-    QScrollArea
+    QLabel, QHBoxLayout, QVBoxLayout, QWidget, QSizePolicy, QScrollArea
 )
-from typing import Protocol, List
+from PyQt6.QtGui import QColor, QFont
+from PyQt6.QtCore import Qt, QSize
 
-class Presenter(Protocol):
-    def handle_open_persons_file(self, filename) -> None:
-        ...
-    def handle_view_group(self) -> None:
-        ...
-    
 class DetailsWindow(QWidget):
     def __init__(self, presenter=None):
         super().__init__()
         self.presenter = presenter
+        self.setWindowTitle("CSV Structure Details")
         self.setGeometry(100, 100, 600, 400)
 
         # Create a scroll area
@@ -29,13 +18,12 @@ class DetailsWindow(QWidget):
         self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)  # Ensure horizontal scrollbar is always shown
 
         # Create a widget to contain the main layout
-        content_widget = QWidget()
-        self.scroll_area.setWidget(content_widget)
+        self.content_widget = QWidget()
+        self.scroll_area.setWidget(self.content_widget)
 
-        self.main_layout = QVBoxLayout(content_widget)
+        self.main_layout = QVBoxLayout(self.content_widget)
         self.main_layout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
         self.main_layout.setSpacing(0)  # Set spacing between layouts to 0
-        self.setLayout(self.main_layout)
 
         # Create a horizontal layout for headers
         self.headers_layout = QHBoxLayout()
@@ -65,7 +53,13 @@ class DetailsWindow(QWidget):
         # Add the headers layout to the main layout
         self.main_layout.addLayout(self.headers_layout)
 
-    def set_field_values(self, persons_data: List[dict]):
+    def set_field_values(self, persons_data):
+        # Clear previous data
+        for i in reversed(range(self.main_layout.count())):
+            layout_item = self.main_layout.itemAt(i)
+            if layout_item.widget():
+                layout_item.widget().deleteLater()
+
         # Create a vertical layout for values
         values_layout = QVBoxLayout()
         values_layout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
@@ -105,18 +99,7 @@ class DetailsWindow(QWidget):
 
         # Add the vertical layout for values to the main layout
         self.main_layout.addLayout(values_layout)
-    
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.scroll_area.setGeometry(0, 0, self.width(), self.height())
-
-    def keyPressEvent(self, event):
-        key_actions = {
-            Qt.Key.Key_Escape: self.close,
-            # Add more key-function mappings as needed
-        }
-
-        if event.key() in key_actions:
-            action = key_actions[event.key()]
-            if callable(action):
-                action()
