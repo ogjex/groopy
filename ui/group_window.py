@@ -33,23 +33,6 @@ class GroupWindow(QWidget):
             group_widget.deleteLater()  # Optional: Ensure proper cleanup of the widget
         self.group_widgets.clear()  # Clear the list to prevent memory leaks
 
-    def save_groups_file(self):
-        # Open file dialog to select a json file        
-        fileName, _ = QFileDialog.getSaveFileName(self,"Save Json File", "","Json Files (*.json)")
-        if fileName:
-            groups_data = self.get_groups_data()
-            self.presenter.handle_save_group_file(fileName, groups_data)
-
-    def load_groups_file(self):
-        # Open file dialog to select a json file
-        fileName, _ = QFileDialog.getOpenFileName(self, "Open Json File", "", "Json Files (*.json)")
-        if fileName:
-            # Clear existing group widgets
-            self.clear_group_widgets()
-            
-            # Load new groups from file
-            self.presenter.handle_open_group_file(fileName)
-
     def get_groups_data(self) -> List[list]:
         """
         Get the data of all group widgets.
