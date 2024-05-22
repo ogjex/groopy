@@ -120,10 +120,7 @@ class WorkspaceWindow(QWidget):
         if reply == QMessageBox.StandardButton.Ok:
             self.presenter.handle_clear_group_layout()
         else:
-            self.cancel_clear()    
-
-    def cancel_clear(self):
-        print("Clear layout canceled.")
+            return
 
     def new_group_layout(self):
         raise NotImplementedError("This function is not yet implemented.")
