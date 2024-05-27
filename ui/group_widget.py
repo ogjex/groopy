@@ -67,12 +67,16 @@ class GroupWidget(QWidget):
         self.participants_layout.addWidget(label)
 
     def update_height(self):
+        self.setFixedHeight(self.calculate_height())
+
+    def calculate_height(self):
         # Calculate the new height based on the number of participants
         new_height = self.title_label.height() + self.participants_frame.contentsMargins().top() + self.participants_frame.contentsMargins().bottom()
         for i in range(self.participants_layout.count()):
             widget = self.participants_layout.itemAt(i).widget()
-            new_height += widget.height() + self.participants_layout.spacing()
-        self.setFixedHeight(new_height)
+            if widget and widget != self._drag_target_indicator:
+                new_height += widget.sizeHint().height() + self.participants_layout.spacing()
+        return new_height
 
     def dragEnterEvent(self, e):
         e.accept()
@@ -99,6 +103,7 @@ class GroupWidget(QWidget):
             widget.show()
             self.participants_layout.activate()
         e.accept()    
+        self.update_height()
 
     def _find_drop_location(self, e):
         pos = e.position()
