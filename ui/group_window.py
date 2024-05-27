@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import (
     QHBoxLayout,
-    QFileDialog,
+    QGridLayout,
     QWidget
 )
 from typing import Protocol, List
@@ -16,22 +16,46 @@ class GroupWindow(QWidget):
     def __init__(self, presenter: Presenter):
         super().__init__()
         self.presenter = presenter
-        self.blayout = QHBoxLayout()
+        self.grid_layout = QGridLayout()
         self.group_widgets = [] 
-        self.setLayout(self.blayout)
+        self.setLayout(self.grid_layout)
 
     def import_group_widgets(self, groups_data):
         for l in groups_data:
             new_group = GroupWidget(l[0],l[1])
-            self.blayout.addWidget(new_group)
+            self.grid_layout.addWidget(new_group)
             self.group_widgets.append(new_group)
+        self.update_layout()
 
     def clear_group_widgets(self):
         # Remove all GroupWidget instances from the layout
         for group_widget in self.group_widgets:
-            self.blayout.removeWidget(group_widget)
+            self.grid_layout.removeWidget(group_widget)
             group_widget.deleteLater()  # Optional: Ensure proper cleanup of the widget
         self.group_widgets.clear()  # Clear the list to prevent memory leaks
+
+    def update_layout(self):
+        for i in reversed(range(self.grid_layout.count())):
+            widget = self.grid_layout.itemAt(i).widget()
+            if widget:
+                self.grid_layout.removeWidget(widget)
+        
+        # Calculate how many widgets fit in one row
+        max_width = self.width()        
+        widget_width = self.group_widgets[0].sizeHint().width()
+        widgets_per_row = max_width // widget_width        
+    
+        if widgets_per_row < 1:
+            widgets_per_row = 1
+        
+        # Print the values
+        print(f"max_width: {max_width}, widget_width: {widget_width}, widgets_per_row: {widgets_per_row}")
+
+        # Add widgets to the grid layout
+        for index, widget in enumerate(self.group_widgets):
+            row = index // widgets_per_row
+            col = index % widgets_per_row
+            self.grid_layout.addWidget(widget, row, col)
 
     def get_groups_data(self) -> List[list]:
         """
@@ -43,6 +67,14 @@ class GroupWindow(QWidget):
             groups_data.append(group_data)
         return groups_data
     
+    def set_widget_heights(self, min_height: int, max_height: int):
+        """
+        Set the minimum and maximum height for all group widgets.
+        """
+        for group_widget in self.group_widgets:
+            group_widget.setMinimumHeight(min_height)
+            group_widget.setMaximumHeight(max_height)
+
     def printGroupsData(self):
         """
         Print data using the getData method of each GroupWidget.

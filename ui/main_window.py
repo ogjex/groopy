@@ -78,7 +78,7 @@ class MainWindow(QMainWindow):
 
     def import_group_widgets(self, groups_data):
         self.group_window.import_group_widgets(groups_data)
-    
+            
     def get_groups_data(self) -> list:
         groups_data = self.group_window.get_groups_data()
         return groups_data
