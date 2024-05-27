@@ -48,9 +48,6 @@ class GroupWindow(QWidget):
         if widgets_per_row < 1:
             widgets_per_row = 1
         
-        # Print the values
-        print(f"max_width: {max_width}, widget_width: {widget_width}, widgets_per_row: {widgets_per_row}")
-
         # Add widgets to the grid layout
         for index, widget in enumerate(self.group_widgets):
             row = index // widgets_per_row
