@@ -12,22 +12,22 @@ class DetailsWindow(QWidget):
 
         # Create a scroll area
         self.scroll_area = QScrollArea(self)
-        self.scroll_area.setWidgetResizable(True)  # Make the widget inside the scroll area resizable
-        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)  # Ensure vertical scrollbar is always shown
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)  # Ensure horizontal scrollbar is always shown
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)  # Adjusted to hide horizontal scrollbar
 
         # Create a widget to contain the main layout
         self.content_widget = QWidget()
         self.scroll_area.setWidget(self.content_widget)
 
         self.main_layout = QVBoxLayout(self.content_widget)
-        self.main_layout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
-        self.main_layout.setSpacing(0)  # Set spacing between layouts to 0
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setSpacing(0)
 
         # Create a horizontal layout for headers
         self.headers_layout = QHBoxLayout()
-        self.headers_layout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
-        self.headers_layout.setSpacing(0)  # Set spacing between labels to 0
+        self.headers_layout.setContentsMargins(0, 0, 0, 0)
+        self.headers_layout.setSpacing(0)
 
         # Create labels for CSV structure fields
         self.field_names = ['Name', 'Gender', 'Education', 'Experience', 'Career Preference', 'Desirables', 'Undesirables']
@@ -44,8 +44,8 @@ class DetailsWindow(QWidget):
             palette.setColor(label.backgroundRole(), header_background_color)
             label.setPalette(palette)
             label.setStyleSheet("color: rgb({}, {}, {});".format(header_font_color.red(), header_font_color.green(), header_font_color.blue()))
-            label.setFont(QFont("Arial", 10, QFont.Weight.Bold))  # Adjust font weight if necessary
-            label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)  # Set label size policy
+            label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
+            label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
             label.setMaximumHeight(50)
             self.field_labels.append(label)
             self.headers_layout.addWidget(label)
@@ -62,15 +62,15 @@ class DetailsWindow(QWidget):
 
         # Create a vertical layout for values
         values_layout = QVBoxLayout()
-        values_layout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
-        values_layout.setSpacing(0)  # Set spacing between layouts to 0
+        values_layout.setContentsMargins(0, 0, 0, 0)
+        values_layout.setSpacing(0)
 
         # Iterate over each person's data
         for index, person_data in enumerate(persons_data):
             # Create a horizontal layout for each person's data
             person_layout = QHBoxLayout()
-            person_layout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
-            person_layout.setSpacing(0)  # Set spacing between labels to 0
+            person_layout.setContentsMargins(0, 0, 0, 0)
+            person_layout.setSpacing(0)
 
             # Set background color for alternating rows
             if index % 2 == 0:
@@ -84,14 +84,12 @@ class DetailsWindow(QWidget):
                 value = person_data.get(field_name.lower(), "")
                 # Create a label for the value
                 label = QLabel(str(value))
-                label.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
-                # Set background color for the label
+                label.setContentsMargins(0, 0, 0, 0)
                 label.setAutoFillBackground(True)
                 palette = label.palette()
                 palette.setColor(label.backgroundRole(), row_color)
                 label.setPalette(palette)
-                label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)  # Set label size policy
-                # Add the label to the person layout
+                label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
                 person_layout.addWidget(label)
 
             # Add the person layout to the vertical layout for values
