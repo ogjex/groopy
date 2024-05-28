@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import (
-    QLabel, QHBoxLayout, QVBoxLayout, QWidget, QSizePolicy, QScrollArea
+    QLabel, QHBoxLayout, QVBoxLayout, QWidget, QSizePolicy, QScrollArea, QSizeGrip
 )
 from PyQt6.QtGui import QColor, QFont
-from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtCore import Qt
 
 class DetailsWindow(QWidget):
     def __init__(self, presenter=None):
@@ -14,7 +14,7 @@ class DetailsWindow(QWidget):
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)  # Adjusted to hide horizontal scrollbar
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
         # Create a widget to contain the main layout
         self.content_widget = QWidget()
@@ -53,11 +53,18 @@ class DetailsWindow(QWidget):
         # Add the headers layout to the main layout
         self.main_layout.addLayout(self.headers_layout)
 
+        # Add a QSizeGrip to the bottom-right corner
+        self.size_grip = QSizeGrip(self)
+        grip_layout = QHBoxLayout()
+        grip_layout.addStretch()
+        grip_layout.addWidget(self.size_grip)
+        self.main_layout.addLayout(grip_layout)
+
     def set_field_values(self, persons_data):
         # Clear previous data
         for i in reversed(range(self.main_layout.count())):
             layout_item = self.main_layout.itemAt(i)
-            if layout_item.widget():
+            if layout_item.widget() and layout_item.widget() is not self.size_grip:
                 layout_item.widget().deleteLater()
 
         # Create a vertical layout for values
@@ -95,9 +102,10 @@ class DetailsWindow(QWidget):
             # Add the person layout to the vertical layout for values
             values_layout.addLayout(person_layout)
 
-        # Add the vertical layout for values to the main layout
-        self.main_layout.addLayout(values_layout)
+        # Add the vertical layout for values to the main layout, above the size grip
+        self.main_layout.insertLayout(self.main_layout.count() - 1, values_layout)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self.scroll_area.setGeometry(0, 0, self.width(), self.height())
+        self.scroll_area.setGeometry(0, 0, self.width(), self.height() - self.size_grip.height())
+        self.size_grip.move(self.width() - self.size_grip.width(), self.height() - self.size_grip.height())
