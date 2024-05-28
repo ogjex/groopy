@@ -81,6 +81,24 @@ class SortWindow(QWidget):
         # Return a list of tuples with checkbox labels and their checked states
         return [(label, checkbox.isChecked()) for label, (checkbox, _) in self.checkbox_dict.items()]
 
+    def get_min_group_size(self) -> int:
+        """
+        Return the minimum group size entered by the user.
+        """
+        return int(self.minimum_group_size_input.text())
+
+    def get_max_group_size(self) -> int:
+        """
+        Return the maximum group size entered by the user.
+        """
+        return int(self.maximum_group_size_input.text())
+
+    def get_max_total_groups(self) -> int:
+        """
+        Return the maximum total number of groups entered by the user.
+        """
+        return int(self.max_total_groups_input.text())
+
     def sort_groups(self):
         # Send the ordered checkbox states to the Presenter
         ordered_checkbox_states = self.get_checkbox_values()
