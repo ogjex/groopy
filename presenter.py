@@ -21,6 +21,13 @@ class Presenter(object):
         self.main_window = main_window
         self.group_editor = group_editor
         self.person_editor = person_editor
+        self.group_sort_methods = {
+            "Option 1": self.method1,
+            "Option 2": self.method2,
+            "Option 3": self.method3,
+            "Option 4": self.method4,
+            "Option 5": self.method5
+        }
         
     def handle_open_group_file(self, file_path):
         self.main_window.clear_group_widgets()
@@ -43,6 +50,29 @@ class Presenter(object):
 
     def handle_set_field_values(self, data):
         self.main_window.update_details_window(data)
+
+    def handle_checkbox_order(self, checkbox_states):
+        print("Processing checkbox order:")
+        for label, state in checkbox_states:
+            print(f"{label}: {'Checked' if state else 'Unchecked'}")
+            if state:
+                # Call the corresponding method if the checkbox is checked
+                self.group_sort_methods[label]()
+
+    def method1(self):
+        print("Executing Method 1")
+
+    def method2(self):
+        print("Executing Method 2")
+
+    def method3(self):
+        print("Executing Method 3")
+
+    def method4(self):
+        print("Executing Method 4")
+
+    def method5(self):
+        print("Executing Method 5")
 
     def run(self) -> None:
         self.main_window.initUI(self)
