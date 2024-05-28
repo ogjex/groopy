@@ -57,6 +57,7 @@ class SortWindow(QWidget):
         # Set the maximum height based on the content
         self.adjust_max_height()
 
+
     def toggle_all_checkboxes(self, state):
         for checkbox, _ in self.checkbox_dict.values():
             checkbox.setChecked(state == Qt.CheckState.Checked)

@@ -76,6 +76,11 @@ class GroupWidget(QWidget):
             widget = self.participants_layout.itemAt(i).widget()
             if widget and widget != self._drag_target_indicator:
                 new_height += widget.sizeHint().height() + self.participants_layout.spacing()
+        
+        # Ensure the height is at least double the sum of title label height and drag target indicator height
+        min_height = self.title_label.height() + self._drag_target_indicator.sizeHint().height() * 4
+        new_height = max(new_height, min_height)
+        
         return new_height
 
     def dragEnterEvent(self, e):
@@ -91,6 +96,7 @@ class GroupWidget(QWidget):
             e.source().hide()
             # Show the target.
             self._drag_target_indicator.show()
+            self.update_height()
         e.accept()
 
     def dropEvent(self, e):
