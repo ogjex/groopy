@@ -3,10 +3,15 @@ from PyQt6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QCheckBox, QPushButton, QListWidget, QListWidgetItem
 )
 from PyQt6.QtCore import Qt
-
+from typing import Protocol
+class Presenter(Protocol):
+    def handle_checkbox_order(self, checkboxes) -> None:
+        ...
 class SortWindow(QWidget):
-    def __init__(self):
+    def __init__(self, presenter: Presenter):
         super().__init__()
+
+        self.presenter = presenter
 
         # Set up the main layout
         self.setWindowTitle("Sort Window")

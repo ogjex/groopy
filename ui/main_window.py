@@ -6,6 +6,8 @@ from typing import Protocol
 from ui.group_window import GroupWindow
 from ui.details_window import DetailsWindow
 from ui.workspace_window import WorkspaceWindow
+from ui.sort_window import SortWindow
+
 from presenter import Presenter
 
 class MainWindow(QMainWindow):
@@ -36,13 +38,7 @@ class MainWindow(QMainWindow):
         self.details_window = DetailsWindow(self.presenter)
         self.workspace_window = WorkspaceWindow(self.presenter)
         self.workspace_window.setMaximumWidth(150)
-        # Add tabs to the main content as needed
-        
-        # Filter bar
-        filter_bar = QFrame()
-        filter_bar.setStyleSheet("background-color: gray;")
-        filter_bar.setMinimumWidth(300) 
-        filter_bar.setMaximumWidth(300)
+        self.sort_window = SortWindow(self.presenter)
 
         menubar_layout = QVBoxLayout()
         menubar_layout.addWidget(menu_bar)        
@@ -57,7 +53,7 @@ class MainWindow(QMainWindow):
         
         overview_filter_layout = QHBoxLayout()
         overview_filter_layout.addWidget(self.group_window)
-        overview_filter_layout.addWidget(filter_bar)
+        overview_filter_layout.addWidget(self.sort_window)
 
         details_window_layout = QVBoxLayout()
         details_label = QLabel("Details")
@@ -78,7 +74,7 @@ class MainWindow(QMainWindow):
 
     def import_group_widgets(self, groups_data):
         self.group_window.import_group_widgets(groups_data)
-            
+
     def get_groups_data(self) -> list:
         groups_data = self.group_window.get_groups_data()
         return groups_data
