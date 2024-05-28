@@ -53,6 +53,11 @@ class SortWindow(QWidget):
     def get_checked_checkboxes(self):
         return {label: checkbox.isChecked() for label, checkbox in self.checkbox_dict.items()}
 
+    def sort_groups(self):
+        # Send the ordered checkbox states to the Presenter
+        ordered_checkbox_states = self.get_checkbox_values()
+        self.presenter.handle_checkbox_order(ordered_checkbox_states)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = SortWindow()
