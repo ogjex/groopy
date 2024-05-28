@@ -13,7 +13,9 @@ from presenter import Presenter
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setMinimumSize(1680, 1050)
+        self.window_width = 1680
+        self.window_height = 1050
+        self.setMinimumSize(self.window_width, self.window_height)
         self.setWindowTitle("Gettin' Groopy")
 
         self.main_widget = QWidget()

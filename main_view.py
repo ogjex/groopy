@@ -14,14 +14,20 @@ def main():
     # Instantiate PersonEditor
     person_editor = PersonEditor()
 
-    # Center the window on the screen
-    window_width = main_window.frameGeometry().width()
-    window_height = main_window.frameGeometry().height()
+    # Get the screen dimensions
     screen = app.primaryScreen()
-    screen_width = screen.size().width()
-    screen_height = screen.size().height()
-    main_window.move((screen_width - window_width) // 2, (screen_height - window_height) // 2)
+    screen_geometry = screen.geometry()
+    screen_width = screen_geometry.width()
     
+    # Calculate the X coordinate for centering the window horizontally
+    x_coordinate = (screen_width - main_window.window_width) // 2
+    
+    # Y coordinate is 0 to place the window at the top of the screen
+    y_coordinate = 0
+    
+    # Move the window to the desired position
+    main_window.move(x_coordinate, y_coordinate)    
+
     presenter = Presenter(group_editor, person_editor, main_window)
     
     # Prepare sample data as dictionaries
@@ -39,8 +45,9 @@ def main():
         ("Group 5", ["Mary", "Nathan", "Olivia"]),
         ("Group 6", ["Peter", "Queen", "Robert"]),
         ("Group 7", ["Henry", "Norton", "Moose"]),
-        ("Group 9", ["Stan", "Chao", "Missy"]),
-        ("Group 8", ["John", "Jane", "Hunny"])
+        ("Group 8", ["Stan", "Chao", "Missy"]),
+        ("Group 9", ["Helle", "Finn", "Dave"]),
+        ("Group 10", ["John", "Jane", "Hunny"])
     ]
     
     main_window.import_group_widgets(groups_data)

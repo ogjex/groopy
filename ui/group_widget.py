@@ -139,6 +139,7 @@ class GroupWidget(QWidget):
 
     def add_item(self, item):
         self.participants_layout.addWidget(item)
+        self.update_height()
 
     def get_group_data(self) -> list:
         """

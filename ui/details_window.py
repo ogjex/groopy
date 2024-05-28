@@ -46,6 +46,7 @@ class DetailsWindow(QWidget):
             label.setStyleSheet("color: rgb({}, {}, {});".format(header_font_color.red(), header_font_color.green(), header_font_color.blue()))
             label.setFont(QFont("Arial", 10, QFont.Weight.Bold))  # Adjust font weight if necessary
             label.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)  # Set label size policy
+            label.setMaximumHeight(50)
             self.field_labels.append(label)
             self.headers_layout.addWidget(label)
 
