@@ -35,14 +35,16 @@ def main():
     max_groups_per_person = 1
     max_total_groups = 10
 
-    grouping_module = GroupingModule(people, min_group_size, max_group_size, max_groups_per_person, max_total_groups)
-    optimal_num_groups = grouping_module.calculate_optimal_num_groups(len(people), min_group_size, max_group_size, max_total_groups)
+    grouping_module = GroupingModule()
+    
+    grouping_module.init_group_sort(people, min_group_size, max_group_size, max_groups_per_person, max_total_groups)
+    optimal_num_groups = grouping_module.calculate_optimal_num_groups()
     
     target_parameter = 'education'
-    parameter_counts = grouping_module.count_parameter_occurrences(people, target_parameter)
+    parameter_counts = grouping_module.count_parameter_occurrences(target_parameter)
     most_frequent_parameter_value = grouping_module.find_most_frequent_parameter_value(parameter_counts)
     
-    filtered_people_list = grouping_module.filter_people_by_parameter(people, target_parameter, most_frequent_parameter_value)
+    filtered_people_list = grouping_module.filter_people_by_parameter(target_parameter, most_frequent_parameter_value)
     remainder_list = grouping_module.find_remainder(people, filtered_people_list)
     group_list = grouping_module.create_groups(optimal_num_groups)
     
