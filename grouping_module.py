@@ -73,7 +73,7 @@ class GroupingModule:
             created_groups.append(Group(group_name))
         return created_groups
     
-    def filter_people_by_parameter(self, parameter:str, value:str) -> list[Person]:
+    def filter_people_by_parameter(self, people_list:list[Person], parameter:str, value:str) -> list[Person]:
         """
         Filters a list of Person objects based on the specified parameter and value.
 
@@ -88,7 +88,7 @@ class GroupingModule:
         filtered_people = []  # Initialize an empty list to store the filtered people
 
         # Iterate through each person in the input list
-        for person in self.people:
+        for person in people_list:
             # Get the value of the specified parameter for the current person
             person_value = getattr(person, parameter)
 
