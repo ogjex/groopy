@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtWidgets import (
-    QApplication, QLineEdit, QLabel, QWidget, QVBoxLayout, QCheckBox, QPushButton, QListWidget, QListWidgetItem
+    QApplication, QComboBox, QLabel, QWidget, QVBoxLayout, QCheckBox, QPushButton, QListWidget, QListWidgetItem
 )
 from PyQt6.QtCore import Qt
 from collections import OrderedDict
@@ -23,10 +23,14 @@ class SortWindow(QWidget):
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.sort_label)
 
-        # Add input fields for minimum group size, maximum group size, and max total number of groups
-        self.minimum_group_size_input = QLineEdit()
-        self.maximum_group_size_input = QLineEdit()
-        self.max_total_groups_input = QLineEdit()
+# Add dropdowns for minimum group size, maximum group size, and max total number of groups
+        self.minimum_group_size_input = QComboBox()
+        self.maximum_group_size_input = QComboBox()
+        self.max_total_groups_input = QComboBox()
+        for i in range(1, 41):
+            self.minimum_group_size_input.addItem(str(i))
+            self.maximum_group_size_input.addItem(str(i))
+            self.max_total_groups_input.addItem(str(i))
         self.layout.addWidget(QLabel("Minimum group size:"))
         self.layout.addWidget(self.minimum_group_size_input)
         self.layout.addWidget(QLabel("Maximum group size:"))
@@ -45,11 +49,12 @@ class SortWindow(QWidget):
 
         # Add checkboxes to the QListWidget
         self.checkbox_dict = OrderedDict()
-        for i in range(5):
+
+        '''for i in range(5):
             checkbox = QCheckBox(f"Option {i+1}")
             list_item = QListWidgetItem(self.checkbox_list)
             self.checkbox_list.setItemWidget(list_item, checkbox)
-            self.checkbox_dict[checkbox.text()] = checkbox
+            self.checkbox_dict[checkbox.text()] = checkbox'''
 
         # Create the buttons
         self.sort_button = QPushButton("Sort Groups")
@@ -58,8 +63,8 @@ class SortWindow(QWidget):
         self.layout.addWidget(self.clear_button)
 
         # Connect the buttons to their functions
-        self.sort_button.clicked.connect(self.sort_groups)
-        #self.clear_button.clicked.connect(self.clear_checkboxes)
+        self.sort_button.clicked.connect(self.set_checkboxes_test)
+        self.clear_button.clicked.connect(self.clear_checkboxes)
 
         # Set the layout
         self.setLayout(self.layout)
@@ -121,8 +126,43 @@ class SortWindow(QWidget):
         # Set the maximum height
         self.setMaximumHeight(total_height)
 
+    def add_checkbox(self, label: str, var_name: str):
+        if label in self.checkbox_dict:
+            return
+        checkbox = QCheckBox(label)
+        list_item = QListWidgetItem(self.checkbox_list)
+        self.checkbox_list.setItemWidget(list_item, checkbox)
+        self.checkbox_dict[var_name] = checkbox
+        self.adjust_max_height()
+
+    def remove_checkbox(self, var_name: str):
+        if var_name not in self.checkbox_dict:
+            return
+        checkbox = self.checkbox_dict.pop(var_name)
+        for i in range(self.checkbox_list.count()):
+            item = self.checkbox_list.item(i)
+            widget = self.checkbox_list.itemWidget(item)
+            if widget == checkbox:
+                self.checkbox_list.takeItem(i)
+                break
+        self.adjust_max_height()
+
+    def clear_checkboxes(self):
+        self.checkbox_dict.clear()
+        self.checkbox_list.clear()
+        self.adjust_max_height()
+
+    def set_checkboxes(self, checkboxes: list):
+        self.clear_checkboxes()
+        for label, var_name in checkboxes:
+            self.add_checkbox(label, var_name)
+
+    def set_checkboxes_test(self):
+        checkboxes = [("Gender", "gender"), ("Education", "education"), ("Career Preference", "career_preference")]
+        self.set_checkboxes(checkboxes)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = SortWindow()
+    window = SortWindow(presenter=None)  # Replace with an actual presenter instance
     window.show()
     sys.exit(app.exec())
