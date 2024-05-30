@@ -171,3 +171,19 @@ class GroupingModule:
                 break
         
         return group_list
+    
+    def dynamic_sort_and_group(self, parameters: list[str]):
+        optimal_num_groups = self.calculate_optimal_num_groups()
+        group_list = self.create_groups(optimal_num_groups)
+
+        sorted_people = self.people
+        for param in parameters:
+            param_counts = self.count_parameter_occurrences(param)
+            most_frequent_value = self.find_most_frequent_parameter_value(param_counts)
+            filtered_people = self.filter_people_by_parameter(sorted_people, param, most_frequent_value)
+            remainder_people = self.find_remainder(sorted_people, filtered_people)
+            group_list = self.distribute_people_to_groups(filtered_people, group_list)
+            sorted_people = remainder_people
+
+        group_list = self.distribute_people_to_groups(sorted_people, group_list)
+        return group_list
