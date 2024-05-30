@@ -6,6 +6,7 @@ from group import Group
 class GroupingModule:
     def __init__(self):
         self.groups = []
+        self.current_group_index = 0  # Initialize the current group index
 
     def init_group_sort(self, people, min_group_size, max_group_size, max_groups_per_person, max_num_groups):
         self.people = people
@@ -154,7 +155,7 @@ class GroupingModule:
 
         person_index = 0
         for person in people_list:
-            group_index = person_index % num_groups  # Calculate the index of the group for the current person
+            group_index = self.current_group_index % num_groups  # Calculate the index of the group for the current person
             current_group = group_list[group_index]  # Get the current group
 
             # Add the person to the current group
@@ -162,6 +163,8 @@ class GroupingModule:
 
             # Update the group in the list of groups
             group_list[group_index] = current_group
+
+            self.current_group_index += 1  # Update the current group index
 
             person_index += 1
             if person_index >= num_people:
