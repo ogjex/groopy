@@ -1,6 +1,21 @@
 from grouping_module import GroupingModule
 from person import Person
 from group import Group
+class Presenter:
+    def __init__(self, grouping_module):
+        self.grouping_module = grouping_module
+
+    def get_user_input(self):
+        num_parameters = int(input("Enter the number of parameters to sort by (1, 2, or 3): "))
+        parameters = []
+        for i in range(num_parameters):
+            parameter = input(f"Enter parameter {i+1}: ")
+            parameters.append(parameter)
+        return parameters
+
+    def present_groups(self, group_list):
+        for group in group_list:
+            print(group)
 
 def main():
     # Sample data representing people with their attributes
@@ -36,31 +51,11 @@ def main():
 
     grouping_module = GroupingModule()
     grouping_module.init_group_sort(people, min_group_size, max_group_size, max_groups_per_person, max_total_groups)
-    optimal_num_groups = grouping_module.calculate_optimal_num_groups()
-    group_list = grouping_module.create_groups(optimal_num_groups)
 
-    # Prompt user for sorting parameters
-    num_parameters = int(input("Enter the number of parameters to sort by (1, 2, or 3): "))
-    parameters = []
-    for i in range(num_parameters):
-        parameter = input(f"Enter parameter {i+1}: ")
-        parameters.append(parameter)
-
-    sorted_people = people
-    for param in parameters:
-        param_counts = grouping_module.count_parameter_occurrences(param)
-        most_frequent_value = grouping_module.find_most_frequent_parameter_value(param_counts)
-        filtered_people = grouping_module.filter_people_by_parameter(sorted_people, param, most_frequent_value)
-        remainder_people = grouping_module.find_remainder(sorted_people, filtered_people)
-
-        group_list = grouping_module.distribute_people_to_groups(filtered_people, group_list)
-        sorted_people = remainder_people
-
-    group_list = grouping_module.distribute_people_to_groups(sorted_people, group_list)
-
-    # Print groups
-    for group in group_list:
-        print(group)
+    presenter = Presenter(grouping_module)
+    parameters = presenter.get_user_input()
+    group_list = grouping_module.dynamic_sort_and_group(parameters)
+    presenter.present_groups(group_list)
 
 if __name__ == "__main__":
     main()
