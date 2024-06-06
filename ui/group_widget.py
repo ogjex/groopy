@@ -16,9 +16,9 @@ class GroupWidget(QWidget, QObject):
 
     orderChanged = pyqtSignal(list)
 
-    def __init__(self, title, participants, presenter: Presenter, parent=None):
+    def __init__(self, group_id, title, participants, presenter: Presenter, parent=None):
         super().__init__(parent)
-        
+        self.group_id = group_id
         self.title = title
         self.participants = participants
         self.presenter = presenter
@@ -59,11 +59,11 @@ class GroupWidget(QWidget, QObject):
         self.setAcceptDrops(True)
         
     def populateParticipants(self):
-        for participant in self.participants:
-           self.addParticipant(participant) 
+        for person_id, person_name in self.participants:
+           self.addParticipant(person_id, person_name) 
 
-    def addParticipant(self, participant):
-        label = DragLabel(participant)
+    def addParticipant(self, person_id, person_name):
+        label = DragLabel(person_id, person_name)
         label.setFrameStyle(QFrame.Shape.Panel | QFrame.Shadow.Sunken)
         label.setMargin(2)
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -158,7 +158,7 @@ class GroupWidget(QWidget, QObject):
         """
         Get the data of this group widget.
         """
-        return [self.title, self.get_item_data()]
+        return [self.group_id, self.title, self.get_item_data()]
 
     def get_item_data(self):
         data = []
@@ -167,8 +167,9 @@ class GroupWidget(QWidget, QObject):
             w = self.participants_layout.itemAt(n).widget()
             if w != self._drag_target_indicator:
                 # The target indicator has no data.
-                data.append(w.data)
+                data.append((w.id, w.name))
         return data
+
     
     @pyqtSlot(list)
     def slot_print_orderChangedList(self, list):
