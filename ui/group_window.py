@@ -27,6 +27,13 @@ class GroupWindow(QWidget):
             self.group_widgets.append(new_group)
         self.update_layout()
 
+    def import_group_widgets(self, groups_data):
+        for group_id, title, participants in groups_data:
+            new_group = GroupWidget(group_id, title, participants, self.presenter)
+            self.grid_layout.addWidget(new_group)
+            self.group_widgets.append(new_group)
+        self.update_layout()
+
     def clear_group_widgets(self):
         # Remove all GroupWidget instances from the layout
         for group_widget in self.group_widgets:
