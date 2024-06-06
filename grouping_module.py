@@ -1,5 +1,4 @@
-import random
-from collections import defaultdict
+from typing import List
 from person import Person
 from group import Group
 
@@ -7,6 +6,7 @@ class GroupingModule:
     def __init__(self):
         self.groups = []
         self.current_group_index = 0  # Initialize the current group index
+        self.next_group_id = 1  # Initialize the next group ID
 
     def init_group_sort(self, people, min_group_size, max_group_size, max_groups_per_person, max_num_groups):
         self.people = people
@@ -69,9 +69,11 @@ class GroupingModule:
             list[Group]: the list of groups that people can be added to
         """
         created_groups = []
-        for i in range(1, groups_to_create + 1):
-            group_name = f"Group {i}"
-            created_groups.append(Group(group_name))
+        for i in range(groups_to_create):
+            group_id = self.next_group_id
+            group_name = f"Group {group_id}"
+            created_groups.append(Group(id=group_id, name=group_name))
+            self.next_group_id += 1  # Increment the next group ID
         return created_groups
     
     def filter_people_by_parameter(self, people_list:list[Person], parameter:str, value:str) -> list[Person]:
@@ -100,25 +102,25 @@ class GroupingModule:
 
         return filtered_people
             
-    def find_remainder(self, list1: list[Person], list2: list[Person]) -> list[Person]:
+    def find_remainder(self, list1: List[Person], list2: List[Person]) -> List[Person]:
         """
         Find the remainder of Person objects not present in both lists.
 
         Args:
-            list1 (list): The first list of Person objects.
-            list2 (list): The second list of Person objects.
+            list1 (List[Person]): The first list of Person objects.
+            list2 (List[Person]): The second list of Person objects.
 
         Returns:
-            list: A list containing Person objects that are not present in both lists.
+            List[Person]: A list containing Person objects that are not present in both lists.
         """
-        names1 = {person.name for person in list1}
-        names2 = {person.name for person in list2}
+        ids1 = {person.id for person in list1}
+        ids2 = {person.id for person in list2}
 
-        unique_names = (names1 ^ names2)
+        unique_ids = (ids1 ^ ids2)
 
         remainder = []
         for person in list1 + list2:
-            if person.name in unique_names:
+            if person.id in unique_ids:
                 remainder.append(person)
         return remainder
 
@@ -176,7 +178,7 @@ class GroupingModule:
         optimal_num_groups = self.calculate_optimal_num_groups()
         group_list = self.create_groups(optimal_num_groups)
 
-        sorted_people = self.people
+        sorted_people = self.sort_people_by_id(self.people)
         for param in parameters:
             param_counts = self.count_parameter_occurrences(param)
             most_frequent_value = self.find_most_frequent_parameter_value(param_counts)
@@ -187,3 +189,15 @@ class GroupingModule:
 
         group_list = self.distribute_people_to_groups(sorted_people, group_list)
         return group_list
+    
+    def sort_people_by_id(self, people_list: List[Person]) -> List[Person]:
+        """
+        Sort the list of Person objects based on their IDs.
+
+        Args:
+            people_list (List[Person]): The list of Person objects to be sorted.
+
+        Returns:
+            List[Person]: The sorted list of Person objects.
+        """
+        return sorted(people_list, key=lambda person: person.id)
