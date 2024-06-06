@@ -37,21 +37,9 @@ def main():
     presenter.run()
     presenter.handle_set_field_values(sample_persons_data)
 
-    groups_data = [
-        ("Group 1", ["Alice", "Bob", "Charlie"]),
-        ("Group 2", ["David", "Eve", "Frank"]),
-        ("Group 3", ["Grace", "Henry", "Ivy"]),
-        ("Group 4", ["Jack", "Kate", "Liam"]),
-        ("Group 5", ["Mary", "Nathan", "Olivia"]),
-        ("Group 6", ["Peter", "Queen", "Robert"]),
-        ("Group 7", ["Henry", "Norton", "Moose"]),
-        ("Group 8", ["Stan", "Chao", "Missy"]),
-        ("Group 9", ["Helle", "Finn", "Dave"]),
-        ("Group 10", ["John", "Jane", "Hunny"])
-    ]
+    groups_data = group_editor.create_group_data_sample()
     
     main_window.import_group_widgets(groups_data)
-    
 
     sys.exit(app.exec())
 

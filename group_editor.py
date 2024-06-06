@@ -99,3 +99,25 @@ class GroupEditor:
             if group.id == group_id:
                 return group
         return None
+
+    def create_group_data_sample(self) -> List[tuple]:
+        """
+        Create sample group data with group IDs.
+        """
+        groups_data = [
+            ("Group 1", ["Alice", "Bob", "Charlie"]),
+            ("Group 2", ["David", "Eve", "Frank"]),
+            ("Group 3", ["Grace", "Henry", "Ivy"]),
+            ("Group 4", ["Jack", "Kate", "Liam"]),
+            ("Group 5", ["Mary", "Nathan", "Olivia"]),
+            ("Group 6", ["Peter", "Queen", "Robert"]),
+            ("Group 7", ["Henry", "Norton", "Moose"]),
+            ("Group 8", ["Stan", "Chao", "Missy"]),
+            ("Group 9", ["Helle", "Finn", "Dave"]),
+            ("Group 10", ["John", "Jane", "Hunny"])
+        ]
+
+        # Add group IDs to each group data tuple
+        groups_data_with_ids = [(f"Group {i+1}", i+1, participants) for i, (_, participants) in enumerate(groups_data)]
+
+        return groups_data_with_ids
