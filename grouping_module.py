@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from person import Person
 from group import Group
 
