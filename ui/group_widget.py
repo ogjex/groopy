@@ -172,5 +172,5 @@ class GroupWidget(QWidget, QObject):
     
     @pyqtSlot(list)
     def slot_print_orderChangedList(self, list):
-        print(f"{list}")
-        #self.presenter.handle_print_group_widget_data(list)
+        #print(f"{list}")
+        self.presenter.handle_print_group_widget_data(list)
