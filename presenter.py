@@ -74,6 +74,9 @@ class Presenter(object):
     def method5(self):
         print("Executing Method 5")
 
+    def handle_print_group_widget_data(self, list):
+        print(f"{list}")
+        
     def run(self) -> None:
         self.main_window.initUI(self)
         self.main_window.show()

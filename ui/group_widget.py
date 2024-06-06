@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, QObject, pyqtSignal, pyqtSlot
 from PyQt6.QtWidgets import (
     QLabel,
     QFrame,
@@ -7,18 +7,25 @@ from PyQt6.QtWidgets import (
 )
 from ui.drag_widget import DragLabel, DragTargetIndicator
 
-class GroupWidget(QWidget):
+from typing import Protocol
+
+class Presenter(Protocol):
+    def handle_print_group_widget_data(self, list: list):
+        ...
+class GroupWidget(QWidget, QObject):
 
     orderChanged = pyqtSignal(list)
 
-    def __init__(self, title, participants, parent=None):
+    def __init__(self, title, participants, presenter: Presenter, parent=None):
         super().__init__(parent)
         
         self.title = title
         self.participants = participants
+        self.presenter = presenter
         self.expanded = True
         self.initUI()
-        
+        self.orderChanged.connect(self.slot_print_orderChangedList)
+
     def initUI(self):
         layout = QVBoxLayout()
         
@@ -162,3 +169,8 @@ class GroupWidget(QWidget):
                 # The target indicator has no data.
                 data.append(w.data)
         return data
+    
+    @pyqtSlot(list)
+    def slot_print_orderChangedList(self, list):
+        print(f"{list}")
+        #self.presenter.handle_print_group_widget_data(list)
