@@ -1,5 +1,6 @@
 class Person:
-    def __init__(self, name, gender, education, experience, career_preference, desirables=None, undesirables=None):
+    def __init__(self, id, name, gender, education, experience, career_preference, desirables=None, undesirables=None):
+        self.id = id
         self.name = name
         self.gender = gender
         self.education = education

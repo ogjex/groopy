@@ -5,6 +5,7 @@ from person import Person
 class PersonEditor:
     def __init__(self):
         self.persons = []
+        self.next_id = 1  # Initialize the next_id to 1
 
     def read_persons_from_csv(self, filename: str) -> List[Person]:
         """
@@ -18,18 +19,18 @@ class PersonEditor:
         """
         persons = []
         with open(filename, 'r', newline='') as csv_file:
-            fieldnames = self._get_csv_fieldnames()
+            fieldnames = self._get_csv_fieldnames(with_id=False)  # Exclude 'id' from fieldnames for reading
             csv_reader = csv.DictReader(csv_file, fieldnames=fieldnames)
             next(csv_reader)  # Skip header row
             for row in csv_reader:
                 person_data = {fieldname: row[fieldname] for fieldname in fieldnames}
-                # Convert 'experience' to integer
-                person_data['experience'] = int(person_data['experience'])
-                # Split 'desirables' into a list
+                person_data['experience'] = int(person_data['experience'])  # Convert 'experience' to integer
                 person_data['desirables'] = person_data['desirables'].split(';') if person_data['desirables'] else []
-                # Handle empty 'undesirables'
                 person_data['undesirables'] = person_data['undesirables'].split(';') if person_data['undesirables'] else []
+                person_data['id'] = self.next_id  # Assign the next_id
                 persons.append(Person(**person_data))
+                self.next_id += 1  # Increment next_id for the next person
+        self.persons = persons  # Update the persons list in the editor
         return persons
 
     def shuffle_persons(self, persons: List[Person]) -> List[Person]:
@@ -89,38 +90,45 @@ class PersonEditor:
                 row_data = {fieldname: getattr(person, fieldname.lower()) for fieldname in fieldnames}
                 csv_writer.writerow(row_data)
     
-    def _get_csv_fieldnames(self) -> List[str]:
+    def _get_csv_fieldnames(self, with_id=True) -> List[str]:
         """
         Get the fieldnames structure of the CSV file.
+
+        Args:
+        - with_id: Whether to include the 'id' field.
 
         Returns:
         A list of fieldnames.
         """
-        return ['name', 'gender', 'education', 'experience', 'career_preference', 'desirables', 'undesirables']
-
+        base_fieldnames = ['name', 'gender', 'education', 'experience', 'career_preference', 'desirables', 'undesirables']
+        if with_id:
+            return ['id'] + base_fieldnames
+        return base_fieldnames
+    
     def create_persons_sample(self) -> List[Person]:
         persons = [
-            Person(name="Alice A.", gender="Female", education="Engineering", experience=3, career_preference="Software Development", desirables=["Bob", "Charlie"]),
-            Person(name="Bob", gender="Male", education="Software Engineering", experience=5, career_preference="Software Engineering", desirables=["Alice"]),
-            Person(name="Charlie", gender="Male", education="Mathematics", experience=2, career_preference="Finance", desirables=["Alice"]),
-            Person(name="Eve", gender="Female", education="Engineering", experience=4, career_preference="Software Development", desirables=["Alice", "Bob"]),
-            Person(name="Alice B.", gender="Male", education="Engineering", experience=6, career_preference="Data Science", desirables=["Alice"]),
-            Person(name="Frank", gender="Male", education="Mathematics", experience=1, career_preference="Software Development"),
-            Person(name="Grace", gender="Female", education="Computer Science", experience=4, career_preference="Finance", desirables=["Bob"]),
-            Person(name="Harry", gender="Male", education="Engineering", experience=3, career_preference="Data Science", desirables=["Alice"]),
-            Person(name="Isabel", gender="Female", education="Mathematics", experience=2, career_preference="Software Development", desirables=["Bob"]),
-            Person(name="Jack", gender="Male", education="Engineering", experience=5, career_preference="Finance", desirables=["Alice"]),
-            Person(name="Karen", gender="Female", education="Computer Science", experience=3, career_preference="Data Science", desirables=["Alice"]),
-            Person(name="Liam", gender="Male", education="Engineering", experience=4, career_preference="Software Development"),
-            Person(name="Mia", gender="Female", education="Mathematics", experience=5, career_preference="Data Science", desirables=["Charlie"]),
-            Person(name="Nathan", gender="Male", education="Engineering", experience=3, career_preference="Finance", desirables=["Alice"]),
-            Person(name="Olivia", gender="Female", education="Computer Science", experience=2, career_preference="Software Development", desirables=["Bob"]),
-            Person(name="Peter", gender="Male", education="Mathematics", experience=4, career_preference="Data Science", desirables=["Alice"]),
-            Person(name="Quinn", gender="Female", education="Engineering", experience=3, career_preference="Finance", desirables=["Alice"]),
-            Person(name="Robert", gender="Male", education="Computer Science", experience=2, career_preference="Software Development", desirables=["Alice"]),
-            Person(name="Sophia", gender="Female", education="Mathematics", experience=4, career_preference="Data Science", desirables=["Charlie"]),
-            Person(name="Thomas", gender="Male", education="Engineering", experience=5, career_preference="Finance"),
-            Person(name="Hortensia", gender="Female", education="Economics", experience=5, career_preference="Finance")                
+            Person(id=self.next_id, name="Alice A.", gender="Female", education="Engineering", experience=3, career_preference="Software Development", desirables=["Bob", "Charlie"]),
+            Person(id=self.next_id + 1, name="Bob", gender="Male", education="Software Engineering", experience=5, career_preference="Software Engineering", desirables=["Alice"]),
+            Person(id=self.next_id + 2, name="Charlie", gender="Male", education="Mathematics", experience=2, career_preference="Finance", desirables=["Alice"]),
+            Person(id=self.next_id + 3, name="Eve", gender="Female", education="Engineering", experience=4, career_preference="Software Development", desirables=["Alice", "Bob"]),
+            Person(id=self.next_id + 4, name="Alice B.", gender="Male", education="Engineering", experience=6, career_preference="Data Science", desirables=["Alice"]),
+            Person(id=self.next_id + 5, name="Frank", gender="Male", education="Mathematics", experience=1, career_preference="Software Development"),
+            Person(id=self.next_id + 6, name="Grace", gender="Female", education="Computer Science", experience=4, career_preference="Finance", desirables=["Bob"]),
+            Person(id=self.next_id + 7, name="Harry", gender="Male", education="Engineering", experience=3, career_preference="Data Science", desirables=["Alice"]),
+            Person(id=self.next_id + 8, name="Isabel", gender="Female", education="Mathematics", experience=2, career_preference="Software Development", desirables=["Bob"]),
+            Person(id=self.next_id + 9, name="Jack", gender="Male", education="Engineering", experience=5, career_preference="Finance", desirables=["Alice"]),
+            Person(id=self.next_id + 10, name="Karen", gender="Female", education="Computer Science", experience=3, career_preference="Data Science", desirables=["Alice"]),
+            Person(id=self.next_id + 11, name="Liam", gender="Male", education="Engineering", experience=4, career_preference="Software Development"),
+            Person(id=self.next_id + 12, name="Mia", gender="Female", education="Mathematics", experience=5, career_preference="Data Science", desirables=["Charlie"]),
+            Person(id=self.next_id + 13, name="Nathan", gender="Male", education="Engineering", experience=3, career_preference="Finance", desirables=["Alice"]),
+            Person(id=self.next_id + 14, name="Olivia", gender="Female", education="Computer Science", experience=2, career_preference="Software Development", desirables=["Bob"]),
+            Person(id=self.next_id + 15, name="Peter", gender="Male", education="Mathematics", experience=4, career_preference="Data Science", desirables=["Alice"]),
+            Person(id=self.next_id + 16, name="Quinn", gender="Female", education="Engineering", experience=3, career_preference="Finance", desirables=["Alice"]),
+            Person(id=self.next_id + 17, name="Robert", gender="Male", education="Computer Science", experience=2, career_preference="Software Development", desirables=["Alice"]),
+            Person(id=self.next_id + 18, name="Sophia", gender="Female", education="Mathematics", experience=4, career_preference="Data Science", desirables=["Charlie"]),
+            Person(id=self.next_id + 19, name="Thomas", gender="Male", education="Engineering", experience=5, career_preference="Finance"),
+            Person(id=self.next_id + 20, name="Hortensia", gender="Female", education="Economics", experience=5, career_preference="Finance")                
             ]
+        self.next_id += len(persons)  # Increment next_id by the number of persons added
         self.persons = persons
         return persons
