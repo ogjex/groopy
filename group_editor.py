@@ -6,6 +6,7 @@ from group import Group
 class GroupEditor:
     def __init__(self):
         self.groups = []
+        self.next_id = 1  # Initialize the next_id to 1
     
     def load_group(self, group_info):
         """
@@ -55,52 +56,46 @@ class GroupEditor:
         if not self.groups:
             raise ValueError("No groups to save.")
 
-        # Create a list of lists containing group name and participants
-        groups_data = [[group.name, group.members] for group in self.groups]
+        # Create a list of dictionaries containing group id, name, and participants
+        groups_data = [{"id": group.id, "name": group.name, "participants": group.members} for group in self.groups]
 
         # Create a dictionary to store the number of groups and the groups' data
         data = {
             "number_of_groups": len(groups_data),
-            "groups": {}
+            "groups": {f"group{group['id']}": group for group in groups_data}
         }
-
-        # Populate the dictionary with group data
-        for i, (group_name, participants) in enumerate(groups_data, start=1):
-            group_key = f"group{i}"
-            data["groups"][group_key] = {
-                "name": group_name,
-                "participants": participants
-            }
 
         # Save the groups to JSON file
         with open(filename, 'w') as json_file:
             json.dump(data, json_file, indent=4)
 
-    def create_groups_from_data(self, groups_data: List[list]) -> List[Group]:
+    def create_groups_from_data(self, groups_data: List[tuple]) -> List[Group]:
         """
         Create Group objects from the provided data and add them to the editor.
         
         Args:
-        - groups_data: A list of lists where each inner list contains group data.
+        - groups_data: A list of tuples where each tuple contains group data (ID, name, participants).
         """
         self.groups.clear()  # Clear existing groups
-        for group_info in groups_data:
-            group_name, participants = group_info
-            group = Group(group_name)
+        for group_id, group_name, participants in groups_data:
+            group = Group(id=group_id, name=group_name)
             for participant in participants:
                 group.add_member(participant)
             self.groups.append(group)
+            # Ensure next_id is always greater than the highest current ID
+            self.next_id = max(self.next_id, group_id + 1)
 
-    def find_group(self, group_name: str) -> Group:
-        """_summary_
-
+    def find_group(self, group_id: int) -> Group:
+        """
+        Find a group by ID.
+        
         Args:
-            group_name (str): _description_
-
+        - group_id: The ID of the group to find.
+        
         Returns:
-            Group: _description_
+        The Group object if found, otherwise None.
         """
         for group in self.groups:
-            if group.name == group_name:
+            if group.id == group_id:
                 return group
         return None
