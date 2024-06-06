@@ -201,3 +201,57 @@ class GroupingModule:
             List[Person]: The sorted list of Person objects.
         """
         return sorted(people_list, key=lambda person: person.id)
+    
+    def move_person_to_group(self, person: Person, source_group: Group, target_group: Group) -> bool:
+        """
+        Move a person from one group to another.
+
+        Args:
+            person (Person): The person to move.
+            source_group (Group): The group from which to move the person.
+            target_group (Group): The group to which to move the person.
+
+        Returns:
+            bool: True if the person was successfully moved, False otherwise.
+        """
+        # Check if the person is in the source group
+        if person in source_group.members:
+            # Remove the person from the source group
+            source_group.members.remove(person)
+            # Add the person to the target group
+            target_group.add_member(person)
+            return True
+        else:
+            # Person not found in the source group
+            return False
+    
+    def get_group_by_id(self, group_id: int) -> Optional[Group]:
+        """
+        Get the group object corresponding to the given ID.
+
+        Args:
+            group_id (int): The ID of the group to retrieve.
+
+        Returns:
+            Optional[Group]: The group object corresponding to the given ID, or None if not found.
+        """
+        for group in self.groups:
+            if group.id == group_id:
+                return group
+        return None
+    
+    def get_person_by_id(self, person_id: int) -> Optional[Person]:
+        """
+        Get the person object corresponding to the given ID.
+
+        Args:
+            person_id (int): The ID of the person to retrieve.
+
+        Returns:
+            Optional[Person]: The person object corresponding to the given ID, or None if not found.
+        """
+        for group in self.groups:
+            for person in group.members:
+                if person.id == person_id:
+                    return person
+        return None
