@@ -14,7 +14,7 @@ class Presenter(Protocol):
         ...
 class GroupWidget(QWidget, QObject):
 
-    on_order_changed = pyqtSignal(list)
+    on_order_changed = pyqtSignal(Tuple[int, int, int])
 
     def __init__(self, group_id: int, title:str, participants: List[Tuple[int, str]], presenter: Presenter, parent=None):
         super().__init__(parent)
@@ -113,7 +113,8 @@ class GroupWidget(QWidget, QObject):
         index = self.participants_layout.indexOf(self._drag_target_indicator)
         if index is not None:
             self.participants_layout.insertWidget(index, widget)
-            self.orderChanged.emit(self.get_item_data())
+            person_id = widget.person_id
+            self.on_order_changed.emit((widget.source_group_id, self.group_id, person_id))
             widget.show()
             self.participants_layout.activate()
         e.accept()    
@@ -171,7 +172,6 @@ class GroupWidget(QWidget, QObject):
                 data.append((w.person_id, w.person_name))
         return data
 
-    @pyqtSlot(list)
-    def slot_participant_order_changed(self, list):
-        #print(f"{list}")
-        self.presenter.handle_participant_order_changed(list)
+    @pyqtSlot(tuple)
+    def slot_participant_order_changed(self, data: Tuple[int, int, int]):
+        self.presenter.handle_participant_order_changed(data)
