@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
 )
 from ui.drag_widget import DragLabel, DragTargetIndicator
 
-from typing import Protocol
+from typing import Protocol, List, Tuple
 
 class Presenter(Protocol):
     def handle_print_group_widget_data(self, list: list):
@@ -16,7 +16,7 @@ class GroupWidget(QWidget, QObject):
 
     orderChanged = pyqtSignal(list)
 
-    def __init__(self, group_id: int, title:str, participants:list, presenter: Presenter, parent=None):
+    def __init__(self, group_id: int, title:str, participants: List[Tuple[int, str]], presenter: Presenter, parent=None):
         super().__init__(parent)
         self.group_id = group_id
         self.title = title
@@ -63,7 +63,7 @@ class GroupWidget(QWidget, QObject):
            self.addParticipant(person_id, person_name) 
 
     def addParticipant(self, person_id: int, person_name: str):
-        label = DragLabel(person_id, person_name)
+        label = DragLabel(person_name)
         label.setFrameStyle(QFrame.Shape.Panel | QFrame.Shadow.Sunken)
         label.setMargin(2)
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
