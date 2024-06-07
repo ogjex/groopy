@@ -100,7 +100,7 @@ class GroupEditor:
                 return group
         return None
 
-    def create_group_data_sample(self) -> List[Tuple[str, int, List[str]]]:
+    def create_group_data_sample(self) -> List[Tuple[int, str, List[str]]]:
         """
         Create sample group data with group IDs.
         """
@@ -118,6 +118,6 @@ class GroupEditor:
         ]
 
         # Add group IDs to each group data tuple
-        groups_data_with_ids = [(title, i+1, participants) for i, (title, participants) in enumerate(groups_data)]
+        groups_data_with_ids = [(i+1, title, participants) for i, (title, participants) in enumerate(groups_data)]
 
         return groups_data_with_ids
