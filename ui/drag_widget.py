@@ -3,14 +3,16 @@ from PyQt6.QtGui import QDrag, QPixmap
 from PyQt6.QtWidgets import QLabel
 
 class DragLabel(QLabel):
-    def __init__(self, text="", parent=None):
-        super().__init__(str(text), parent)
-        # the size needs refactoring, so a drag label creates a target indicator that can be used for itself
+    def __init__(self, person_id: int, person_name: str, parent=None):
+        super().__init__(str(person_name), parent)  # Ensure text is a string
+        self.person_id = person_id
+        self.person_name = person_name
+        # The size needs refactoring, so a drag label creates a target indicator that can be used for itself
         self.setContentsMargins(25, 5, 25, 5)
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setStyleSheet("border: 1px solid black;")
         # Store data separately from display label, but use label for default.
-        self.data = self.text()
+        self.data = (self.person_id, self.person_name)
 
     def set_data(self, data):
         self.data = data

@@ -76,6 +76,9 @@ class Presenter(object):
 
     def handle_print_group_widget_data(self, list):
         print(f"{list}")
+
+    def handle_participant_order_changed(self, list):
+        ...
         
     def run(self) -> None:
         self.main_window.initUI(self)

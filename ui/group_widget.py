@@ -14,7 +14,7 @@ class Presenter(Protocol):
         ...
 class GroupWidget(QWidget, QObject):
 
-    orderChanged = pyqtSignal(list)
+    on_order_changed = pyqtSignal(list)
 
     def __init__(self, group_id: int, title:str, participants: List[Tuple[int, str]], presenter: Presenter, parent=None):
         super().__init__(parent)
@@ -24,7 +24,7 @@ class GroupWidget(QWidget, QObject):
         self.presenter = presenter
         self.expanded = True
         self.initUI()
-        self.orderChanged.connect(self.slot_print_orderChangedList)
+        self.on_order_changed.connect(self.slot_participant_order_changed)
 
     def initUI(self):
         layout = QVBoxLayout()
@@ -161,7 +161,7 @@ class GroupWidget(QWidget, QObject):
         """
         return [self.group_id, self.title, self.get_item_data()]
 
-    def get_item_data(self):
+    def get_item_data(self) -> list:
         data = []
         for n in range(self.participants_layout.count()):
             # Get the widget at each index in turn.
@@ -171,8 +171,7 @@ class GroupWidget(QWidget, QObject):
                 data.append((w.person_id, w.person_name))
         return data
 
-    
     @pyqtSlot(list)
-    def slot_print_orderChangedList(self, list):
+    def slot_participant_order_changed(self, list):
         #print(f"{list}")
-        self.presenter.handle_print_group_widget_data(list)
+        self.presenter.handle_participant_order_changed(list)
