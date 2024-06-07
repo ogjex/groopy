@@ -168,7 +168,7 @@ class GroupWidget(QWidget, QObject):
             w = self.participants_layout.itemAt(n).widget()
             if w != self._drag_target_indicator:
                 # The target indicator has no data.
-                data.append((w.id, w.name))
+                data.append((w.person_id, w.person_name))
         return data
 
     
