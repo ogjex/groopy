@@ -105,16 +105,16 @@ class GroupEditor:
         Create sample group data with group IDs and participant IDs.
         """
         groups_data = [
-            ("Group 1", [("Alice", 1), ("Bob", 2), ("Charlie", 3)]),
-            ("Group 2", [("David", 4), ("Eve", 5), ("Frank", 6)]),
-            ("Group 3", [("Grace", 7), ("Henry", 8), ("Ivy", 9)]),
-            ("Group 4", [("Jack", 10), ("Kate", 11), ("Liam", 12)]),
-            ("Group 5", [("Mary", 13), ("Nathan", 14), ("Olivia", 15)]),
-            ("Group 6", [("Peter", 16), ("Queen", 17), ("Robert", 18)]),
-            ("Group 7", [("Henry", 19), ("Norton", 20), ("Moose", 21)]),
-            ("Group 8", [("Stan", 22), ("Chao", 23), ("Missy", 24)]),
-            ("Group 9", [("Helle", 25), ("Finn", 26), ("Dave", 27)]),
-            ("Group 10", [("John", 28), ("Jane", 29), ("Hunny", 30)])
+            ("Group 1", [(1, "Alice"), (2, "Bob"), (3, "Charlie")]),
+            ("Group 2", [(4, "David"), (5, "Eve"), (6, "Frank")]),
+            ("Group 3", [(7, "Grace"), (8, "Henry"), (9, "Ivy")]),
+            ("Group 4", [(10, "Jack"), (11, "Kate"), (12, "Liam")]),
+            ("Group 5", [(13, "Mary"), (14, "Nathan"), (15, "Olivia")]),
+            ("Group 6", [(16, "Peter"), (17, "Queen"), (18, "Robert")]),
+            ("Group 7", [(19, "Henry"), (20, "Norton"), (21, "Moose")]),
+            ("Group 8", [(22, "Stan"), (23, "Chao"), (24, "Missy")]),
+            ("Group 9", [(25, "Helle"), (26, "Finn"), (27, "Dave")]),
+            ("Group 10", [(28, "John"), (29, "Jane"), (30, "Hunny")])
         ]
 
         # Add group IDs to each group data tuple
