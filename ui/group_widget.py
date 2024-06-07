@@ -14,7 +14,7 @@ class Presenter(Protocol):
         ...
 class GroupWidget(QWidget, QObject):
 
-    on_order_changed = pyqtSignal(Tuple[int, int, int])
+    on_order_changed = pyqtSignal(tuple)
 
     def __init__(self, group_id: int, title:str, participants: List[Tuple[int, str]], presenter: Presenter, parent=None):
         super().__init__(parent)
