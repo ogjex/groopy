@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QLabel
 
 class DragLabel(QLabel):
     def __init__(self, text="", parent=None):
-        super().__init__(text, parent)
+        super().__init__(str(text), parent)
         # the size needs refactoring, so a drag label creates a target indicator that can be used for itself
         self.setContentsMargins(25, 5, 25, 5)
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)

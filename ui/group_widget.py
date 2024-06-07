@@ -63,7 +63,7 @@ class GroupWidget(QWidget, QObject):
            self.addParticipant(person_id, person_name) 
 
     def addParticipant(self, person_id: int, person_name: str):
-        label = DragLabel(person_name)
+        label = DragLabel(person_id, person_name)
         label.setFrameStyle(QFrame.Shape.Panel | QFrame.Shadow.Sunken)
         label.setMargin(2)
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)

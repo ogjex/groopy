@@ -100,24 +100,24 @@ class GroupEditor:
                 return group
         return None
 
-    def create_group_data_sample(self) -> List[Tuple[int, str, List[str]]]:
+    def create_group_data_sample(self) -> List[Tuple[int, str, List[Tuple[int, str]]]]:
         """
-        Create sample group data with group IDs.
+        Create sample group data with group IDs and participant IDs.
         """
         groups_data = [
-            ("Group 1", ["Alice", "Bob", "Charlie"]),
-            ("Group 2", ["David", "Eve", "Frank"]),
-            ("Group 3", ["Grace", "Henry", "Ivy"]),
-            ("Group 4", ["Jack", "Kate", "Liam"]),
-            ("Group 5", ["Mary", "Nathan", "Olivia"]),
-            ("Group 6", ["Peter", "Queen", "Robert"]),
-            ("Group 7", ["Henry", "Norton", "Moose"]),
-            ("Group 8", ["Stan", "Chao", "Missy"]),
-            ("Group 9", ["Helle", "Finn", "Dave"]),
-            ("Group 10", ["John", "Jane", "Hunny"])
+            ("Group 1", [("Alice", 1), ("Bob", 2), ("Charlie", 3)]),
+            ("Group 2", [("David", 4), ("Eve", 5), ("Frank", 6)]),
+            ("Group 3", [("Grace", 7), ("Henry", 8), ("Ivy", 9)]),
+            ("Group 4", [("Jack", 10), ("Kate", 11), ("Liam", 12)]),
+            ("Group 5", [("Mary", 13), ("Nathan", 14), ("Olivia", 15)]),
+            ("Group 6", [("Peter", 16), ("Queen", 17), ("Robert", 18)]),
+            ("Group 7", [("Henry", 19), ("Norton", 20), ("Moose", 21)]),
+            ("Group 8", [("Stan", 22), ("Chao", 23), ("Missy", 24)]),
+            ("Group 9", [("Helle", 25), ("Finn", 26), ("Dave", 27)]),
+            ("Group 10", [("John", 28), ("Jane", 29), ("Hunny", 30)])
         ]
 
         # Add group IDs to each group data tuple
-        groups_data_with_ids = [(i+1, title, participants) for i, (title, participants) in enumerate(groups_data)]
+        groups_data_with_ids = [(i + 1, title, participants) for i, (title, participants) in enumerate(groups_data)]
 
         return groups_data_with_ids
