@@ -113,8 +113,16 @@ class GroupWidget(QWidget, QObject):
         index = self.participants_layout.indexOf(self._drag_target_indicator)
         if index is not None:
             self.participants_layout.insertWidget(index, widget)
-            person_id = widget.person_id
-            self.on_order_changed.emit((widget.source_group_id, self.group_id, person_id))
+            person_id, person_name = widget.data
+            parent_group_id = None
+            parent = widget.parent()
+            while parent:
+                if isinstance(parent, GroupWidget):
+                    parent_group_id = parent.group_id
+                    break
+                parent = parent.parent()
+            if parent_group_id is not None:
+                self.on_order_changed.emit((parent_group_id, self.group_id, person_id))
             widget.show()
             self.participants_layout.activate()
         e.accept()    
