@@ -16,7 +16,7 @@ class GroupWidget(QWidget, QObject):
 
     orderChanged = pyqtSignal(list)
 
-    def __init__(self, group_id, title, participants, presenter: Presenter, parent=None):
+    def __init__(self, group_id: int, title:str, participants:list, presenter: Presenter, parent=None):
         super().__init__(parent)
         self.group_id = group_id
         self.title = title
@@ -62,7 +62,7 @@ class GroupWidget(QWidget, QObject):
         for person_id, person_name in self.participants:
            self.addParticipant(person_id, person_name) 
 
-    def addParticipant(self, person_id, person_name):
+    def addParticipant(self, person_id: int, person_name: str):
         label = DragLabel(person_id, person_name)
         label.setFrameStyle(QFrame.Shape.Panel | QFrame.Shadow.Sunken)
         label.setMargin(2)
@@ -71,6 +71,7 @@ class GroupWidget(QWidget, QObject):
         label.setScaledContents(True)
         label.setContentsMargins(5, 0, 5, 0)
         label.setAutoFillBackground(True)
+        label.data = (person_id, person_name)
         self.participants_layout.addWidget(label)
 
     def update_height(self):
