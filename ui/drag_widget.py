@@ -3,8 +3,8 @@ from PyQt6.QtGui import QDrag, QPixmap
 from PyQt6.QtWidgets import QLabel
 
 class DragLabel(QLabel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, text="", parent=None):
+        super().__init__(text, parent)
         # the size needs refactoring, so a drag label creates a target indicator that can be used for itself
         self.setContentsMargins(25, 5, 25, 5)
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
