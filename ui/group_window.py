@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
     QGridLayout,
     QWidget
 )
-from typing import Protocol, List
+from typing import Protocol, List, Optional
 
 from ui.group_widget import GroupWidget
 
@@ -76,5 +76,20 @@ class GroupWindow(QWidget):
         """
         Print data using the getData method of each GroupWidget.
         """
+        print(self.get_groups_data())
+    
+    def find_group_id_by_participant_id(self, participant_id: int) -> Optional[int]:
+        """
+        Find the group_id for a given participant_id.
+
+        Args:
+            participant_id (int): The ID of the participant.
+
+        Returns:
+            Optional[int]: The group_id if found, otherwise None.
+        """
         for group_widget in self.group_widgets:
-            print(group_widget.get_item_data())
+            for person_id in group_widget.get_item_data():
+                if person_id == participant_id:
+                    return group_widget.group_id
+        return None
