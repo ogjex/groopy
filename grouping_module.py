@@ -8,8 +8,10 @@ class GroupingModule:
         self.current_group_index = 0  # Initialize the current group index
         self.next_group_id = 1  # Initialize the next group ID
 
-    def init_group_sort(self, people, min_group_size, max_group_size, max_groups_per_person, max_num_groups):
+    def init_people_to_sort(self, people):
         self.people = people
+
+    def init_group_sort(self, min_group_size, max_group_size, max_groups_per_person, max_num_groups):
         self.min_group_size = min_group_size
         self.max_group_size = max_group_size
         self.max_groups_per_person = max_groups_per_person
@@ -275,3 +277,7 @@ class GroupingModule:
                 if person.id == person_id:
                     return person
         return None
+    
+    def print_groups(self):
+        for g in self.groups:
+            print(g)
