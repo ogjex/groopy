@@ -1,7 +1,7 @@
 import json
-import csv
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
+from person import Person
 from group import Group
 class GroupEditor:
     def __init__(self):
@@ -69,7 +69,7 @@ class GroupEditor:
         with open(filename, 'w') as json_file:
             json.dump(data, json_file, indent=4)
 
-    def create_groups_from_data(self, groups_data: List[tuple]) -> List[Group]:
+    def create_groups_from_data(self, groups_data: List[tuple]):
         """
         Create Group objects from the provided data and add them to the editor.
         
@@ -85,22 +85,66 @@ class GroupEditor:
             # Ensure next_id is always greater than the highest current ID
             self.next_id = max(self.next_id, group_id + 1)
 
-    def find_group(self, group_id: int) -> Group:
+    def move_person_to_group(self, person_id: int, target_group_id: int) -> bool:
+        source_group = self.find_group_of_person(person_id)
+        person = self.get_person_by_id(person_id)
+        target_group = self.get_group_by_id(target_group_id)
+
+        if source_group and person and target_group:
+            source_group.remove_member(person)  # Modified to use Person object
+            target_group.add_member(person)  # Modified to use Person object
+            return True
+        else:
+            return False
+        
+    def find_group_of_person(self, person_id: int) -> Optional[Group]:
         """
-        Find a group by ID.
-        
+        Find the group that contains the person with the specified ID.
+
         Args:
-        - group_id: The ID of the group to find.
-        
+            person_id (int): The ID of the person to find.
+
         Returns:
-        The Group object if found, otherwise None.
+            Optional[Group]: The group containing the person, or None if not found.
+        """
+        for group in self.groups:
+            for person in group.members:
+                if person.id == person_id:
+                    return group
+        return None
+    
+    def get_group_by_id(self, group_id: int) -> Optional[Group]:
+        """
+        Get the group object corresponding to the given ID.
+
+        Args:
+            group_id (int): The ID of the group to retrieve.
+
+        Returns:
+            Optional[Group]: The group object corresponding to the given ID, or None if not found.
         """
         for group in self.groups:
             if group.id == group_id:
                 return group
         return None
+    
+    def get_person_by_id(self, person_id: int) -> Optional[Person]:
+        """
+        Get the person object corresponding to the given ID.
 
-    def create_group_data_sample(self) -> List[Tuple[int, str, List[Tuple[int, str]]]]:
+        Args:
+            person_id (int): The ID of the person to retrieve.
+
+        Returns:
+            Optional[Person]: The person object corresponding to the given ID, or None if not found.
+        """
+        for group in self.groups:
+            for person in group.members:
+                if person.id == person_id:
+                    return person
+        return None
+    
+    def create_group_data_sample(self):# -> List[Tuple[int, str, List[Tuple[int, str]]]]:
         """
         Create sample group data with group IDs and participant IDs.
         """
@@ -119,5 +163,9 @@ class GroupEditor:
 
         # Add group IDs to each group data tuple
         groups_data_with_ids = [(i + 1, title, participants) for i, (title, participants) in enumerate(groups_data)]
+        self.create_groups_from_data(groups_data_with_ids)
+        #return groups_data_with_ids
 
-        return groups_data_with_ids
+    def print_groups(self):
+        for g in self.groups:
+            print(g)

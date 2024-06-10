@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QApplication
 from ui.main_window import MainWindow
 from group_editor import GroupEditor
 from person_editor import PersonEditor
-from grouping_module import GroupingModule
+from group_sorter import GroupSorter
 from presenter import Presenter
 
 def main():
@@ -15,9 +15,7 @@ def main():
     # Instantiate PersonEditor
     person_editor = PersonEditor()
     
-    grouping_module = GroupingModule()
-    grouping_module.set_group(sample_persons)
-    #grouping_module.set_people_to_sort(sample_persons)
+    group_sorter = GroupSorter()
 
     # Get the screen dimensions
     screen = app.primaryScreen()
@@ -33,18 +31,18 @@ def main():
     # Move the window to the desired position
     main_window.move(x_coordinate, y_coordinate)    
 
-    presenter = Presenter(grouping_module, group_editor, person_editor, main_window)
+    presenter = Presenter(group_sorter, group_editor, person_editor, main_window)
     
+    # Prepare sample data as dictionaries for details window
     sample_persons = person_editor.create_persons_sample()
     sample_persons_data = person_editor.get_persons_data_as_dict(sample_persons)
 
     presenter.run()
     presenter.handle_set_field_values(sample_persons_data)
 
-    groups_data = group_editor.create_group_data_sample()
-    
-    # Prepare sample data as dictionaries    
-    
+    # can the groups_data also be used for grouping_module?
+    group_editor.create_group_data_sample()
+    groups_data = group_editor.groups
     main_window.import_group_widgets(groups_data)
 
     sys.exit(app.exec())

@@ -1,3 +1,5 @@
+from person import Person
+
 class Group:
     def __init__(self, id: int, name:str):
         self.id = id
@@ -6,10 +8,10 @@ class Group:
         self.gender_is_balanced = False
         self.university_is_diverse = False
 
-    def add_member(self, person):
+    def add_member(self, person: Person):  
         self.members.append(person)
     
-    def remove_member(self, person):
+    def remove_member(self, person: Person):  
         if person in self.members:
             self.members.remove(person)
 

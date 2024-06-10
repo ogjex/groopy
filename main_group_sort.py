@@ -1,4 +1,4 @@
-from grouping_module import GroupingModule
+from group_sorter import GroupingModule
 from person import Person
 from person_editor import PersonEditor
 from group import Group

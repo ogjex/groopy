@@ -2,7 +2,7 @@ import sys
 import unittest
 # setting path
 sys.path.append('../groopy')
-from grouping_module import GroupingModule
+from group_sorter import GroupingModule
 from person import Person
 from group import Group
 

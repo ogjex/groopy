@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Protocol
 from group_editor import GroupEditor
 from person_editor import PersonEditor
-from grouping_module import GroupingModule
+from group_sorter import GroupSorter
 
 class MainWindow(Protocol):
     def initUI(self, presenter: Presenter) -> None:
@@ -18,8 +18,8 @@ class MainWindow(Protocol):
     def clear_group_widgets() -> None:
         ...
 class Presenter(object):
-    def __init__(self, grouping_module: GroupingModule, group_editor: GroupEditor, person_editor: PersonEditor, main_window: MainWindow):
-        self.grouping_module = grouping_module
+    def __init__(self, group_sorter: GroupSorter, group_editor: GroupEditor, person_editor: PersonEditor, main_window: MainWindow):
+        self.group_sorter = group_sorter
         self.group_editor = group_editor
         self.person_editor = person_editor
         self.main_window = main_window
@@ -82,8 +82,8 @@ class Presenter(object):
     def handle_participant_order_changed(self, data:tuple):
         participant_id = data[0]
         target_group_id = data[1]
-        #self.grouping_module.move_person_to_group(participant_id, target_group_id)
-        self.grouping_module.print_groups()
+        self.group_editor.move_person_to_group(participant_id, target_group_id)
+        self.group_editor.print_groups()
         #print(f"Received data: {data}")
         #self.main_window.print_group_widgets()
 

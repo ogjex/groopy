@@ -1,21 +1,19 @@
-from typing import List, Optional
+from typing import List
 from person import Person
 from group import Group
 
-class GroupingModule:
+class GroupSorter:
     def __init__(self):
-        self.groups = []
-        self.current_group_index = 0  # Initialize the current group index
-        self.next_group_id = 1  # Initialize the next group ID
-
-    def init_people_to_sort(self, people):
-        self.people = people
-
+        ...
+    
     def init_group_sort(self, min_group_size, max_group_size, max_groups_per_person, max_num_groups):
         self.min_group_size = min_group_size
         self.max_group_size = max_group_size
         self.max_groups_per_person = max_groups_per_person
         self.max_num_groups = max_num_groups
+
+    def set_people_to_sort(self, people):
+        self.people = people
 
     def calculate_optimal_num_groups(self) -> int:
         total_people = len(self.people)
@@ -203,81 +201,3 @@ class GroupingModule:
             List[Person]: The sorted list of Person objects.
         """
         return sorted(people_list, key=lambda person: person.id)
-    
-    def move_person_to_group(self, person_id: int, target_group_id: id) -> bool:
-        """
-        Move a person to another group.
-
-        Args:
-            person (Person): The person to move.
-            source_group (Group): The group from which to move the person.
-            target_group (Group): The group to which to move the person.
-
-        Returns:
-            bool: True if the person was successfully moved, False otherwise.
-        """
-        # Check if the person is in the source group
-        source_group = self.find_group_of_person(person_id)
-        person = self.get_person_by_id(person_id)
-        target_group = self.get_group_by_id(target_group_id)
-
-        if person in source_group.members:
-            # Remove the person from the source group
-            source_group.members.remove(person)
-            # Add the person to the target group
-            target_group.add_member(person)
-            return True
-        else:
-            # Person not found in the source group
-            return False
-
-    def find_group_of_person(self, person_id: int) -> Optional[Group]:
-        """
-        Find the group that contains the person with the specified ID.
-
-        Args:
-            person_id (int): The ID of the person to find.
-
-        Returns:
-            Optional[Group]: The group containing the person, or None if not found.
-        """
-        for group in self.groups:
-            for person in group.members:
-                if person.id == person_id:
-                    return group
-        return None
-    
-    def get_group_by_id(self, group_id: int) -> Optional[Group]:
-        """
-        Get the group object corresponding to the given ID.
-
-        Args:
-            group_id (int): The ID of the group to retrieve.
-
-        Returns:
-            Optional[Group]: The group object corresponding to the given ID, or None if not found.
-        """
-        for group in self.groups:
-            if group.id == group_id:
-                return group
-        return None
-    
-    def get_person_by_id(self, person_id: int) -> Optional[Person]:
-        """
-        Get the person object corresponding to the given ID.
-
-        Args:
-            person_id (int): The ID of the person to retrieve.
-
-        Returns:
-            Optional[Person]: The person object corresponding to the given ID, or None if not found.
-        """
-        for group in self.groups:
-            for person in group.members:
-                if person.id == person_id:
-                    return person
-        return None
-    
-    def print_groups(self):
-        for g in self.groups:
-            print(g)
