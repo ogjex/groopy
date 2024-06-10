@@ -202,9 +202,9 @@ class GroupingModule:
         """
         return sorted(people_list, key=lambda person: person.id)
     
-    def move_person_to_group(self, person: Person, source_group: Group, target_group: Group) -> bool:
+    def move_person_to_group(self, person_id: int, target_group_id: id) -> bool:
         """
-        Move a person from one group to another.
+        Move a person to another group.
 
         Args:
             person (Person): The person to move.
@@ -215,6 +215,10 @@ class GroupingModule:
             bool: True if the person was successfully moved, False otherwise.
         """
         # Check if the person is in the source group
+        source_group = self.find_group_of_person(person_id)
+        person = self.get_person_by_id(person_id)
+        target_group = self.get_group_by_id(target_group_id)
+
         if person in source_group.members:
             # Remove the person from the source group
             source_group.members.remove(person)
@@ -224,6 +228,22 @@ class GroupingModule:
         else:
             # Person not found in the source group
             return False
+
+    def find_group_of_person(self, person_id: int) -> Optional[Group]:
+        """
+        Find the group that contains the person with the specified ID.
+
+        Args:
+            person_id (int): The ID of the person to find.
+
+        Returns:
+            Optional[Group]: The group containing the person, or None if not found.
+        """
+        for group in self.groups:
+            for person in group.members:
+                if person.id == person_id:
+                    return group
+        return None
     
     def get_group_by_id(self, group_id: int) -> Optional[Group]:
         """
