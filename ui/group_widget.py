@@ -115,19 +115,11 @@ class GroupWidget(QWidget, QObject):
         index = self.participants_layout.indexOf(self._drag_target_indicator)
         if index is not None:
             self.participants_layout.insertWidget(index, widget)
-            person_id, person_name = widget.data
-            parent_group_id = None
-            parent = widget.parent()
-            while parent:
-                if isinstance(parent, GroupWidget):
-                    parent_group_id = parent.group_id
-                    break
-                parent = parent.parent()
-            if parent_group_id is not None:
-                self.on_order_changed.emit((parent_group_id, self.group_id, person_id))
+            participant_id = widget.data[0]
+            self.on_order_changed.emit((participant_id, self.group_id))
             widget.show()
             self.participants_layout.activate()
-        e.accept()    
+        e.accept()
         self.update_height()
 
     def _find_drop_location(self, e):
@@ -183,5 +175,5 @@ class GroupWidget(QWidget, QObject):
         return data
 
     @pyqtSlot(tuple)
-    def slot_participant_order_changed(self, data: Tuple[int, int, int]):
+    def slot_participant_order_changed(self, data: Tuple[int, int]):
         self.presenter.handle_participant_order_changed(data)
