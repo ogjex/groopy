@@ -12,6 +12,8 @@ from typing import Protocol, List, Tuple
 class Presenter(Protocol):
     def handle_print_group_widget_data(self, list: list):
         ...
+    def handle_participant_order_changed(self, data: tuple):
+        ...
 class GroupWidget(QWidget, QObject):
 
     on_order_changed = pyqtSignal(tuple)
