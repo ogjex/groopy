@@ -85,6 +85,9 @@ class MainWindow(QMainWindow):
     def update_details_window(self, data) -> None:
         self.details_window.set_field_values(data)
 
+    def print_group_widgets(self):
+        self.group_window.printGroupsData()
+
     # Define global Keypress events
     def keyPressEvent(self, event):
         key_actions = {
