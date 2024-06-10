@@ -47,6 +47,10 @@ class Presenter(object):
         self.group_editor.create_groups_from_data(groups_data)
         self.group_editor.save_groups_to_json(file_path)
 
+    def handle_import_group_widgets(self):
+        groups_data = self.group_editor.prep_groups_for_view()
+        self.main_window.import_group_widgets(groups_data)
+
     def handle_clear_group_layout(self):
         self.main_window.clear_group_widgets()
 

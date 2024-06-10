@@ -69,18 +69,20 @@ class GroupEditor:
         with open(filename, 'w') as json_file:
             json.dump(data, json_file, indent=4)
 
-    def create_groups_from_data(self, groups_data: List[tuple]):
+    def create_groups_from_data(self, groups_data: List[Tuple[int, str, List[Tuple[int, str]]]]):
         """
         Create Group objects from the provided data and add them to the editor.
         
         Args:
         - groups_data: A list of tuples where each tuple contains group data (ID, name, participants).
+          The participants are tuples containing (participant_id, participant_name).
         """
         self.groups.clear()  # Clear existing groups
         for group_id, group_name, participants in groups_data:
             group = Group(id=group_id, name=group_name)
             for participant in participants:
-                group.add_member(participant)
+                person = Person(id=participant[0], name=participant[1])  # Create Person objects with ID and name
+                group.add_member(person)
             self.groups.append(group)
             # Ensure next_id is always greater than the highest current ID
             self.next_id = max(self.next_id, group_id + 1)
@@ -144,6 +146,19 @@ class GroupEditor:
                     return person
         return None
     
+    def prep_groups_for_view(self) -> List[Tuple[int, str, List[Tuple[int, str]]]]:
+        """
+        Prepare groups data for the view.
+
+        Returns:
+        A list of tuples where each tuple contains group data (ID, name, participants).
+        """
+        groups_data = []
+        for group in self.groups:
+            participants = [(person.id, person.name) for person in group.members]
+            groups_data.append((group.id, group.name, participants))
+        return groups_data
+
     def create_group_data_sample(self):# -> List[Tuple[int, str, List[Tuple[int, str]]]]:
         """
         Create sample group data with group IDs and participant IDs.

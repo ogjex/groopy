@@ -42,8 +42,9 @@ def main():
 
     # can the groups_data also be used for grouping_module?
     group_editor.create_group_data_sample()
-    groups_data = group_editor.groups
-    main_window.import_group_widgets(groups_data)
+    presenter.handle_import_group_widgets()
+    #groups_data = group_editor.groups
+    #main_window.import_group_widgets(groups_data)
 
     sys.exit(app.exec())
 
