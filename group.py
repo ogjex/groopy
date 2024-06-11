@@ -12,7 +12,7 @@ class Group:
         self.members.append(person)
     
     def remove_member(self, person: Person):  
-        if person in self.members:
+        if person in self.members: 
             self.members.remove(person)
 
     def calculate_gender_balance(self, gender_threshold=0.4):

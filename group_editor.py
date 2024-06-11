@@ -2,10 +2,12 @@ import json
 from typing import List, Tuple, Optional
 
 from person import Person
+from person_editor import PersonEditor  
 from group import Group
 class GroupEditor:
-    def __init__(self):
+    def __init__(self, person_editor: PersonEditor):
         self.groups = []
+        self.person_editor = person_editor
         self.next_id = 1  # Initialize the next_id to 1
     
     def load_group(self, group_info):
@@ -45,30 +47,32 @@ class GroupEditor:
         """
         return [group.name for group in self.groups]
     
-    def save_groups_to_json(self, filename):
+    def save_groups_to_json(self, filename, persons_csv_path):
         """
         Write the list of groups to a JSON file.
-        
+
         Args:
         - filename: The filename for the JSON file.
+        - persons_csv_path: The path to the persons CSV file.
         """
         # Ensure that the list of groups is created before saving
         if not self.groups:
             raise ValueError("No groups to save.")
 
-        # Create a list of dictionaries containing group id, name, and participants
-        groups_data = [{"id": group.id, "name": group.name, "participants": group.members} for group in self.groups]
+        # Create a list of dictionaries containing group id, name, and participants (with IDs only)
+        groups_data = [{"id": group.id, "name": group.name, "participants": [person.id for person in group.members]} for group in self.groups]
 
-        # Create a dictionary to store the number of groups and the groups' data
+        # Create a dictionary to store the number of groups, groups' data, and the persons CSV path
         data = {
             "number_of_groups": len(groups_data),
-            "groups": {f"group{group['id']}": group for group in groups_data}
+            "groups": {f"group{group['id']}": group for group in groups_data},
+            "persons_csv_path": persons_csv_path  # Save path to persons CSV file
         }
 
         # Save the groups to JSON file
         with open(filename, 'w') as json_file:
             json.dump(data, json_file, indent=4)
-
+    
     def create_groups_from_data(self, groups_data: List[Tuple[int, str, List[Tuple[int, str]]]]):
         """
         Create Group objects from the provided data and add them to the editor.
@@ -78,11 +82,12 @@ class GroupEditor:
           The participants are tuples containing (participant_id, participant_name).
         """
         self.groups.clear()  # Clear existing groups
-        for group_id, group_name, participants in groups_data:
+        for group_id, group_name, participant_ids in groups_data:
             group = Group(id=group_id, name=group_name)
-            for participant in participants:
-                person = Person(id=participant[0], name=participant[1])  # Create Person objects with ID and name
-                group.add_member(person)
+            for person_id in participant_ids:
+                person = self.person_editor.get_person_by_id(person_id)  # Get Person object using PersonEditor
+                if person:
+                    group.add_member(person)
             self.groups.append(group)
             # Ensure next_id is always greater than the highest current ID
             self.next_id = max(self.next_id, group_id + 1)
@@ -93,8 +98,8 @@ class GroupEditor:
         target_group = self.get_group_by_id(target_group_id)
 
         if source_group and person and target_group:
-            source_group.remove_member(person)  # Modified to use Person object
-            target_group.add_member(person)  # Modified to use Person object
+            source_group.remove_member(person)
+            target_group.add_member(person)
             return True
         else:
             return False
