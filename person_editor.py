@@ -1,5 +1,5 @@
 import csv, random
-from typing import List
+from typing import List, Optional
 from person import Person
 
 class PersonEditor:
@@ -89,7 +89,7 @@ class PersonEditor:
             for person in persons:
                 row_data = {fieldname: getattr(person, fieldname.lower()) for fieldname in fieldnames}
                 csv_writer.writerow(row_data)
-    
+
     def _get_csv_fieldnames(self, with_id=True) -> List[str]:
         """
         Get the fieldnames structure of the CSV file.

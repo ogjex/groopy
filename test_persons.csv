@@ -1,0 +1,6 @@
+name,gender,education,experience,career_preference,desirables,undesirables
+Alice,Female,Engineering,3,Software Development,Bob;Charlie,Eve
+Bob,Male,Software Engineering,5,Software Engineering,Alice,Eve
+Charlie,Male,Mathematics,2,Finance,Alice,Eve
+Eve,Female,Engineering,4,Software Development,Alice,Bob
+Frank,Male,Mathematics,1,Software Development,,Alice

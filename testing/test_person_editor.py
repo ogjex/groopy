@@ -8,10 +8,14 @@ class TestPersonEditor(unittest.TestCase):
         self.editor = PersonEditor()
 
     def test_read_persons_from_csv(self):
-        # Assuming the CSV file exists and is correctly formatted
         persons = self.editor.read_persons_from_csv('test_persons.csv')
-        self.assertEqual(len(persons), 5)  # Assuming the test file has 5 persons
-
+        self.assertEqual(len(persons), 5)
+        self.assertEqual(persons[0].name, 'Alice')
+        self.assertEqual(persons[1].name, 'Bob')
+        self.assertEqual(persons[2].name, 'Charlie')
+        self.assertEqual(persons[3].name, 'Eve')
+        self.assertEqual(persons[4].name, 'Frank')
+    
     def test_shuffle_persons(self):
         persons = self.editor.create_persons_sample()
         shuffled = self.editor.shuffle_persons(persons)
