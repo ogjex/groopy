@@ -143,6 +143,7 @@ class PersonEditor:
         return None
 
     def create_persons_sample(self) -> List[Person]:
+        self.persons.clear()
         persons = [
             Person(id=self.next_id, name="Alice A.", gender="Female", education="Engineering", experience=3, career_preference="Software Development", desirables=["Bob", "Charlie"]),
             Person(id=self.next_id + 1, name="Bob", gender="Male", education="Software Engineering", experience=5, career_preference="Software Engineering", desirables=["Alice"]),

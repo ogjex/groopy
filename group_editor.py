@@ -174,24 +174,27 @@ class GroupEditor:
         # Ensure PersonEditor has created sample persons
         self.person_editor.create_persons_sample()
 
+        # Get the sample persons created by PersonEditor
+        persons = self.person_editor.get_persons()
+
         # Create groups using the sample persons created by PersonEditor
         groups_data = [
-            ("Group 1", [1, 2, 3]),
-            ("Group 2", [4, 5, 6]),
-            ("Group 3", [7, 8, 9]),
-            ("Group 4", [10, 11, 12]),
-            ("Group 5", [13, 14, 15]),
-            ("Group 6", [16, 17, 18]),
-            ("Group 7", [19, 20, 21]),
-            ("Group 8", [22, 23, 24]),
-            ("Group 9", [25, 26, 27]),
-            ("Group 10", [28, 29, 30])
+            ("Group 1", [person.id for person in persons[:3]]),  # Assign IDs from first 3 persons to Group 1
+            ("Group 2", [person.id for person in persons[3:6]]),  # Assign IDs from next 3 persons to Group 2
+            ("Group 3", [person.id for person in persons[6:9]]),  # Assign IDs from next 3 persons to Group 3
+            ("Group 4", [person.id for person in persons[9:12]]),  # Assign IDs from next 3 persons to Group 4
+            ("Group 5", [person.id for person in persons[12:15]]),  # Assign IDs from next 3 persons to Group 5
+            ("Group 6", [person.id for person in persons[15:18]]),  # Assign IDs from next 3 persons to Group 6
+            ("Group 7", [person.id for person in persons[18:21]]),  # Assign IDs from next 3 persons to Group 7
+            ("Group 8", [person.id for person in persons[21:24]]),  # Assign IDs from next 3 persons to Group 8
+            ("Group 9", [person.id for person in persons[24:27]]),  # Assign IDs from next 3 persons to Group 9
+            ("Group 10", [person.id for person in persons[27:]]),  # Assign IDs from remaining persons to Group 10
         ]
 
         # Add group IDs to each group data tuple
         groups_data_with_ids = [(i + 1, title, participants) for i, (title, participants) in enumerate(groups_data)]
         self.create_groups_from_data(groups_data_with_ids)
-
+    
     def print_groups(self):
         for g in self.groups:
             print(g)
