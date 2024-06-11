@@ -18,8 +18,9 @@ class PersonEditor:
         A list of Person objects.
         """
         persons = []
+        has_id = self.has_id_column(filename)
         with open(filename, 'r', newline='') as csv_file:
-            fieldnames = self._get_csv_fieldnames(with_id=False)  # Exclude 'id' from fieldnames for reading
+            fieldnames = self._get_csv_fieldnames(with_id=has_id)  # Include 'id' if CSV has 'id' column
             csv_reader = csv.DictReader(csv_file, fieldnames=fieldnames)
             next(csv_reader)  # Skip header row
             for row in csv_reader:
@@ -27,11 +28,32 @@ class PersonEditor:
                 person_data['experience'] = int(person_data['experience'])  # Convert 'experience' to integer
                 person_data['desirables'] = person_data['desirables'].split(';') if person_data['desirables'] else []
                 person_data['undesirables'] = person_data['undesirables'].split(';') if person_data['undesirables'] else []
-                person_data['id'] = self.next_id  # Assign the next_id
+                if has_id:
+                    person_data['id'] = int(person_data['id'])  # Convert 'id' to integer if present
+                else:
+                    person_data['id'] = self.next_id  # Assign the next_id if 'id' is not present
                 persons.append(Person(**person_data))
                 self.next_id += 1  # Increment next_id for the next person
         self.persons = persons  # Update the persons list in the editor
         return persons
+
+    def has_id_column(self, filename: str, delimiter=',') -> bool:
+        """
+        Determine if the CSV file has an 'id' column.
+
+        Args:
+        - filename: The filename of the CSV file.
+        - delimiter: The delimiter used in the CSV file. Default is ','.
+
+        Returns:
+        True if the CSV file has an 'id' column, False otherwise.
+        """
+        with open(filename, 'r', newline='') as csv_file:
+            dialect = csv.Sniffer().sniff(csv_file.read(1024), delimiters=delimiter)
+            csv_file.seek(0)
+            reader = csv.reader(csv_file, dialect)
+            headers = next(reader)
+            return 'id' in headers
 
     def shuffle_persons(self, persons: List[Person]) -> List[Person]:
         """
