@@ -11,10 +11,10 @@ def main():
     
     main_window = MainWindow()
     
-    group_editor = GroupEditor()
+    
     # Instantiate PersonEditor
     person_editor = PersonEditor()
-    
+    group_editor = GroupEditor(person_editor)
     group_sorter = GroupSorter()
 
     # Get the screen dimensions
