@@ -105,6 +105,21 @@ class PersonEditor:
             return ['id'] + base_fieldnames
         return base_fieldnames
     
+    def get_person_by_id(self, person_id: int) -> Optional[Person]:
+        """
+        Get the person object corresponding to the given ID.
+
+        Args:
+        - person_id: The ID of the person to retrieve.
+
+        Returns:
+        The Person object corresponding to the given ID, or None if not found.
+        """
+        for person in self.persons:
+            if person.id == person_id:
+                return person
+        return None
+
     def create_persons_sample(self) -> List[Person]:
         persons = [
             Person(id=self.next_id, name="Alice A.", gender="Female", education="Engineering", experience=3, career_preference="Software Development", desirables=["Bob", "Charlie"]),

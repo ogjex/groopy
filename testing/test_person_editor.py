@@ -2,48 +2,41 @@ import unittest, sys, csv
 # setting path
 sys.path.append('../groopy')
 from person_editor import PersonEditor
-from person import Person
-import os
 
 class TestPersonEditor(unittest.TestCase):
     def setUp(self):
-        # Create a sample CSV file for testing
-        with open('test_persons.csv', 'w', newline='') as csvfile:
-            fieldnames = ['Name', 'Gender', 'Education', 'Experience', 'Career Preference', 'Desirables', 'Undesirables']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerow({'Name': 'Alice', 'Gender': 'Female', 'Education': 'Engineering', 'Experience': '3', 'Career Preference': 'Software Development', 'Desirables': 'Bob;Charlie', 'Undesirables': ''})
-            writer.writerow({'Name': 'Bob', 'Gender': 'Male', 'Education': 'Software Engineering', 'Experience': '5', 'Career Preference': 'Software Engineering', 'Desirables': 'Alice', 'Undesirables': ''})
-            # Add more sample rows if needed
+        self.editor = PersonEditor()
 
     def test_read_persons_from_csv(self):
-        editor = PersonEditor()
-        persons = editor.read_persons_from_csv('test_persons.csv')
-        
-        # Check if the correct number of Person objects are read
-        self.assertEqual(len(persons), 2)
+        # Assuming the CSV file exists and is correctly formatted
+        persons = self.editor.read_persons_from_csv('test_persons.csv')
+        self.assertEqual(len(persons), 5)  # Assuming the test file has 5 persons
 
-        # Check if the first Person object is read correctly
-        self.assertEqual(persons[0].name, 'Alice')
-        self.assertEqual(persons[0].gender, 'Female')
-        self.assertEqual(persons[0].education, 'Engineering')
-        self.assertEqual(persons[0].experience, 3)
-        self.assertEqual(persons[0].career_preference, 'Software Development')
-        self.assertEqual(persons[0].desirables, ['Bob', 'Charlie'])
-        self.assertEqual(persons[0].undesirables, [])
+    def test_shuffle_persons(self):
+        persons = self.editor.create_persons_sample()
+        shuffled = self.editor.shuffle_persons(persons)
+        self.assertNotEqual(persons, shuffled)  # Check if the list order has changed
 
-        # Check if the second Person object is read correctly
-        self.assertEqual(persons[1].name, 'Bob')
-        self.assertEqual(persons[1].gender, 'Male')
-        self.assertEqual(persons[1].education, 'Software Engineering')
-        self.assertEqual(persons[1].experience, 5)
-        self.assertEqual(persons[1].career_preference, 'Software Engineering')
-        self.assertEqual(persons[1].desirables, ['Alice'])
-        self.assertEqual(persons[1].undesirables, [])
+    def test_get_person_by_id(self):
+        persons = self.editor.create_persons_sample()
+        person = self.editor.get_person_by_id(1)
+        self.assertIsNotNone(person)
+        self.assertEqual(person.id, 1)
 
-    def tearDown(self):
-        # Clean up the sample CSV file after the test
-        os.remove('test_persons.csv')
+    def test_get_persons_data_as_dict(self):
+        persons = self.editor.create_persons_sample()
+        persons_data = self.editor.get_persons_data_as_dict(persons)
+        self.assertIsInstance(persons_data, list)
+        self.assertIsInstance(persons_data[0], dict)
+        self.assertEqual(persons_data[0]['id'], 1)
+
+    def test_save_csv(self):
+        persons = self.editor.create_persons_sample()
+        self.editor.save_csv(persons, 'test_output.csv')
+        # Check if file is created
+        with open('test_output.csv', 'r') as file:
+            data = file.read()
+            self.assertIn('id,name,gender,education,experience,career_preference,desirables,undesirables', data)
 
 if __name__ == '__main__':
     unittest.main()

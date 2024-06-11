@@ -73,22 +73,25 @@ class GroupEditor:
         with open(filename, 'w') as json_file:
             json.dump(data, json_file, indent=4)
     
-    def create_groups_from_data(self, groups_data: List[Tuple[int, str, List[Tuple[int, str]]]]):
+    def create_groups_from_data(self, groups_data: List[Tuple[int, str, List[int]]]):
         """
         Create Group objects from the provided data and add them to the editor.
         
         Args:
         - groups_data: A list of tuples where each tuple contains group data (ID, name, participants).
-          The participants are tuples containing (participant_id, participant_name).
+          The participants are IDs referencing Person objects.
         """
         self.groups.clear()  # Clear existing groups
+
+        # Iterate over the provided group data to create and populate Group objects
         for group_id, group_name, participant_ids in groups_data:
-            group = Group(id=group_id, name=group_name)
+            group = Group(id=group_id, name=group_name)  # Create a new Group object
             for person_id in participant_ids:
                 person = self.person_editor.get_person_by_id(person_id)  # Get Person object using PersonEditor
                 if person:
-                    group.add_member(person)
-            self.groups.append(group)
+                    group.add_member(person)  # Add Person object to the Group
+            self.groups.append(group)  # Add the populated Group to the list of groups
+
             # Ensure next_id is always greater than the highest current ID
             self.next_id = max(self.next_id, group_id + 1)
 
@@ -164,27 +167,30 @@ class GroupEditor:
             groups_data.append((group.id, group.name, participants))
         return groups_data
 
-    def create_group_data_sample(self):# -> List[Tuple[int, str, List[Tuple[int, str]]]]:
+    def create_group_data_sample(self):
         """
-        Create sample group data with group IDs and participant IDs.
+        Create sample group data with group IDs and participant IDs using persons from PersonEditor.
         """
+        # Ensure PersonEditor has created sample persons
+        self.person_editor.create_persons_sample()
+
+        # Create groups using the sample persons created by PersonEditor
         groups_data = [
-            ("Group 1", [(1, "Alice"), (2, "Bob"), (3, "Charlie")]),
-            ("Group 2", [(4, "David"), (5, "Eve"), (6, "Frank")]),
-            ("Group 3", [(7, "Grace"), (8, "Henry"), (9, "Ivy")]),
-            ("Group 4", [(10, "Jack"), (11, "Kate"), (12, "Liam")]),
-            ("Group 5", [(13, "Mary"), (14, "Nathan"), (15, "Olivia")]),
-            ("Group 6", [(16, "Peter"), (17, "Queen"), (18, "Robert")]),
-            ("Group 7", [(19, "Henry"), (20, "Norton"), (21, "Moose")]),
-            ("Group 8", [(22, "Stan"), (23, "Chao"), (24, "Missy")]),
-            ("Group 9", [(25, "Helle"), (26, "Finn"), (27, "Dave")]),
-            ("Group 10", [(28, "John"), (29, "Jane"), (30, "Hunny")])
+            ("Group 1", [1, 2, 3]),
+            ("Group 2", [4, 5, 6]),
+            ("Group 3", [7, 8, 9]),
+            ("Group 4", [10, 11, 12]),
+            ("Group 5", [13, 14, 15]),
+            ("Group 6", [16, 17, 18]),
+            ("Group 7", [19, 20, 21]),
+            ("Group 8", [22, 23, 24]),
+            ("Group 9", [25, 26, 27]),
+            ("Group 10", [28, 29, 30])
         ]
 
         # Add group IDs to each group data tuple
         groups_data_with_ids = [(i + 1, title, participants) for i, (title, participants) in enumerate(groups_data)]
         self.create_groups_from_data(groups_data_with_ids)
-        #return groups_data_with_ids
 
     def print_groups(self):
         for g in self.groups:
