@@ -10,7 +10,7 @@ class Person:
         self.undesirables = undesirables if undesirables is not None else []
         
     def __str__(self):
-        return f"Name: {self.name}, Gender: {self.gender}, Education: {self.education}, Experience: {self.experience}, Career Preference: {self.career_preference}"
+        return f"ID: {self.id}, Name: {self.name}, Gender: {self.gender}, Education: {self.education}, Experience: {self.experience}, Career Preference: {self.career_preference}"
 
     def __eq__(self, other):
         return (self.name, self.gender, self.education, self.experience, self.career_preference) == \
