@@ -8,7 +8,13 @@ from collections import OrderedDict
 from typing import Protocol
 
 class Presenter(Protocol):
-    def handle_checkbox_order(self, checkboxes) -> None:
+    def handle_checkbox_order(self, checkboxes: list) -> None:
+        ...
+    def handle_min_group_size_changed(self, new_value: int) -> None:
+        ...
+    def handle_max_group_size_changed(self, new_value: int) -> None:
+        ...
+    def handle_max_total_groups_changed(self, new_value: int) -> None:
         ...
 class SortWindow(QWidget):
     def __init__(self, presenter: Presenter):
@@ -23,7 +29,7 @@ class SortWindow(QWidget):
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.sort_label)
 
-# Add dropdowns for minimum group size, maximum group size, and max total number of groups
+        # Add dropdowns for minimum group size, maximum group size, and max total number of groups
         self.minimum_group_size_input = QComboBox()
         self.maximum_group_size_input = QComboBox()
         self.max_total_groups_input = QComboBox()
@@ -37,6 +43,11 @@ class SortWindow(QWidget):
         self.layout.addWidget(self.maximum_group_size_input)
         self.layout.addWidget(QLabel("Max total number of groups:"))
         self.layout.addWidget(self.max_total_groups_input)
+
+         # Connect the combo boxes to their respective slots
+        self.minimum_group_size_input.currentIndexChanged.connect(self.on_min_group_size_changed)
+        self.maximum_group_size_input.currentIndexChanged.connect(self.on_max_group_size_changed)
+        self.max_total_groups_input.currentIndexChanged.connect(self.on_max_total_groups_changed)
 
         # Create the top checkbox to check/uncheck all
         self.top_checkbox = QCheckBox("Select All")
@@ -90,19 +101,19 @@ class SortWindow(QWidget):
         """
         Return the minimum group size entered by the user.
         """
-        return int(self.minimum_group_size_input.text())
+        return int(self.minimum_group_size_input.currentText())
 
     def get_max_group_size(self) -> int:
         """
         Return the maximum group size entered by the user.
         """
-        return int(self.maximum_group_size_input.text())
+        return int(self.maximum_group_size_input.currentText())
 
     def get_max_total_groups(self) -> int:
         """
         Return the maximum total number of groups entered by the user.
         """
-        return int(self.max_total_groups_input.text())
+        return int(self.max_total_groups_input.currentText())
 
     def sort_groups(self):
         # Send the ordered checkbox states to the Presenter
@@ -160,6 +171,18 @@ class SortWindow(QWidget):
     def set_checkboxes_test(self):
         checkboxes = [("Gender", "gender"), ("Education", "education"), ("Career Preference", "career_preference")]
         self.set_checkboxes(checkboxes)
+
+    def on_min_group_size_changed(self):
+        min_group_size = self.get_min_group_size()
+        self.presenter.handle_min_group_size_changed(min_group_size)
+
+    def on_max_group_size_changed(self):
+        max_group_size = self.get_max_group_size()
+        self.presenter.handle_max_group_size_changed(max_group_size)
+
+    def on_max_total_groups_changed(self):
+        max_total_groups = self.get_max_total_groups()
+        self.presenter.handle_max_total_groups_changed(max_total_groups)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

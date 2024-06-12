@@ -88,9 +88,19 @@ class Presenter(object):
         target_group_id = data[1]
         self.group_editor.move_person_to_group(participant_id, target_group_id)
         self.group_editor.print_groups()
-        #print(f"Received data: {data}")
-        #self.main_window.print_group_widgets()
 
+    def handle_min_group_size_changed(self, min_group_size: int) -> None:
+        print(f"Minimum group size changed to: {min_group_size}")
+        self.group_sorter.set_min_group_size(min_group_size)
+
+    def handle_max_group_size_changed(self, max_group_size: int) -> None:
+        print(f"Maximum group size changed to: {max_group_size}")
+        self.group_sorter.set_max_group_size(max_group_size)
+
+    def handle_max_total_groups_changed(self, max_total_groups: int) -> None:
+        print(f"Max total number of groups changed to: {max_total_groups}")
+        self.group_sorter.set_max_num_groups(max_total_groups)
+    
     def run(self) -> None:
         self.main_window.initUI(self)
         self.main_window.show()

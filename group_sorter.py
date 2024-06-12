@@ -3,13 +3,26 @@ from person import Person
 from group import Group
 
 class GroupSorter:
-    def __init__(self):
-        ...
-    
-    def init_group_sort(self, min_group_size, max_group_size, max_groups_per_person, max_num_groups):
+    def __init__(self, min_group_size=2, max_group_size=5, max_groups_per_person=1, max_num_groups=10):
+        # Initialize default values
         self.min_group_size = min_group_size
         self.max_group_size = max_group_size
         self.max_groups_per_person = max_groups_per_person
+        self.max_num_groups = max_num_groups
+        self.people = []
+        self.next_group_id = 1
+        self.current_group_index = 0
+
+    def set_min_group_size(self, min_group_size: int):
+        self.min_group_size = min_group_size
+
+    def set_max_group_size(self, max_group_size: int):
+        self.max_group_size = max_group_size
+
+    def set_max_groups_per_person(self, max_groups_per_person: int):
+        self.max_groups_per_person = max_groups_per_person
+
+    def set_max_num_groups(self, max_num_groups: int):
         self.max_num_groups = max_num_groups
 
     def set_people_to_sort(self, people):
