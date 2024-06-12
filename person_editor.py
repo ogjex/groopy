@@ -5,7 +5,7 @@ from person import Person
 class PersonEditor:
     def __init__(self):
         self.persons = []
-        self.next_id = 1  # Initialize the next_id to 1
+        self.reset_id()
 
     def read_persons_from_csv(self, filename: str) -> List[Person]:
         """
@@ -18,6 +18,7 @@ class PersonEditor:
         A list of Person objects.
         """
         persons = []
+        self.reset_id()
         has_id = self.has_id_column(filename)
         with open(filename, 'r', newline='') as csv_file:
             fieldnames = self._get_csv_fieldnames(with_id=has_id)  # Include 'id' if CSV has 'id' column
@@ -142,8 +143,15 @@ class PersonEditor:
                 return person
         return None
 
+    def reset_id(self) -> None:
+        """
+        Reset the next_id attribute to 1.
+        """
+        self.next_id = 1
+
     def create_persons_sample(self) -> List[Person]:
         self.persons.clear()
+        self.reset_id()
         persons = [
             Person(id=self.next_id, name="Alice A.", gender="Female", education="Engineering", experience=3, career_preference="Software Development", desirables=["Bob", "Charlie"]),
             Person(id=self.next_id + 1, name="Bob", gender="Male", education="Software Engineering", experience=5, career_preference="Software Engineering", desirables=["Alice"]),
