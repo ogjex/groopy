@@ -1,4 +1,4 @@
-import unittest, sys, csv
+import unittest, sys
 # setting path
 sys.path.append('../groopy')
 from person_editor import PersonEditor

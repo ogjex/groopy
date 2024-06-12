@@ -111,8 +111,7 @@ class Presenter(object):
 
     def run(self) -> None:
         # Load preferences
-        preferences_file = "preferences.json"
-        self.handler.load_from_file(preferences_file)
+        self.handler.load_preferences()
 
         # Set group sorter values based on loaded preferences
         self.group_sorter.set_min_group_size(self.handler.min_group_size)

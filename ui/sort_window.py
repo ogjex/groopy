@@ -16,6 +16,12 @@ class Presenter(Protocol):
         ...
     def handle_max_total_groups_changed(self, new_value: int) -> None:
         ...
+    def load_initial_min_group_size_value(self) -> int:
+        ...
+    def load_initial_max_group_size_value(self) -> int:
+        ...
+    def load_initial_max_total_groups_values(self) -> int:
+        ...
 class SortWindow(QWidget):
     def __init__(self, presenter: Presenter):
         super().__init__()
@@ -43,6 +49,9 @@ class SortWindow(QWidget):
         self.layout.addWidget(self.maximum_group_size_input)
         self.layout.addWidget(QLabel("Max total number of groups:"))
         self.layout.addWidget(self.max_total_groups_input)
+
+        # Load initial values from presenter
+        self.set_combobox_values()
 
          # Connect the combo boxes to their respective slots
         self.minimum_group_size_input.currentIndexChanged.connect(self.on_min_group_size_changed)
@@ -82,6 +91,15 @@ class SortWindow(QWidget):
 
         # Set the maximum height based on the content
         self.adjust_max_height()
+
+    def set_combobox_values(self):
+        min_group_size = self.presenter.load_initial_min_group_size_value()
+        max_group_size = self.presenter.load_initial_max_group_size_value()
+        max_total_groups = self.presenter.load_initial_max_total_groups_value()
+
+        self.minimum_group_size_input.setCurrentIndex(min_group_size - 1)
+        self.maximum_group_size_input.setCurrentIndex(max_group_size - 1)
+        self.max_total_groups_input.setCurrentIndex(max_total_groups - 1)
 
     def toggle_all_checkboxes(self):
         if self.top_checkbox.isChecked():
