@@ -3,6 +3,7 @@ from typing import Protocol
 from group_editor import GroupEditor
 from person_editor import PersonEditor
 from group_sorter import GroupSorter
+from workspace_preference_handler import WorkspacePreferenceHandler
 
 class MainWindow(Protocol):
     def initUI(self, presenter: Presenter) -> None:
@@ -18,11 +19,12 @@ class MainWindow(Protocol):
     def clear_group_widgets() -> None:
         ...
 class Presenter(object):
-    def __init__(self, group_sorter: GroupSorter, group_editor: GroupEditor, person_editor: PersonEditor, main_window: MainWindow):
+    def __init__(self, group_sorter: GroupSorter, group_editor: GroupEditor, person_editor: PersonEditor, main_window: MainWindow, handler: WorkspacePreferenceHandler):
         self.group_sorter = group_sorter
         self.group_editor = group_editor
         self.person_editor = person_editor
         self.main_window = main_window
+        self.handler = handler
         self.group_sort_methods = {
             "Option 1": self.method1,
             "Option 2": self.method2,
@@ -90,17 +92,34 @@ class Presenter(object):
         self.group_editor.print_groups()
 
     def handle_min_group_size_changed(self, min_group_size: int) -> None:
-        print(f"Minimum group size changed to: {min_group_size}")
         self.group_sorter.set_min_group_size(min_group_size)
 
     def handle_max_group_size_changed(self, max_group_size: int) -> None:
-        print(f"Maximum group size changed to: {max_group_size}")
         self.group_sorter.set_max_group_size(max_group_size)
 
     def handle_max_total_groups_changed(self, max_total_groups: int) -> None:
-        print(f"Max total number of groups changed to: {max_total_groups}")
         self.group_sorter.set_max_num_groups(max_total_groups)
     
+    def load_initial_min_group_size_value(self) -> int:
+        return self.handler.get_min_group_size()
+
+    def load_initial_max_group_size_value(self) -> int:
+        return self.handler.get_max_group_size()
+    
+    def load_initial_max_total_groups_values(self) -> int:
+        return self.handler.get_max_num_groups()
+
     def run(self) -> None:
+        # Load preferences
+        preferences_file = "preferences.json"
+        self.handler.load_from_file(preferences_file)
+
+        # Set group sorter values based on loaded preferences
+        self.group_sorter.set_min_group_size(self.handler.min_group_size)
+        self.group_sorter.set_max_group_size(self.handler.max_group_size)
+        self.group_sorter.set_max_groups_per_person(self.handler.max_groups_per_person)
+        self.group_sorter.set_max_num_groups(self.handler.max_num_groups)
+
+        # Initialize and show the main window
         self.main_window.initUI(self)
         self.main_window.show()
