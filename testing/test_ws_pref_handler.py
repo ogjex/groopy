@@ -1,5 +1,7 @@
-import unittest
-import os
+import unittest, os, sys
+
+# setting path
+sys.path.append('../groopy')
 from workspace_preference_handler import WorkspacePreferenceHandler
 
 class TestWorkspacePreferenceHandler(unittest.TestCase):
