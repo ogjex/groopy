@@ -4,10 +4,10 @@ class WorkspacePreferenceHandler:
     def __init__(self, preference_file="workspace_preferences.json"):
         self.preference_file = preference_file
         self.workspace_title = ""
-        self.min_group_size = 1
-        self.max_group_size = 1
+        self.min_group_size = 2
+        self.max_group_size = 5
         self.max_groups_per_person = 1
-        self.max_num_groups = 1
+        self.max_num_groups = 10
         self.persons_list = ""
         self.group_layout = ""
         self.load_preferences()

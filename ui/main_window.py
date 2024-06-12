@@ -84,6 +84,10 @@ class MainWindow(QMainWindow):
     # Define functions for details_window
     def update_details_window(self, data) -> None:
         self.details_window.set_field_values(data)
+    
+    # Define functions for sort_window    
+    def update_sort_window_values(self) -> None:
+        self.sort_window.set_combobox_values()
 
     def print_group_widgets(self):
         self.group_window.printGroupsData()

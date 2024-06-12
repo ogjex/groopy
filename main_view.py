@@ -4,6 +4,7 @@ from ui.main_window import MainWindow
 from group_editor import GroupEditor
 from person_editor import PersonEditor
 from group_sorter import GroupSorter
+from workspace_preference_handler import WorkspacePreferenceHandler
 from presenter import Presenter
 
 def main():
@@ -16,6 +17,7 @@ def main():
     person_editor = PersonEditor()
     group_editor = GroupEditor(person_editor)
     group_sorter = GroupSorter()
+    ws_handler = WorkspacePreferenceHandler()    
 
     # Get the screen dimensions
     screen = app.primaryScreen()
@@ -31,7 +33,7 @@ def main():
     # Move the window to the desired position
     main_window.move(x_coordinate, y_coordinate)    
 
-    presenter = Presenter(group_sorter, group_editor, person_editor, main_window)
+    presenter = Presenter(group_sorter, group_editor, person_editor, main_window, ws_handler)
     
     # Prepare sample data as dictionaries for details window
     sample_persons = person_editor.create_persons_sample()

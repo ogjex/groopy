@@ -16,8 +16,10 @@ class MainWindow(Protocol):
         ...
     def update_details_window(self, data) -> None:
         ...
-    def clear_group_widgets() -> None:
+    def clear_group_widgets(self) -> None:
         ...
+    def update_sort_window_values(self) -> None:
+        ...        
 class Presenter(object):
     def __init__(self, group_sorter: GroupSorter, group_editor: GroupEditor, person_editor: PersonEditor, main_window: MainWindow, handler: WorkspacePreferenceHandler):
         self.group_sorter = group_sorter
@@ -106,12 +108,19 @@ class Presenter(object):
     def load_initial_max_group_size_value(self) -> int:
         return self.handler.get_max_group_size()
     
-    def load_initial_max_total_groups_values(self) -> int:
+    def load_initial_max_total_groups_value(self) -> int:
         return self.handler.get_max_num_groups()
+    
+    def update_sort_window_values(self):
+        self.main_window.update_sort_window_values()
 
     def run(self) -> None:
         # Load preferences
         self.handler.load_preferences()
+
+        # Initialize and show the main window
+        self.main_window.initUI(self)
+        self.main_window.show()
 
         # Set group sorter values based on loaded preferences
         self.group_sorter.set_min_group_size(self.handler.min_group_size)
@@ -119,6 +128,3 @@ class Presenter(object):
         self.group_sorter.set_max_groups_per_person(self.handler.max_groups_per_person)
         self.group_sorter.set_max_num_groups(self.handler.max_num_groups)
 
-        # Initialize and show the main window
-        self.main_window.initUI(self)
-        self.main_window.show()

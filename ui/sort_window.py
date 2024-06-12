@@ -20,7 +20,7 @@ class Presenter(Protocol):
         ...
     def load_initial_max_group_size_value(self) -> int:
         ...
-    def load_initial_max_total_groups_values(self) -> int:
+    def load_initial_max_total_groups_value(self) -> int:
         ...
 class SortWindow(QWidget):
     def __init__(self, presenter: Presenter):
@@ -53,7 +53,7 @@ class SortWindow(QWidget):
         # Load initial values from presenter
         self.set_combobox_values()
 
-         # Connect the combo boxes to their respective slots
+        # Connect the combo boxes to their respective slots
         self.minimum_group_size_input.currentIndexChanged.connect(self.on_min_group_size_changed)
         self.maximum_group_size_input.currentIndexChanged.connect(self.on_max_group_size_changed)
         self.max_total_groups_input.currentIndexChanged.connect(self.on_max_total_groups_changed)
