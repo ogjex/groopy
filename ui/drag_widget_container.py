@@ -10,37 +10,33 @@ from ui.drag_widget import DragTargetIndicator
 class DragWidgetContainer(QWidget, QObject):
     on_order_changed = pyqtSignal(tuple)
 
-    def __init__(self, title: str, parent=None):
+    def __init__(self, title:str, parent=None):
         super().__init__(parent)
         self.title = title
         self.setAcceptDrops(True)
         self.orientation = Qt.Orientation.Vertical
-        self._drag_target_indicator = DragTargetIndicator()
-        self.layout = QVBoxLayout(self)
-        self.layout.addWidget(self._drag_target_indicator)
-        self._drag_target_indicator.hide()
 
     def init_ui(self):
-        layout = QVBoxLayout()
+        self.layout = QVBoxLayout()
         
         # Create a title label
         self.title_label = QLabel(self.title)
         self.title_label.setMaximumHeight(50)
-        layout.addWidget(self.title_label)
+        self.layout.addWidget(self.title_label)
         
         # Create a frame for participants
         self.dragwidget_frame = QFrame()
         self.dragwidget_frame.setFrameShape(QFrame.Shape.StyledPanel)
         self.dragwidget_frame.setFrameShadow(QFrame.Shadow.Sunken)  # Set the shadow of the frame
         self.dragwidget_layout = QVBoxLayout(self.dragwidget_frame)
-        layout.addWidget(self.dragwidget_frame)
+        self.layout.addWidget(self.dragwidget_frame)
 
         self.orientation=Qt.Orientation.Vertical
         self._drag_target_indicator = DragTargetIndicator()
         self.dragwidget_layout.addWidget(self._drag_target_indicator)
         self._drag_target_indicator.hide()
         
-        self.setLayout(layout)
+        self.setLayout(self.layout)
         
         # Show participants initially
         self.dragwidget_frame.show()
@@ -79,7 +75,7 @@ class DragWidgetContainer(QWidget, QObject):
         self._drag_target_indicator.hide()
         index = self.layout.indexOf(self._drag_target_indicator)
         if index is not None:
-            self.layout.insertWidget(index, widget)
+            self.dragwidget_layout.insertWidget(index, widget)
             self.emit_order_changed(widget)
             widget.show()
             self.layout.activate()
