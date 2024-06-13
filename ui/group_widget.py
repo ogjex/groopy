@@ -1,70 +1,37 @@
-from PyQt6.QtCore import Qt, QObject, pyqtSignal, pyqtSlot
+from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtWidgets import (
-    QLabel,
     QFrame,
-    QVBoxLayout,
     QWidget,
 )
-from ui.drag_widget import DragLabel, DragTargetIndicator
+from PyQt6.QtGui import (
+    QDropEvent, 
+)
+from ui.drag_widget_container import DragWidgetContainer
+from ui.drag_widget import DragLabel
 
 from typing import Protocol, List, Tuple
 
 class Presenter(Protocol):
     def handle_print_group_widget_data(self, list: list):
         ...
-    def handle_participant_order_changed(self, data: tuple):
+    def handle_participant_order_changed(self, tuple):
         ...
-class GroupWidget(QWidget, QObject):
-
-    on_order_changed = pyqtSignal(tuple)
+class GroupWidget(DragWidgetContainer):
 
     def __init__(self, group_id: int, title:str, participants: List[Tuple[int, str]], presenter: Presenter, parent=None):
-        super().__init__(parent)
+        super().__init__(title, parent)
         self.group_id = group_id
-        self.title = title
         self.participants = participants
         self.presenter = presenter
         self.expanded = True
-        self.initUI()
+        self.init_ui()
         self.on_order_changed.connect(self.slot_participant_order_changed)
-
-    def initUI(self):
-        layout = QVBoxLayout()
         
-        # Create a title label
-        self.title_label = QLabel(self.title)
-        self.title_label.setMaximumHeight(50)
-        layout.addWidget(self.title_label)
-        
-        # Create a frame for participants
-        self.participants_frame = QFrame()
-        self.participants_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.participants_frame.setFrameShadow(QFrame.Shadow.Sunken)  # Set the shadow of the frame
-        self.participants_layout = QVBoxLayout(self.participants_frame)
-        layout.addWidget(self.participants_frame)
-
-        self.orientation=Qt.Orientation.Vertical
-        self._drag_target_indicator = DragTargetIndicator()
-        self.participants_layout.addWidget(self._drag_target_indicator)
-        self._drag_target_indicator.hide()
-        
-        self.setLayout(layout)
-        
-        # Hide participants initially
-        self.participants_frame.show()
-        
-        # Populate participants
-        self.populateParticipants()
-        self.update_height()
-        
-        # Enable drag and drop
-        self.setAcceptDrops(True)
-        
-    def populateParticipants(self):
+    def populate_drag_widgets(self):
         for person_id, person_name in self.participants:
-           self.addParticipant(person_id, person_name) 
+           self.add_participant(person_id, person_name) 
 
-    def addParticipant(self, person_id: int, person_name: str):
+    def add_participant(self, person_id: int, person_name: str):
         label = DragLabel(person_id, person_name)
         label.setFrameStyle(QFrame.Shape.Panel | QFrame.Shadow.Sunken)
         label.setMargin(2)
@@ -74,18 +41,15 @@ class GroupWidget(QWidget, QObject):
         label.setContentsMargins(5, 0, 5, 0)
         label.setAutoFillBackground(True)
         label.data = (person_id, person_name)
-        self.participants_layout.addWidget(label)
-
-    def update_height(self):
-        self.setFixedHeight(self.calculate_height())
+        self.dragwidget_layout.addWidget(label)
 
     def calculate_height(self):
         # Calculate the new height based on the number of participants
-        new_height = self.title_label.height() + self.participants_frame.contentsMargins().top() + self.participants_frame.contentsMargins().bottom()
-        for i in range(self.participants_layout.count()):
-            widget = self.participants_layout.itemAt(i).widget()
+        new_height = self.title_label.height() + self.dragwidget_frame.contentsMargins().top() + self.dragwidget_frame.contentsMargins().bottom()
+        for i in range(self.dragwidget_layout.count()):
+            widget = self.dragwidget_layout.itemAt(i).widget()
             if widget and widget != self._drag_target_indicator:
-                new_height += widget.sizeHint().height() + self.participants_layout.spacing()
+                new_height += widget.sizeHint().height() + self.dragwidget_layout.spacing()
         
         # Ensure the height is at least double the sum of title label height and drag target indicator height
         min_height = self.title_label.height() + self._drag_target_indicator.sizeHint().height() * 4
@@ -93,69 +57,15 @@ class GroupWidget(QWidget, QObject):
         
         return new_height
 
-    def dragEnterEvent(self, e):
-        e.accept()
-    
-    def dragMoveEvent(self, e):
-        # Find the correct location of the drop target, so we can move it there.
-        index = self._find_drop_location(e)
-        if index is not None:
-            # Inserting moves the item if its alreaady in the layout.
-            self.participants_layout.insertWidget(index, self._drag_target_indicator)
-            # Hide the item being dragged.
-            e.source().hide()
-            # Show the target.
-            self._drag_target_indicator.show()
-            self.update_height()
-        e.accept()
-
-    def dropEvent(self, e):
-        widget = e.source()
-        self._drag_target_indicator.hide()
-        index = self.participants_layout.indexOf(self._drag_target_indicator)
-        if index is not None:
-            self.participants_layout.insertWidget(index, widget)
-            participant_id = widget.data[0]
-            self.on_order_changed.emit((participant_id, self.group_id))
-            widget.show()
-            self.participants_layout.activate()
-        e.accept()
-        self.update_height()
-
-    def _find_drop_location(self, e):
-        pos = e.position()
-        spacing = self.participants_layout.spacing() / 2
-
-        for n in range(self.participants_layout.count()):
-            # Get the widget at each index in turn.
-            w = self.participants_layout.itemAt(n).widget()
-
-            if self.orientation == Qt.Orientation.Vertical:
-                # Drag drop vertically.
-                drop_here = (
-                    pos.y() >= w.y() - spacing
-                    and pos.y() <= w.y() + w.size().height() + spacing
-                )
-            else:
-                # Drag drop horizontally.
-                drop_here = (
-                    pos.x() >= w.x() - spacing
-                    and pos.x() <= w.x() + w.size().width() + spacing
-                )
-
-            if drop_here:
-                # Drop over this target.
-                break
-
-        return n
-
-    def dragLeaveEvent(self, e):
-        self._drag_target_indicator.hide()
-        self.update_height()
-        e.accept()
+    def emit_order_changed(self, widget):
+        """
+        Override the emit_order_changed method to customize the signal data.
+        """
+        person_id, person_name = widget.data
+        self.on_order_changed.emit((widget.parent().group_id, self.group_id, person_id))
 
     def add_item(self, item):
-        self.participants_layout.addWidget(item)
+        self.dragwidget_layout.addWidget(item)
         self.update_height()
 
     def get_group_data(self) -> list:
@@ -166,14 +76,14 @@ class GroupWidget(QWidget, QObject):
 
     def get_item_data(self) -> list:
         data = []
-        for n in range(self.participants_layout.count()):
+        for n in range(self.dragwidget_layout.count()):
             # Get the widget at each index in turn.
-            w = self.participants_layout.itemAt(n).widget()
+            w = self.dragwidget_layout.itemAt(n).widget()
             if w != self._drag_target_indicator:
                 # The target indicator has no data.
                 data.append((w.person_id, w.person_name))
         return data
 
     @pyqtSlot(tuple)
-    def slot_participant_order_changed(self, data: Tuple[int, int]):
+    def slot_participant_order_changed(self, data: Tuple[int, int, int]):
         self.presenter.handle_participant_order_changed(data)
