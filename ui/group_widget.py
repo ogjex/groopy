@@ -1,11 +1,5 @@
 from PyQt6.QtCore import Qt, pyqtSlot
-from PyQt6.QtWidgets import (
-    QFrame,
-    QWidget,
-)
-from PyQt6.QtGui import (
-    QDropEvent, 
-)
+from PyQt6.QtWidgets import QFrame
 from ui.drag_widget_container import DragWidgetContainer
 from ui.drag_widget import DragLabel
 

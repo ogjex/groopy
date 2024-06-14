@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt
 from collections import OrderedDict
 
 from typing import Protocol
+from ui.drag_widget import DragCheckBox
 
 class Presenter(Protocol):
     def handle_checkbox_order(self, checkboxes: list) -> None:
@@ -60,7 +61,7 @@ class SortWindow(QWidget):
 
         # Create the top checkbox to check/uncheck all
         self.top_checkbox = QCheckBox("Select All")
-        self.top_checkbox.stateChanged.connect(self.toggle_all_checkboxes)  # Correct connection
+        self.top_checkbox.stateChanged.connect(self.toggle_all_checkboxes)
         self.layout.addWidget(self.top_checkbox)
 
         # Create the QListWidget to hold the checkboxes
@@ -83,8 +84,8 @@ class SortWindow(QWidget):
         self.layout.addWidget(self.clear_button)
 
         # Connect the buttons to their functions
-        self.sort_button.clicked.connect(self.set_checkboxes_test)
-        self.clear_button.clicked.connect(self.clear_checkboxes)
+        #self.sort_button.clicked.connect(self.set_checkboxes_test)
+        #self.clear_button.clicked.connect(self.clear_checkboxes)
 
         # Set the layout
         self.setLayout(self.layout)
@@ -92,6 +93,23 @@ class SortWindow(QWidget):
         # Set the maximum height based on the content
         self.adjust_max_height()
 
+    def adjust_max_height(self):
+        # Calculate the required height
+        total_height = sum(widget.sizeHint().height() for widget in [
+            self.minimum_group_size_input,
+            self.maximum_group_size_input,
+            self.max_total_groups_input,
+            self.top_checkbox,
+            self.sort_button,
+            self.clear_button,
+        ])
+        total_height += sum(checkbox.sizeHint().height() for checkbox in self.checkbox_dict.values())
+
+        total_height += 180  # Adjust this value as needed
+
+        # Set the maximum height
+        self.setMaximumHeight(total_height)
+        
     def set_combobox_values(self):
         min_group_size = self.presenter.load_initial_min_group_size_value()
         max_group_size = self.presenter.load_initial_max_group_size_value()
@@ -115,6 +133,12 @@ class SortWindow(QWidget):
         # Return a list of tuples with checkbox labels and their checked states
         return [(label, checkbox.isChecked()) for label, (checkbox, _) in self.checkbox_dict.items()]
 
+    def sort_groups(self):
+        # Send the ordered checkbox states to the Presenter
+        ordered_checkbox_states = self.get_checkbox_values()
+        self.presenter.process_checkbox_order(ordered_checkbox_states)
+
+
     def get_min_group_size(self) -> int:
         """
         Return the minimum group size entered by the user.
@@ -132,63 +156,6 @@ class SortWindow(QWidget):
         Return the maximum total number of groups entered by the user.
         """
         return int(self.max_total_groups_input.currentText())
-
-    def sort_groups(self):
-        # Send the ordered checkbox states to the Presenter
-        ordered_checkbox_states = self.get_checkbox_values()
-        self.presenter.process_checkbox_order(ordered_checkbox_states)
-
-    def adjust_max_height(self):
-        # Calculate the required height
-        total_height = sum(widget.sizeHint().height() for widget in [
-            self.minimum_group_size_input,
-            self.maximum_group_size_input,
-            self.max_total_groups_input,
-            self.top_checkbox,
-            self.sort_button,
-            self.clear_button,
-        ])
-        total_height += sum(checkbox.sizeHint().height() for checkbox in self.checkbox_dict.values())
-
-        total_height += 180  # Adjust this value as needed
-
-        # Set the maximum height
-        self.setMaximumHeight(total_height)
-
-    def add_checkbox(self, label: str, var_name: str):
-        if label in self.checkbox_dict:
-            return
-        checkbox = QCheckBox(label)
-        list_item = QListWidgetItem(self.checkbox_list)
-        self.checkbox_list.setItemWidget(list_item, checkbox)
-        self.checkbox_dict[var_name] = checkbox
-        self.adjust_max_height()
-
-    def remove_checkbox(self, var_name: str):
-        if var_name not in self.checkbox_dict:
-            return
-        checkbox = self.checkbox_dict.pop(var_name)
-        for i in range(self.checkbox_list.count()):
-            item = self.checkbox_list.item(i)
-            widget = self.checkbox_list.itemWidget(item)
-            if widget == checkbox:
-                self.checkbox_list.takeItem(i)
-                break
-        self.adjust_max_height()
-
-    def clear_checkboxes(self):
-        self.checkbox_dict.clear()
-        self.checkbox_list.clear()
-        self.adjust_max_height()
-
-    def set_checkboxes(self, checkboxes: list):
-        self.clear_checkboxes()
-        for label, var_name in checkboxes:
-            self.add_checkbox(label, var_name)
-
-    def set_checkboxes_test(self):
-        checkboxes = [("Gender", "gender"), ("Education", "education"), ("Career Preference", "career_preference")]
-        self.set_checkboxes(checkboxes)
 
     def on_min_group_size_changed(self):
         min_group_size = self.get_min_group_size()
