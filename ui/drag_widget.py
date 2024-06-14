@@ -36,7 +36,9 @@ class DragLabel(QLabel, DragWidget):
     
     def set_data(self, data):
         self.data = data
-
+    
+    def get_person_id(self) -> int:
+        return self.person_id
 class DragCheckbox(QCheckBox, DragWidget):
     def __init__(self, value: str, parent=None):
         QCheckBox.__init__(self, value, parent)
