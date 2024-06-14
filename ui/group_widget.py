@@ -19,8 +19,7 @@ class Presenter(Protocol):
 class GroupWidget(DragWidgetContainer):
 
     def __init__(self, group_id: int, title:str, participants: List[Tuple[int, str]], presenter: Presenter, parent=None):
-        super().__init__(title, parent)
-        self.group_id = group_id
+        super().__init__(title, group_id, parent)
         self.participants = participants
         self.presenter = presenter
         self.expanded = True
@@ -57,13 +56,13 @@ class GroupWidget(DragWidgetContainer):
         
         return new_height
 
-    def emit_order_changed(self, widget):
+    def emit_order_changed(self, src_widget: DragLabel, target_widget_id: int):
         """
         Override the emit_order_changed method to customize the signal data.
         """
-        person_id, person_name = widget.data
-        self.on_order_changed.emit((widget.parent().group_id, self.group_id, person_id))
-
+        participant_id = src_widget.get_person_id()
+        self.on_order_changed.emit((participant_id, target_widget_id))
+    
     def add_item(self, item):
         self.dragwidget_layout.addWidget(item)
         self.update_height()
@@ -72,7 +71,7 @@ class GroupWidget(DragWidgetContainer):
         """
         Get the data of this group widget.
         """
-        return [self.group_id, self.title, self.get_item_data()]
+        return [self.id, self.title, self.get_item_data()]
 
     def get_item_data(self) -> list:
         data = []
