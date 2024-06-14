@@ -10,9 +10,10 @@ from ui.drag_widget import DragTargetIndicator
 class DragWidgetContainer(QWidget, QObject):
     on_order_changed = pyqtSignal(tuple)
 
-    def __init__(self, title:str, parent=None):
+    def __init__(self, title: str, id: int, parent=None):
         super().__init__(parent)
         self.title = title
+        self.id = id
         self.setAcceptDrops(True)
         self.orientation = Qt.Orientation.Vertical
 
@@ -73,20 +74,21 @@ class DragWidgetContainer(QWidget, QObject):
     def dropEvent(self, e: QDropEvent):
         widget = e.source()
         self._drag_target_indicator.hide()
-        index = self.layout.indexOf(self._drag_target_indicator)
+        index = self.dragwidget_layout.indexOf(self._drag_target_indicator)
         if index is not None:
             self.dragwidget_layout.insertWidget(index, widget)
-            self.emit_order_changed(widget)
+            self.emit_order_changed(widget, self.id)
             widget.show()
-            self.layout.activate()
+            self.dragwidget_layout.activate()
         e.accept()
+        self.update_height()
 
-    def emit_order_changed(self, widget):
+    def emit_order_changed(self, src_widget:QWidget, target_widget_id:int):
         """
-        This method emits the on_order_changed signal. It can be overridden by subclasses
+        This method emits the on_order_changed signal. It must be overridden by subclasses
         to customize the signal data.
         """
-        self.on_order_changed.emit((self, widget))
+        pass
 
     def dragLeaveEvent(self, e: QDragLeaveEvent):
         self._drag_target_indicator.hide()
