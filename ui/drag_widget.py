@@ -59,14 +59,11 @@ class DragSortWidget(DragWidget):
         self.radio2 = QRadioButton("Option 2")
         
         # Layouts
-        h_layout = QHBoxLayout()
-        h_layout.addWidget(self.radio1)
-        h_layout.addWidget(self.radio2)
-        
-        main_layout = QVBoxLayout()
+        main_layout = QHBoxLayout()
         main_layout.addWidget(self.checkbox)
         main_layout.addWidget(self.label)
-        main_layout.addLayout(h_layout)
+        main_layout.addWidget(self.radio1)
+        main_layout.addWidget(self.radio2)     
         
         self.setLayout(main_layout)
     

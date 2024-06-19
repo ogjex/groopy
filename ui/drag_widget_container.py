@@ -25,7 +25,7 @@ class DragWidgetContainer(QWidget, QObject):
         self.title_label.setMaximumHeight(50)
         self.layout.addWidget(self.title_label)
         
-        # Create a frame for participants
+        # Create a frame for dragwidgets
         self.dragwidget_frame = QFrame()
         self.dragwidget_frame.setFrameShape(QFrame.Shape.StyledPanel)
         self.dragwidget_frame.setFrameShadow(QFrame.Shadow.Sunken)  # Set the shadow of the frame
@@ -36,13 +36,8 @@ class DragWidgetContainer(QWidget, QObject):
                 
         self.setLayout(self.layout)
         
-        # Show participants initially
+        # Show dragwidgets initially
         self.dragwidget_frame.show()
-        
-        # Populate dragwidgets
-        self.populate_drag_widgets()
-        self.update_height()
-
 
     def set_orientation(self, orientation:Qt.Orientation):
         self.orientation = orientation
@@ -55,11 +50,8 @@ class DragWidgetContainer(QWidget, QObject):
     def update_height(self):
         self.setFixedHeight(self.calculate_height())
 
-    def calculate_height():
-        ...
-    
-    def populate_drag_widgets(self):
-        ... 
+    def calculate_height(self):
+        return 0
     
     def dragEnterEvent(self, e:QDragEnterEvent):
         e.accept()

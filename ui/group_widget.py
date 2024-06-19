@@ -18,6 +18,7 @@ class GroupWidget(DragWidgetContainer):
         self.presenter = presenter
         self.expanded = True
         self.init_ui()
+        self.populate_drag_widgets()
         self.on_order_changed.connect(self.slot_participant_order_changed)
         
     def populate_drag_widgets(self):

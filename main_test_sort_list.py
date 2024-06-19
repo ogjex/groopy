@@ -16,13 +16,13 @@ if __name__ == "__main__":
             print(f"Order changed: {data}")
 
     presenter = TestPresenter()
-    widget = SortListWidget("Test Title", presenter)
-    
-    widget.populate_drag_widgets({
+    # Populate the drag widgets with a dictionary
+    drag_widget_dict = {
         "Item 1": "var1",
         "Item 2": "var2",
         "Item 3": "var3"
-    })
+    }
+    widget = SortListWidget("Test Title", presenter, drag_widget_dict)
 
     widget.show()
     sys.exit(app.exec())
