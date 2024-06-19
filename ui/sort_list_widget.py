@@ -65,9 +65,24 @@ class SortListWidget(DragWidgetContainer):
         """
         Override the emit_order_changed method to customize the signal data.
         """
-        item_index = self.list_widget.indexFromItem(src_widget)
-        self.on_order_changed.emit((src_widget, item_index.row(), target_widget_id))
+        # Find the corresponding QListWidgetItem for the src_widget
+        for index in range(self.list_widget.count()):
+            item = self.list_widget.item(index)
+            if self.list_widget.itemWidget(item) == src_widget:
+                self.on_order_changed.emit((src_widget, index, target_widget_id))
+                break
 
+    def calculate_height(self):
+        # Calculate the new height based on the number of QListWidgetItems
+        new_height = self.title_label.height() + 50  # Initial height including title label and padding
+        for index in range(self.list_widget.count()):
+            item = self.list_widget.item(index)
+            widget = self.list_widget.itemWidget(item)
+            if widget:
+                new_height += widget.sizeHint().height() + self.list_widget.spacing()
+        
+        return new_height
+    
     def get_sort_list_data(self):
         data = []
         for index in range(self.list_widget.count()):
