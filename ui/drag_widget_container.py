@@ -31,12 +31,9 @@ class DragWidgetContainer(QWidget, QObject):
         self.dragwidget_frame.setFrameShadow(QFrame.Shadow.Sunken)  # Set the shadow of the frame
         self.dragwidget_layout = QVBoxLayout(self.dragwidget_frame)
         self.layout.addWidget(self.dragwidget_frame)
-
-        self.orientation=Qt.Orientation.Vertical
-        self._drag_target_indicator = DragTargetIndicator()
-        self.dragwidget_layout.addWidget(self._drag_target_indicator)
-        self._drag_target_indicator.hide()
-        
+        self.set_orientation(Qt.Orientation.Vertical)
+        self.set_drag_target_indicator()
+                
         self.setLayout(self.layout)
         
         # Show participants initially
@@ -45,6 +42,15 @@ class DragWidgetContainer(QWidget, QObject):
         # Populate dragwidgets
         self.populate_drag_widgets()
         self.update_height()
+
+
+    def set_orientation(self, orientation:Qt.Orientation):
+        self.orientation = orientation
+
+    def set_drag_target_indicator(self):
+        self._drag_target_indicator = DragTargetIndicator()
+        self.dragwidget_layout.addWidget(self._drag_target_indicator)
+        self._drag_target_indicator.hide()
 
     def update_height(self):
         self.setFixedHeight(self.calculate_height())

@@ -1,9 +1,17 @@
 from PyQt6.QtCore import QMimeData, Qt
 from PyQt6.QtGui import QDrag, QPixmap
-from PyQt6.QtWidgets import QWidget, QLabel, QCheckBox
+from PyQt6.QtWidgets import (
+    QWidget, 
+    QLabel, 
+    QCheckBox, 
+    QVBoxLayout, 
+    QHBoxLayout, 
+    QCheckBox, 
+    QLabel, 
+    QRadioButton)
 
 class DragWidget(QWidget):
-    def __init__(self, parent: QWidget | None = ..., flags: Qt.WindowType = ...) -> None:
+    def __init__(self, parent=None, flags=Qt.WindowType.Widget):
         super().__init__(parent, flags)
 
     def mouseMoveEvent(self, e):
@@ -39,13 +47,42 @@ class DragLabel(QLabel, DragWidget):
     
     def get_person_id(self) -> int:
         return self.person_id
-class DragCheckBox(QCheckBox, DragWidget):
-    def __init__(self, value: str, parent=None):
-        QCheckBox.__init__(self, value, parent)
-        DragWidget.__init__(self, parent)
-        self.value = value
-        self.setContentsMargins(25, 5, 25, 5)
-
+class DragSortWidget(DragWidget):
+    def __init__(self, label_text, var_name, parent=None):
+        super(DragSortWidget, self).__init__(parent)
+        
+        # Initialize widgets
+        self.checkbox = QCheckBox()
+        self.label = QLabel(label_text)
+        self.var_name = var_name
+        self.radio1 = QRadioButton("Option 1")
+        self.radio2 = QRadioButton("Option 2")
+        
+        # Layouts
+        h_layout = QHBoxLayout()
+        h_layout.addWidget(self.radio1)
+        h_layout.addWidget(self.radio2)
+        
+        main_layout = QVBoxLayout()
+        main_layout.addWidget(self.checkbox)
+        main_layout.addWidget(self.label)
+        main_layout.addLayout(h_layout)
+        
+        self.setLayout(main_layout)
+    
+    def is_checked(self):
+        return self.checkbox.isChecked()
+    
+    def get_label_text(self):
+        return self.label.text()
+    
+    def get_selected_radio(self):
+        if self.radio1.isChecked():
+            return "Option 1"
+        elif self.radio2.isChecked():
+            return "Option 2"
+        else:
+            return None
 class DragTargetIndicator(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
