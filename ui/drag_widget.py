@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import (
     QCheckBox, 
     QVBoxLayout, 
     QHBoxLayout, 
+    QFrame,
     QCheckBox, 
     QLabel, 
     QRadioButton)
@@ -54,19 +55,30 @@ class DragSortWidget(DragWidget):
         # Initialize widgets
         self.checkbox = QCheckBox()
         self.label = QLabel(label_text)
-        #self.label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self.var_name = var_name
         self.radio1 = QRadioButton("Spread")
         self.radio2 = QRadioButton("Focus")
         
         self.radio1.setChecked(True)
 
+        # Create vertical separators
+        self.separator1 = QFrame()
+        self.separator1.setFrameShape(QFrame.Shape.VLine)
+        self.separator1.setFrameShadow(QFrame.Shadow.Sunken)
+        
+        self.separator2 = QFrame()
+        self.separator2.setFrameShape(QFrame.Shape.VLine)
+        self.separator2.setFrameShadow(QFrame.Shadow.Sunken)
+        
         # Layouts
         main_layout = QHBoxLayout()
+        
         main_layout.addWidget(self.checkbox)
         main_layout.addWidget(self.label)
+        main_layout.addWidget(self.separator1)
         main_layout.addWidget(self.radio1)
-        main_layout.addWidget(self.radio2)     
+        main_layout.addWidget(self.separator2)
+        main_layout.addWidget(self.radio2)
         
         self.setLayout(main_layout)
     
@@ -78,9 +90,9 @@ class DragSortWidget(DragWidget):
     
     def get_selected_radio(self):
         if self.radio1.isChecked():
-            return "Option 1"
+            return "Spread"
         elif self.radio2.isChecked():
-            return "Option 2"
+            return "Focus"
         else:
             return None
         
