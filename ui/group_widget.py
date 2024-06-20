@@ -24,6 +24,12 @@ class GroupWidget(DragWidgetContainer):
         self.populate_drag_widgets()
         self.on_order_changed.connect(self.slot_participant_order_changed)
         
+    def init_ui(self):
+        super().init_ui()
+        self.layout.addWidget(self.dragwidget_frame)
+        self.setLayout(self.layout)
+        self.dragwidget_frame.show()
+
     def populate_drag_widgets(self):
         for person_id, person_name in self.participants:
            self.add_participant(person_id, person_name) 

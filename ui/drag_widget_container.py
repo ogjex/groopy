@@ -29,14 +29,9 @@ class DragWidgetContainer(QWidget, QObject):
         self.dragwidget_frame.setFrameShape(QFrame.Shape.StyledPanel)
         self.dragwidget_frame.setFrameShadow(QFrame.Shadow.Sunken)  # Set the shadow of the frame
         self.dragwidget_layout = QVBoxLayout(self.dragwidget_frame)
-        self.layout.addWidget(self.dragwidget_frame)
-        self.set_orientation(Qt.Orientation.Vertical)
+        
         self.set_drag_target_indicator()
         self.layout.setSpacing(5)  # Adjust spacing as needed
-        self.setLayout(self.layout)
-        
-        # Show dragwidgets initially
-        self.dragwidget_frame.show()
 
     def set_orientation(self, orientation:Qt.Orientation):
         self.orientation = orientation

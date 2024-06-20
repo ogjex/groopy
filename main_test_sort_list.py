@@ -18,11 +18,13 @@ if __name__ == "__main__":
     presenter = TestPresenter()
     # Populate the drag widgets with a dictionary
     drag_widget_dict = {
-        "Gender": "gender",
-        "Education": "education",
-        "Experience": "experience"
+        "Item 1": (True, "Spread"),
+        "Item 2": (False, "Focus"),
+        "Item 3": (True, "Spread")
     }
     widget = SortListWidget("Test Title", presenter, drag_widget_dict)
 
     widget.show()
+    widget.toggle_checkbox_values()  # Toggle checkbox values
     sys.exit(app.exec())
+

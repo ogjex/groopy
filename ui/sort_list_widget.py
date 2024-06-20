@@ -1,8 +1,13 @@
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import (
+    QFrame,
+    QHBoxLayout,
+    QCheckBox, 
+    QLabel
+)
 from PyQt6.QtGui import QDropEvent
 from ui.drag_widget_container import DragWidgetContainer
 from ui.drag_widget import DragSortWidget
-from typing import Protocol, Dict
+from typing import Protocol, Dict, Tuple
 
 class Presenter(Protocol):
     def handle_checked_list_widget_data(self, list: list):
@@ -11,61 +16,82 @@ class Presenter(Protocol):
         ...
 
 class SortListWidget(DragWidgetContainer):
-
-    def __init__(self, title: str, presenter: Presenter, drag_widget_dict: Dict[str, str], id=0, parent=None):
+    def __init__(self, title: str, presenter: Presenter, drag_widget_dict: Dict[str, Tuple[bool, str]], id=0, parent=None):
         super().__init__(title, id, parent)
         self.presenter = presenter
         self.drag_widget_dict = drag_widget_dict
         self.init_ui()
         self.populate_drag_widgets()
-        #self.on_order_changed.connect(self.sort_order_changed)
-        # need to add buttons here and connect
-        # need to add a way to read in previous sort order values from workspace preferences
 
     def init_ui(self):
-        super().init_ui()        
-        #self.dragwidget_layout.setSpacing(1)
+        super().init_ui()
+
+        # Header frame
+        self.header_frame = QFrame()
+        self.header_layout = QHBoxLayout(self.header_frame)
+        
+        self.cb_checkall = QCheckBox("Select All")
+        self.cb_checkall.stateChanged.connect(self.toggle_checkbox_values)
+        self.header_layout.addWidget(self.cb_checkall)
+
+        self.header_layout.addWidget(self.header_checkbox)
+        self.header_layout.addStretch(1)  # To center "Spread" and "Focus"
+    
+        # Call parent layout to add widgets in the right order
+        self.layout.addWidget(self.header_frame)
+        self.layout.addWidget(self.dragwidget_frame)
+        self.setLayout(self.layout)
+        self.dragwidget_frame.show()
 
     def populate_drag_widgets(self):
-        for label, var_name in list(self.drag_widget_dict.items()):
-            self.add_sort_list_widget(label, var_name)
+        for label, (checkbox_state, radio_option) in self.drag_widget_dict.items():
+            self.add_sort_list_widget(label, checkbox_state, radio_option)
 
-    def add_sort_list_widget(self, label: str, var_name: str):
-        drag_sort_widget = DragSortWidget(label, var_name)
-        self.drag_widget_dict[var_name] = drag_sort_widget
-        self.dragwidget_layout.addWidget(drag_sort_widget)
+    def add_sort_list_widget(self, label: str, checkbox_state: bool, radio_option: str):
+        frame = QFrame()
+        frame_layout = QHBoxLayout(frame)
+        
+        drag_sort_widget = DragSortWidget(label, label, checkbox_state, radio_option)
+        frame_layout.addWidget(drag_sort_widget)
+        
+        self.drag_widget_dict[label] = drag_sort_widget
+        self.dragwidget_layout.addWidget(frame)
         self.update_height()
 
-    def remove_sort_list_widget(self, var_name: str):
-        widget = self.drag_widget_dict.pop(var_name, None)
-        if widget:
-            self.layout.removeWidget(widget)
-            widget.deleteLater()
-            self.update_height()
-
-    def clear_checkboxes(self):
-        for widget in self.drag_widget_dict.values():
-            self.layout.removeWidget(widget)
-            widget.deleteLater()
+    def clear_sort_list_widgets(self):
+        while self.dragwidget_layout.count() > 0:
+            item = self.dragwidget_layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
         self.drag_widget_dict.clear()
         self.update_height()
 
+    def update_sort_list_widgets(self, new_preferences: Dict[str, Tuple[bool, str]]):
+        self.clear_sort_list_widgets()
+        self.drag_widget_dict = new_preferences
+        self.populate_drag_widgets()
+
+    def toggle_checkbox_values(self):
+        for index in range(self.dragwidget_layout.count()):
+            widget = self.dragwidget_layout.itemAt(index).widget()
+            if isinstance(widget, DragSortWidget):
+                current_state = widget.checkbox.isChecked()
+                widget.checkbox.setChecked(not current_state)
+    
+    def toggle_all_checkboxes(self):
+        if self.cb_checkall.isChecked():
+            self.change_checkboxes(True)
+        else:
+            self.change_checkboxes(False)
+
+    def change_checkboxes(self, value:bool):
+        ...
+        '''for checkbox in self.checkbox_dict.values():
+            checkbox.setChecked(value)'''
+
     def dropEvent(self, e: QDropEvent):
         self.handle_common_drop_event(e)
-
-    def emit_order_changed(self, src_widget: QWidget, target_widget_id: int):
-        """
-        Override the emit_order_changed method to customize the signal data.
-        """
-        list_data = self.get_checked_sort_list_data()
-        print(f"{list_data}")
-        #self.presenter.handle_checked_list_widget_data(list_data)
-        '''# Find the corresponding QListWidgetItem for the src_widget
-        for index in range(self.list_widget.count()):
-            item = self.list_widget.item(index)
-            if self.list_widget.itemWidget(item) == src_widget:
-                self.on_order_changed.emit((src_widget, index, target_widget_id))
-                break'''
 
     def calculate_height(self):
         # Calculate the new height based on the number of widgets

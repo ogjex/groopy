@@ -49,18 +49,24 @@ class DragLabel(QLabel, DragWidget):
     def get_person_id(self) -> int:
         return self.person_id
 class DragSortWidget(DragWidget):
-    def __init__(self, label_text, var_name, parent=None):
+    def __init__(self, label_text, var_name, checkbox_state=False, radio_option="Spread", parent=None):
         super(DragSortWidget, self).__init__(parent)
         
         # Initialize widgets
         self.checkbox = QCheckBox()
+        self.checkbox.setChecked(checkbox_state)
+        
         self.label = QLabel(label_text)
         self.var_name = var_name
+        
         self.radio1 = QRadioButton("Spread")
         self.radio2 = QRadioButton("Focus")
         
-        self.radio1.setChecked(True)
-
+        if radio_option == "Spread":
+            self.radio1.setChecked(True)
+        elif radio_option == "Focus":
+            self.radio2.setChecked(True)
+        
         # Create vertical separators
         self.separator1 = QFrame()
         self.separator1.setFrameShape(QFrame.Shape.VLine)
@@ -103,6 +109,13 @@ class DragSortWidget(DragWidget):
             'is_checked': self.is_checked(),
             'selected_radio': self.get_selected_radio()
         }
+    
+    def set_values(self, checkbox_state: bool, radio_option: str):
+        self.checkbox.setChecked(checkbox_state)
+        if radio_option == "Spread":
+            self.radio1.setChecked(True)
+        elif radio_option == "Focus":
+            self.radio2.setChecked(True)
 class DragTargetIndicator(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
