@@ -14,7 +14,6 @@ class Presenter(Protocol):
         ...
     def handle_sort_order_changed(self, list: list):
         ...
-
 class SortListWidget(DragWidgetContainer):
     def __init__(self, title: str, presenter: Presenter, drag_widget_dict: Dict[str, Tuple[bool, str]], id=0, parent=None):
         super().__init__(title, id, parent)

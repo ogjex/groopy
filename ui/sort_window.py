@@ -9,8 +9,6 @@ from typing import Protocol
 from ui.sort_list_widget import SortListWidget
 
 class Presenter(Protocol):
-    def handle_checkbox_order(self, checkboxes: list) -> None:
-        ...
     def handle_min_group_size_changed(self, new_value: int) -> None:
         ...
     def handle_max_group_size_changed(self, new_value: int) -> None:
@@ -26,8 +24,8 @@ class Presenter(Protocol):
 class SortWindow(QWidget):
     def __init__(self, presenter: Presenter):
         super().__init__()
-        self.setMinimumWidth(200) 
-        self.setMaximumWidth(200)
+        self.setMinimumWidth(350) 
+        self.setMaximumWidth(350)
         self.presenter = presenter
 
         # Set up the main layout
@@ -59,8 +57,15 @@ class SortWindow(QWidget):
         self.maximum_group_size_input.currentIndexChanged.connect(self.on_max_group_size_changed)
         self.max_total_groups_input.currentIndexChanged.connect(self.on_max_total_groups_changed)
 
-        # Create the top checkbox to check/uncheck all
-        
+        # create the SortListWidget
+        drag_widget_dict = {
+        "Gender": (True, "Spread"),
+        "Education": (False, "Spread"),
+        "Experience": (True, "Spread"),
+        "Location": (True, "Focus")
+        }
+        self.sl_widget = SortListWidget("Sort Priority", presenter, drag_widget_dict)
+        self.layout.addWidget(self.sl_widget)
         # Create the buttons
         self.sort_button = QPushButton("Sort Groups")
         self.clear_button = QPushButton("Clear Groups")
@@ -89,7 +94,7 @@ class SortWindow(QWidget):
         ])
         #total_height += sum(checkbox.sizeHint().height() for checkbox in self.checkbox_dict.values())
 
-        total_height += 180  # Adjust this value as needed
+        total_height += 480  # Adjust this value as needed
 
         # Set the maximum height
         self.setMaximumHeight(total_height)
