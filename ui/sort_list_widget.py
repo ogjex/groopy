@@ -34,7 +34,7 @@ class SortListWidget(DragWidgetContainer):
         self.cb_checkall.stateChanged.connect(self.toggle_checkbox_values)
         self.header_layout.addWidget(self.cb_checkall)
 
-        self.header_layout.addWidget(self.header_checkbox)
+        self.header_layout.addWidget(self.cb_checkall)
         self.header_layout.addStretch(1)  # To center "Spread" and "Focus"
     
         # Call parent layout to add widgets in the right order
