@@ -108,10 +108,10 @@ class DragSortWidget(DragWidget):
             'var_name': self.var_name,
             'is_checked': self.is_checked(),
             'selected_radio': self.get_selected_radio()
-        }
-    
+        }        
+
     def set_values(self, checkbox_state: bool, radio_option: str):
-        self.checkbox.setChecked(checkbox_state)
+        self.checkbox.setChecked(checkbox_state) 
         if radio_option == "Spread":
             self.radio1.setChecked(True)
         elif radio_option == "Focus":

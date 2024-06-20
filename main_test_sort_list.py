@@ -25,6 +25,5 @@ if __name__ == "__main__":
     widget = SortListWidget("Test Title", presenter, drag_widget_dict)
 
     widget.show()
-    widget.toggle_checkbox_values()  # Toggle checkbox values
     sys.exit(app.exec())
 

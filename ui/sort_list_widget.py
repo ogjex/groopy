@@ -31,7 +31,7 @@ class SortListWidget(DragWidgetContainer):
         self.header_layout = QHBoxLayout(self.header_frame)
         
         self.cb_checkall = QCheckBox("Select All")
-        self.cb_checkall.stateChanged.connect(self.toggle_checkbox_values)
+        self.cb_checkall.stateChanged.connect(self.toggle_all_checkboxes)
         self.header_layout.addWidget(self.cb_checkall)
 
         self.header_layout.addWidget(self.cb_checkall)
@@ -71,13 +71,6 @@ class SortListWidget(DragWidgetContainer):
         self.clear_sort_list_widgets()
         self.drag_widget_dict = new_preferences
         self.populate_drag_widgets()
-
-    def toggle_checkbox_values(self):
-        for index in range(self.dragwidget_layout.count()):
-            widget = self.dragwidget_layout.itemAt(index).widget()
-            if isinstance(widget, DragSortWidget):
-                current_state = widget.checkbox.isChecked()
-                widget.checkbox.setChecked(not current_state)
     
     def toggle_all_checkboxes(self):
         if self.cb_checkall.isChecked():
@@ -85,11 +78,29 @@ class SortListWidget(DragWidgetContainer):
         else:
             self.change_checkboxes(False)
 
-    def change_checkboxes(self, value:bool):
-        ...
-        '''for checkbox in self.checkbox_dict.values():
-            checkbox.setChecked(value)'''
+    def change_checkboxes(self, value: bool):
+        for index in range(self.dragwidget_layout.count()):
+            item = self.dragwidget_layout.itemAt(index)
+            if self.is_valid_drag_sort_widget_frame(item):
+                frame_widget = item.widget()
+                self.change_checkboxes_in_frame(frame_widget, value)
 
+    def is_valid_drag_sort_widget_frame(self, item):
+        return item and isinstance(item.widget(), QFrame)
+
+    def change_checkboxes_in_frame(self, frame_widget, value):
+        frame_layout = frame_widget.layout()
+        if not frame_layout:
+            return
+
+        for i in range(frame_layout.count()):
+            widget = frame_layout.itemAt(i).widget()
+            if isinstance(widget, DragSortWidget):
+                self.set_checkbox_value(widget, value)
+
+    def set_checkbox_value(self, widget, value):
+        widget.checkbox.setChecked(value)                            
+    
     def dropEvent(self, e: QDropEvent):
         self.handle_common_drop_event(e)
 

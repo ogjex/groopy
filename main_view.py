@@ -11,8 +11,6 @@ def main():
     app = QApplication(sys.argv)
     
     main_window = MainWindow()
-    
-    
     # Instantiate PersonEditor
     person_editor = PersonEditor()
     group_editor = GroupEditor(person_editor)
