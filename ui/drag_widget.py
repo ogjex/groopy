@@ -54,10 +54,13 @@ class DragSortWidget(DragWidget):
         # Initialize widgets
         self.checkbox = QCheckBox()
         self.label = QLabel(label_text)
+        #self.label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self.var_name = var_name
-        self.radio1 = QRadioButton("Option 1")
-        self.radio2 = QRadioButton("Option 2")
+        self.radio1 = QRadioButton("Spread")
+        self.radio2 = QRadioButton("Focus")
         
+        self.radio1.setChecked(True)
+
         # Layouts
         main_layout = QHBoxLayout()
         main_layout.addWidget(self.checkbox)
@@ -80,6 +83,14 @@ class DragSortWidget(DragWidget):
             return "Option 2"
         else:
             return None
+        
+    def get_data(self):
+        return {
+            'label_text': self.get_label_text(),
+            'var_name': self.var_name,
+            'is_checked': self.is_checked(),
+            'selected_radio': self.get_selected_radio()
+        }
 class DragTargetIndicator(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)

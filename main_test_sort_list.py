@@ -18,9 +18,9 @@ if __name__ == "__main__":
     presenter = TestPresenter()
     # Populate the drag widgets with a dictionary
     drag_widget_dict = {
-        "Item 1": "var1",
-        "Item 2": "var2",
-        "Item 3": "var3"
+        "Gender": "gender",
+        "Education": "education",
+        "Experience": "experience"
     }
     widget = SortListWidget("Test Title", presenter, drag_widget_dict)
 

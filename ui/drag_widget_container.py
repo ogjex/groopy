@@ -1,14 +1,13 @@
-from PyQt6.QtCore import Qt, QObject, pyqtSignal
+from PyQt6.QtCore import Qt, QObject
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFrame, QLabel
 from PyQt6.QtGui import (
     QDragEnterEvent, 
     QDragMoveEvent, 
-    QDropEvent, 
+    QDropEvent,
     QDragLeaveEvent)
 from ui.drag_widget import DragTargetIndicator
 
 class DragWidgetContainer(QWidget, QObject):
-    on_order_changed = pyqtSignal(tuple)
 
     def __init__(self, title: str, id: int, parent=None):
         super().__init__(parent)
@@ -33,7 +32,7 @@ class DragWidgetContainer(QWidget, QObject):
         self.layout.addWidget(self.dragwidget_frame)
         self.set_orientation(Qt.Orientation.Vertical)
         self.set_drag_target_indicator()
-                
+        self.layout.setSpacing(5)  # Adjust spacing as needed
         self.setLayout(self.layout)
         
         # Show dragwidgets initially
@@ -69,29 +68,21 @@ class DragWidgetContainer(QWidget, QObject):
             self.update_height()
         e.accept()
     
-    def dropEvent(self, e: QDropEvent):
+    def dragLeaveEvent(self, e: QDragLeaveEvent):
+        self._drag_target_indicator.hide()
+        self.update_height()
+        e.accept()
+
+    def handle_common_drop_event(self, e: QDropEvent):
         widget = e.source()
         self._drag_target_indicator.hide()
         index = self.dragwidget_layout.indexOf(self._drag_target_indicator)
         if index is not None:
             self.dragwidget_layout.insertWidget(index, widget)
-            self.emit_order_changed(widget, self.id)
             widget.show()
             self.dragwidget_layout.activate()
         e.accept()
         self.update_height()
-
-    def emit_order_changed(self, src_widget:QWidget, target_widget_id:int):
-        """
-        This method emits the on_order_changed signal. It must be overridden by subclasses
-        to customize the signal data.
-        """
-        pass
-
-    def dragLeaveEvent(self, e: QDragLeaveEvent):
-        self._drag_target_indicator.hide()
-        self.update_height()
-        e.accept()
 
     def _find_drop_location(self, e: QDragMoveEvent):
         pos = e.position()

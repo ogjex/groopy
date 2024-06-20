@@ -1,5 +1,7 @@
-from PyQt6.QtCore import Qt, pyqtSlot
+from PyQt6.QtCore import Qt, pyqtSlot, pyqtSignal
 from PyQt6.QtWidgets import QFrame
+from PyQt6.QtGui import QDropEvent
+
 from ui.drag_widget_container import DragWidgetContainer
 from ui.drag_widget import DragLabel
 
@@ -11,7 +13,8 @@ class Presenter(Protocol):
     def handle_participant_order_changed(self, tuple):
         ...
 class GroupWidget(DragWidgetContainer):
-
+    on_order_changed = pyqtSignal(tuple)
+    
     def __init__(self, group_id: int, title:str, participants: List[Tuple[int, str]], presenter: Presenter, parent=None):
         super().__init__(title, group_id, parent)
         self.participants = participants
@@ -51,10 +54,12 @@ class GroupWidget(DragWidgetContainer):
         
         return new_height
 
+    def dropEvent(self, e: QDropEvent):
+        self.handle_common_drop_event(e)
+        widget = e.source()
+        self.emit_order_changed(widget, self.id)
+
     def emit_order_changed(self, src_widget: DragLabel, target_widget_id: int):
-        """
-        Override the emit_order_changed method to customize the signal data.
-        """
         participant_id = src_widget.get_person_id()
         self.on_order_changed.emit((participant_id, target_widget_id))
     
