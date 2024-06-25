@@ -153,28 +153,29 @@ class PersonEditor:
         self.persons.clear()
         self.reset_id()
         persons = [
-            Person(id=self.next_id, name="Alice A.", gender="Female", education="Engineering", experience=3, career_preference="Software Development", desirables=["Bob", "Charlie"]),
-            Person(id=self.next_id + 1, name="Bob", gender="Male", education="Software Engineering", experience=5, career_preference="Software Engineering", desirables=["Alice"]),
-            Person(id=self.next_id + 2, name="Charlie", gender="Male", education="Mathematics", experience=2, career_preference="Finance", desirables=["Alice"]),
-            Person(id=self.next_id + 3, name="Eve", gender="Female", education="Engineering", experience=4, career_preference="Software Development", desirables=["Alice", "Bob"]),
-            Person(id=self.next_id + 4, name="Alice B.", gender="Male", education="Engineering", experience=6, career_preference="Data Science", desirables=["Alice"]),
-            Person(id=self.next_id + 5, name="Frank", gender="Male", education="Mathematics", experience=1, career_preference="Software Development"),
-            Person(id=self.next_id + 6, name="Grace", gender="Female", education="Computer Science", experience=4, career_preference="Finance", desirables=["Bob"]),
-            Person(id=self.next_id + 7, name="Harry", gender="Male", education="Engineering", experience=3, career_preference="Data Science", desirables=["Alice"]),
-            Person(id=self.next_id + 8, name="Isabel", gender="Female", education="Mathematics", experience=2, career_preference="Software Development", desirables=["Bob"]),
-            Person(id=self.next_id + 9, name="Jack", gender="Male", education="Engineering", experience=5, career_preference="Finance", desirables=["Alice"]),
-            Person(id=self.next_id + 10, name="Karen", gender="Female", education="Computer Science", experience=3, career_preference="Data Science", desirables=["Alice"]),
-            Person(id=self.next_id + 11, name="Liam", gender="Male", education="Engineering", experience=4, career_preference="Software Development"),
-            Person(id=self.next_id + 12, name="Mia", gender="Female", education="Mathematics", experience=5, career_preference="Data Science", desirables=["Charlie"]),
-            Person(id=self.next_id + 13, name="Nathan", gender="Male", education="Engineering", experience=3, career_preference="Finance", desirables=["Alice"]),
-            Person(id=self.next_id + 14, name="Olivia", gender="Female", education="Computer Science", experience=2, career_preference="Software Development", desirables=["Bob"]),
-            Person(id=self.next_id + 15, name="Peter", gender="Male", education="Mathematics", experience=4, career_preference="Data Science", desirables=["Alice"]),
-            Person(id=self.next_id + 16, name="Quinn", gender="Female", education="Engineering", experience=3, career_preference="Finance", desirables=["Alice"]),
-            Person(id=self.next_id + 17, name="Robert", gender="Male", education="Computer Science", experience=2, career_preference="Software Development", desirables=["Alice"]),
-            Person(id=self.next_id + 18, name="Sophia", gender="Female", education="Mathematics", experience=4, career_preference="Data Science", desirables=["Charlie"]),
-            Person(id=self.next_id + 19, name="Thomas", gender="Male", education="Engineering", experience=5, career_preference="Finance"),
-            Person(id=self.next_id + 20, name="Hortensia", gender="Female", education="Economics", experience=5, career_preference="Finance")                
-            ]
+        Person(id=self.next_id, name="Alice A.", gender="Female", education="Engineering", experience=3, career_preference="Software Development", location_preference="Zealand", desirables=["Bob", "Charlie"]),
+        Person(id=self.next_id + 1, name="Bob", gender="Male", education="Software Engineering", experience=5, career_preference="Software Engineering", location_preference="Zealand", desirables=["Alice"]),
+        Person(id=self.next_id + 2, name="Charlie", gender="Male", education="Mathematics", experience=2, career_preference="Finance", location_preference="Zealand", desirables=["Alice"]),
+        Person(id=self.next_id + 3, name="Eve", gender="Female", education="Engineering", experience=4, career_preference="Software Development", location_preference="Zealand", desirables=["Alice", "Bob"]),
+        Person(id=self.next_id + 4, name="Alice B.", gender="Male", education="Engineering", experience=6, career_preference="Data Science", location_preference="Zealand", desirables=["Alice"]),
+        Person(id=self.next_id + 5, name="Frank", gender="Male", education="Mathematics", experience=1, career_preference="Software Development", location_preference="Jutland"),
+        Person(id=self.next_id + 6, name="Grace", gender="Female", education="Computer Science", experience=4, career_preference="Finance", location_preference="Zealand", desirables=["Bob"]),
+        Person(id=self.next_id + 7, name="Harry", gender="Male", education="Engineering", experience=3, career_preference="Data Science", location_preference="Zealand", desirables=["Alice"]),
+        Person(id=self.next_id + 8, name="Isabel", gender="Female", education="Mathematics", experience=2, career_preference="Software Development", location_preference="Zealand", desirables=["Bob"]),
+        Person(id=self.next_id + 9, name="Jack", gender="Male", education="Engineering", experience=5, career_preference="Finance", location_preference="Zealand", desirables=["Alice"]),
+        Person(id=self.next_id + 10, name="Karen", gender="Female", education="Computer Science", experience=3, career_preference="Data Science", location_preference="Zealand", desirables=["Alice"]),
+        Person(id=self.next_id + 11, name="Liam", gender="Male", education="Engineering", experience=4, career_preference="Software Development", location_preference="Jutland"),
+        Person(id=self.next_id + 12, name="Mia", gender="Female", education="Mathematics", experience=5, career_preference="Data Science", location_preference="Zealand", desirables=["Charlie"]),
+        Person(id=self.next_id + 13, name="Nathan", gender="Male", education="Engineering", experience=3, career_preference="Finance", location_preference="Zealand", desirables=["Alice"]),
+        Person(id=self.next_id + 14, name="Olivia", gender="Female", education="Computer Science", experience=2, career_preference="Software Development", location_preference="Zealand", desirables=["Bob"]),
+        Person(id=self.next_id + 15, name="Peter", gender="Male", education="Mathematics", experience=4, career_preference="Data Science", location_preference="Zealand", desirables=["Alice"]),
+        Person(id=self.next_id + 16, name="Quinn", gender="Female", education="Engineering", experience=3, career_preference="Finance", location_preference="Zealand", desirables=["Alice"]),
+        Person(id=self.next_id + 17, name="Robert", gender="Male", education="Computer Science", experience=2, career_preference="Software Development", location_preference="Zealand", desirables=["Alice"]),
+        Person(id=self.next_id + 18, name="Sophia", gender="Female", education="Mathematics", experience=4, career_preference="Data Science", location_preference="Zealand", desirables=["Charlie"]),
+        Person(id=self.next_id + 19, name="Thomas", gender="Male", education="Engineering", experience=5, career_preference="Finance", location_preference="Virtual"),
+        Person(id=self.next_id + 20, name="Hortensia", gender="Female", education="Economics", experience=5, career_preference="Finance", location_preference="Virtual")
+        ]
+
         self.next_id += len(persons)  # Increment next_id by the number of persons added
         self.persons = persons
         return persons

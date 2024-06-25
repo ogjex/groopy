@@ -19,8 +19,8 @@ def main():
     #strategies = {'gender': 'focused'}  # Example strategy, can be adjusted
     #strategies = {'gender': 'spread'}
     #strategies = {'gender': 'spread', 'education': 'focused'}
-    strategies = {'gender': 'focused', 'education': 'spread'}
-
+    #strategies = {'gender': 'focused', 'education': 'spread'}
+    strategies = {'education': 'spread', 'gender': 'focused'}
     # Create an instance of GroupSorter
     sorter = GroupSorter(min_group_size, max_group_size, max_groups_per_person, max_num_groups)
     
