@@ -20,21 +20,15 @@ def main():
     #strategies = {'gender': 'spread'}
     #strategies = {'gender': 'spread', 'education': 'focused'}
     strategies = {'gender': 'focused', 'education': 'spread'}
-    
+
     # Create an instance of GroupSorter
     sorter = GroupSorter(min_group_size, max_group_size, max_groups_per_person, max_num_groups)
     
     # Set the people to be sorted
     sorter.set_people_to_sort(people)
-    
-    # Sort people based on parameters if strategy is 'focused'
-    if any(strategy == 'focused' for strategy in strategies.values()):
-        sorted_people = sorter.sort_people_by_parameters(list(strategies.keys()))
-    else:
-        sorted_people = people  # No sorting if strategy is 'spread'
-    
+        
     # Distribute people into groups based on strategies
-    groups = sorter.distribute_people_to_groups(sorted_people, strategies)
+    groups = sorter.distribute_people_to_groups(strategies)
     
     # Print out the groups
     for group in groups:
