@@ -27,7 +27,9 @@ def main():
 
     # Define sorting parameters and strategies
     sorting_parameters = ['gender', 'education']
-    strategies = {'gender': 'heterogeneous', 'education': 'homogeneous'}
+    strategies = {'gender': 'homogeneous', 'education': 'heterogeneous'}
+    #strategies = {'gender': 'heterogeneous'}
+    #strategies = {'gender': 'homogeneous'}
 
     # Sort people based on the parameters
     sorted_people = grouping_module.sort_people_by_parameters(sorting_parameters)
@@ -39,7 +41,7 @@ def main():
     for group in groups:
         print(f"\n{group.name} (ID: {group.id}):")
         for member in group.members:
-            print(f"- {member.name}, {member.gender}, {member.education}")
+            print(f"- {member.id}, {member.name}, {member.gender}, {member.education}")
 
 if __name__ == "__main__":
     main()

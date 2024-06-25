@@ -58,46 +58,63 @@ class GroupSorter:
         """
         return sorted(self.people, key=lambda person: tuple(getattr(person, param) for param in parameters))
 
-    def distribute_people_to_groups(self, people: List[Person], strategies: Dict[str, str]) -> List[Group]:
-        """
-        Distribute people into groups based on the sorted list and specified strategies.
-
-        Args:
-            people (List[Person]): List of sorted people.
-            strategies (Dict[str, str]): Strategies for each parameter ('heterogeneous' or 'homogeneous').
-
-        Returns:
-            List[Group]: List of groups after distribution.
-        """
+    def distribute_people_to_groups(self, sorted_people, strategies):
+        # Calculate the optimal number of groups
         optimal_num_groups = self.calculate_optimal_num_groups()
-        group_list = self.create_groups(optimal_num_groups)
-
-        group_iterators = [iter(group_list)] * len(group_list)
+        print(f"{optimal_num_groups}")
+        # Initialize groups
+        self.groups = [Group(id=i+1, name=f'Group {i+1}') for i in range(optimal_num_groups)]
+        
         current_group_index = 0
+        
+        # Create dictionaries to store people based on the strategy
+        parameter_people_dict = {param: {} for param in strategies}
+        
+        # Populate the dictionaries with people
+        for person in sorted_people:
+            for param in strategies:
+                parameter_value = getattr(person, param)
+                if parameter_value not in parameter_people_dict[param]:
+                    parameter_people_dict[param][parameter_value] = []
+                parameter_people_dict[param][parameter_value].append(person)
+        
+        for param, strategy in strategies.items():
+            people_by_value = parameter_people_dict[param]
+            
+            if strategy == 'homogeneous':
+                for value, people_list in people_by_value.items():
+                    for person in people_list:
+                        self.groups[current_group_index].add_member(person)
+                        if len(self.groups[current_group_index].members) >= self.max_group_size:
+                            current_group_index += 1
+                            if current_group_index >= len(self.groups):
+                                current_group_index = 0  # Start reusing groups if we exceed the max number of groups
+            elif strategy == 'heterogeneous':
+                while any(people_by_value.values()):
+                    for value, people_list in people_by_value.items():
+                        if people_list:
+                            self.groups[current_group_index].add_member(people_list.pop(0))
+                            if len(self.groups[current_group_index].members) >= self.max_group_size:
+                                current_group_index += 1
+                                if current_group_index >= len(self.groups):
+                                    current_group_index = 0
+        
+        self.balance_groups()
+        
+        # Return only non-empty groups
+        return [group for group in self.groups if group.members]
 
-        for strategy in strategies.values():
-            if strategy == 'heterogeneous':
-                for person in people:
-                    group = next(itertools.cycle(group_list))
-                    group.add_member(person)
-            elif strategy == 'homogeneous':
-                while people:
-                    person = people.pop(0)
-                    group = group_list[current_group_index % len(group_list)]
-                    if len(group.members) < self.max_group_size:
-                        group.add_member(person)
-                    if len(group.members) == self.max_group_size:
-                        current_group_index += 1
-
-        # Handle remainder people
-        for person in people:
-            for group in group_list:
-                if len(group.members) < self.max_group_size:
-                    group.add_member(person)
+    def balance_groups(self):
+        for group in self.groups:
+            while len(group.members) < self.min_group_size:
+                # Find a group with more members than min_group_size
+                candidates = [g for g in self.groups if len(g.members) > self.min_group_size]
+                if not candidates:
                     break
-
-        return group_list
-
+                candidate = max(candidates, key=lambda g: len(g.members))
+                # Move one member from candidate to group
+                group.add_member(candidate.members.pop())
+                    
     def calculate_optimal_num_groups(self) -> int:
         total_people = len(self.people)
         max_possible_groups = self.calc_max_possible_groups(total_people, self.min_group_size, self.max_num_groups)
@@ -166,24 +183,6 @@ class GroupSorter:
 
         return filtered_people
             
-    def find_remainder(self, list1: List[Person], list2: List[Person]) -> List[Person]:
-        """
-        Find the remainder of Person objects not present in both lists.
-
-        Args:
-            list1 (List[Person]): The first list of Person objects.
-            list2 (List[Person]): The second list of Person objects.
-
-        Returns:
-            List[Person]: A list containing Person objects that are not present in both lists.
-        """
-        # Create a set of IDs for the second list
-        ids2 = {person.id for person in list2}
-        
-        # Filter out the persons in list1 that are not in list2
-        remainder = [person for person in list1 if person.id not in ids2]
-        return remainder
-
     def calculate_people_per_group(self, people: list[Person], num_groups: int) -> int:
         """
         Generalised function that calculates people per group and returns the number
@@ -197,108 +196,6 @@ class GroupSorter:
         """
         num_people_per_group = len(people) // num_groups
         return num_people_per_group
-
-    def distribute_people_to_groups(self, people_list: list[Person], group_list: list[Group]) -> list[Group]:
-        """
-        Distribute people to groups iteratively and incrementally.
-
-        This method iterates through the list of people and assigns each person to a group.
-        When reaching the end of the group list, it starts over from the beginning.
-
-        Args:
-            people_list (list[Person]): List of Person objects.
-            group_list (list[Group]): List of Group objects.
-
-        Returns:
-            list[Group]: The updated list of groups after distributing people.
-        """
-        num_people = len(people_list)
-        num_groups = len(group_list)
-
-        person_index = 0
-        for person in people_list:
-            group_index = self.current_group_index % num_groups  # Calculate the index of the group for the current person
-            current_group = group_list[group_index]  # Get the current group
-
-            # Add the person to the current group
-            current_group.add_member(person)
-
-            # Update the group in the list of groups
-            group_list[group_index] = current_group
-
-            self.current_group_index += 1  # Update the current group index
-
-            person_index += 1
-            if person_index >= num_people:
-                break
-        
-        return group_list
-    
-    def focus_people_on_parameter(self, parameter: str) -> list[Group]:
-        """
-        Groups people based on a single parameter to create homogeneous groups.
-
-        This method sorts people based on the specified parameter and distributes them into groups
-        by filling up one group at a time until the maximum group size is reached, then moves to the next group.
-
-        Args:
-            parameter (str): The parameter to focus on (e.g., 'education', 'experience', etc.).
-
-        Returns:
-            list[Group]: The list of groups after distributing people based on the specified parameter.
-        """
-        # Count the occurrences of each value for the specified parameter
-        param_counts = self.count_parameter_occurrences(parameter)
-        
-        # Sort parameter values by their frequency in descending order
-        sorted_param_values = sorted(param_counts, key=param_counts.get, reverse=True)
-        
-        # Create the optimal number of groups
-        optimal_num_groups = self.calculate_optimal_num_groups()
-        group_list = self.create_groups(optimal_num_groups)
-        
-        # Clear the assigned_people set
-        self.assigned_people.clear()
-
-        # Iterate over sorted parameter values and distribute people into groups
-        for value in sorted_param_values:
-            filtered_people = self.filter_people_by_parameter(self.people, parameter, value)
-            
-            # Distribute people into groups by filling one group at a time
-            for person in filtered_people:
-                for group in group_list:
-                    if len(group.members) < self.max_group_size:
-                        group.add_member(person)
-                        self.assigned_people.add(person)
-                        break
-        
-        # Find the remainder of the people who were not assigned to any group
-        remainder_people = self.find_remainder(self.people, self.assigned_people)
-        
-        # Distribute the remainder of the people into groups
-        for person in remainder_people:
-            for group in group_list:
-                if len(group.members) < self.max_group_size:
-                    group.add_member(person)
-                    break
-        
-        return group_list
-    
-    def dynamic_sort_and_group(self, parameters: list[str]):
-        optimal_num_groups = self.calculate_optimal_num_groups()
-        group_list = self.create_groups(optimal_num_groups)
-
-        sorted_people = self.sort_people_by_id(self.people)
-        for param in parameters:
-            param_counts = self.count_parameter_occurrences(param)
-            most_frequent_value = self.find_most_frequent_parameter_value(param_counts)
-            filtered_people = self.filter_people_by_parameter(sorted_people, param, most_frequent_value)
-            remainder_people = self.find_remainder(sorted_people, filtered_people)
-            group_list = self.distribute_people_to_groups(filtered_people, group_list)
-            sorted_people = remainder_people
-
-        group_list = self.distribute_people_to_groups(sorted_people, group_list)
-        return group_list
     
     def sort_people_by_id(self, people_list: List[Person]) -> List[Person]:
         """
