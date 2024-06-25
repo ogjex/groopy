@@ -48,26 +48,35 @@ class GroupSorter:
     
     def sort_people_by_parameters(self, parameters: List[str]) -> List[Person]:
         """
-        Sort people based on multiple parameters.
+        Sorts the list of people based on the given parameters.
 
         Args:
-            parameters (List[str]): List of parameter names to sort by in priority order.
+            parameters (List[str]): List of parameters to sort by.
 
         Returns:
-            List[Person]: Sorted list of people.
+            List[Person]: Sorted list of Person objects.
         """
-        return sorted(self.people, key=lambda person: tuple(getattr(person, param) for param in parameters))
-
-    def distribute_people_to_groups(self, sorted_people, strategies):
-        # Calculate the optimal number of groups
-        optimal_num_groups = self.calculate_optimal_num_groups()
-        print(f"{optimal_num_groups}")
-        # Initialize groups
-        self.groups = [Group(id=i+1, name=f'Group {i+1}') for i in range(optimal_num_groups)]
+        sorted_people = self.people[:]
+        for param in parameters:
+            sorted_people.sort(key=lambda person: getattr(person, param))
+        return sorted_people
         
+    def distribute_people_to_groups(self, sorted_people: List[Person], strategies: dict[str, str]) -> List[Group]:
+        """
+        Distributes sorted people into groups based on the given strategies.
+
+        Args:
+            sorted_people (List[Person]): List of people sorted by the strategies.
+            strategies (dict[str, str]): Dictionary defining the sorting strategy for each parameter.
+
+        Returns:
+            List[Group]: List of groups with distributed members.
+        """
+        # Initialize groups
+        self.groups = self.create_groups(self.calculate_optimal_num_groups())
         current_group_index = 0
         
-        # Create dictionaries to store people based on the strategy
+        # Dictionary to store people by parameter value
         parameter_people_dict = {param: {} for param in strategies}
         
         # Populate the dictionaries with people
@@ -78,33 +87,67 @@ class GroupSorter:
                     parameter_people_dict[param][parameter_value] = []
                 parameter_people_dict[param][parameter_value].append(person)
         
-        for param, strategy in strategies.items():
+        # Track which people have already been assigned to a group
+        assigned_people = set()
+        
+        # Distribute people to groups based on strategies
+        for param in sorted(strategies.keys()):  # Sort keys to prioritize 'gender' over 'education'
+            strategy = strategies[param]
             people_by_value = parameter_people_dict[param]
             
-            if strategy == 'homogeneous':
-                for value, people_list in people_by_value.items():
-                    for person in people_list:
-                        self.groups[current_group_index].add_member(person)
-                        if len(self.groups[current_group_index].members) >= self.max_group_size:
-                            current_group_index += 1
-                            if current_group_index >= len(self.groups):
-                                current_group_index = 0  # Start reusing groups if we exceed the max number of groups
-            elif strategy == 'heterogeneous':
-                while any(people_by_value.values()):
-                    for value, people_list in people_by_value.items():
-                        if people_list:
-                            self.groups[current_group_index].add_member(people_list.pop(0))
-                            if len(self.groups[current_group_index].members) >= self.max_group_size:
-                                current_group_index += 1
-                                if current_group_index >= len(self.groups):
-                                    current_group_index = 0
+            if strategy == 'focused':
+                self.distribute_focused(people_by_value, assigned_people, current_group_index)
+            elif strategy == 'spread':
+                self.distribute_spread(sorted_people, assigned_people, current_group_index)
         
+        # Balance groups to ensure min_group_size
         self.balance_groups()
         
         # Return only non-empty groups
         return [group for group in self.groups if group.members]
 
+    def distribute_focused(self, people_by_value: dict, assigned_people: set, current_group_index: int):
+        """
+        Distributes people into groups focused (homogeneously) based on the given people_by_value dictionary.
+
+        Args:
+            people_by_value (dict): Dictionary containing lists of people grouped by parameter values.
+            assigned_people (set): Set of people who have already been assigned to a group.
+            current_group_index (int): Current index of the group being processed.
+        """
+        for value, people_list in people_by_value.items():
+            for person in people_list:
+                if person not in assigned_people:
+                    self.groups[current_group_index].add_member(person)
+                    assigned_people.add(person)
+                    if len(self.groups[current_group_index].members) >= self.max_group_size:
+                        current_group_index += 1
+                        if current_group_index >= len(self.groups):
+                            current_group_index = 0
+
+    def distribute_spread(self, sorted_people: List[Person], assigned_people: set, current_group_index: int):
+        """
+        Distributes people into groups spread (heterogeneously) based on the given sorted_people list.
+
+        Args:
+            sorted_people (List[Person]): List of people sorted by parameters.
+            assigned_people (set): Set of people who have already been assigned to a group.
+            current_group_index (int): Current index of the group being processed.
+        """
+        for person in sorted_people:
+            if person not in assigned_people:
+                self.groups[current_group_index].add_member(person)
+                assigned_people.add(person)
+                if len(self.groups[current_group_index].members) >= self.max_group_size:
+                    current_group_index += 1
+                    if current_group_index >= len(self.groups):
+                        current_group_index = 0
+
     def balance_groups(self):
+        """
+        Balances the number of members in each group to meet the min_group_size requirement.
+        """
+        
         for group in self.groups:
             while len(group.members) < self.min_group_size:
                 # Find a group with more members than min_group_size
@@ -114,7 +157,7 @@ class GroupSorter:
                 candidate = max(candidates, key=lambda g: len(g.members))
                 # Move one member from candidate to group
                 group.add_member(candidate.members.pop())
-                    
+
     def calculate_optimal_num_groups(self) -> int:
         total_people = len(self.people)
         max_possible_groups = self.calc_max_possible_groups(total_people, self.min_group_size, self.max_num_groups)

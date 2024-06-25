@@ -1,47 +1,56 @@
 from group_sorter import GroupSorter
-from person import Person
 from person_editor import PersonEditor
-from group import Group
 
 def main():
-    my_person_editor = PersonEditor()
-    people = my_person_editor.create_persons_sample()
-
-    # Define parameters
+    # Initialize PersonEditor to read and manage persons
+    person_editor = PersonEditor()
+    
+    # Read persons from CSV or create sample data
+    filename = 'persons.csv'
+    people = person_editor.read_persons_from_csv(filename)
+    
+    # Initialize GroupSorter with parameters
     min_group_size = 3
     max_group_size = 5
     max_groups_per_person = 1
-    max_total_groups = 10
-
+    max_num_groups = 10
+    
+    # Define sorting and grouping strategies
+    strategies = {'gender': 'focused'}  # 'focused' for homogeneous, 'spread' for heterogeneous
+    # Define sorting and grouping strategies
+    #strategies = {'gender': 'spread', 'education': 'focused'}
+    #strategies = {'gender': 'spread'}
+    #strategies = {'gender': 'spread', 'education': 'focused'}
+    #strategies = {'gender': 'spread', 'education': 'focused'}
 
     # Create an instance of GroupSorter
-    grouping_module = GroupSorter(
-        min_group_size=min_group_size,
-        max_group_size=max_group_size,
-        max_groups_per_person=max_groups_per_person,
-        max_num_groups=max_total_groups
-    )
-
-    # Set the people to the GroupSorter
-    grouping_module.set_people_to_sort(people)
-
-    # Define sorting parameters and strategies
-    sorting_parameters = ['gender', 'education']
-    strategies = {'gender': 'homogeneous', 'education': 'heterogeneous'}
-    #strategies = {'gender': 'heterogeneous'}
-    #strategies = {'gender': 'homogeneous'}
-
-    # Sort people based on the parameters
-    sorted_people = grouping_module.sort_people_by_parameters(sorting_parameters)
-
-    # Distribute sorted people into groups based on the strategies
-    groups = grouping_module.distribute_people_to_groups(sorted_people, strategies)
-
-    # Print the groups and their members for verification
-    for group in groups:
-        print(f"\n{group.name} (ID: {group.id}):")
-        for member in group.members:
-            print(f"- {member.id}, {member.name}, {member.gender}, {member.education}")
-
+    sorter = GroupSorter(min_group_size, max_group_size, max_groups_per_person, max_num_groups)
+    
+    # Set the people to be sorted
+    sorter.set_people_to_sort(people)
+    
+    # Sort people based on parameters (sorted by 'gender' in this case)
+    sorted_people = sorter.sort_people_by_parameters(list(strategies.keys()))
+    
+    # Debugging: Print sorted people
+    print("Sorted People:")
+    for person in sorted_people:
+        print(f"{person.id}, {person.name}, {person.gender}, {person.education}")
+    print()
+    
+    # Distribute people into groups based on strategies
+    groups = sorter.distribute_people_to_groups(sorted_people, strategies)
+    
+    # Debugging: Print groups
+    if groups:
+        print("Groups formed:")
+        for group in groups:
+            print(f"Group {group.id} ({len(group.members)} members):")
+            for person in group.members:
+                print(f"- {person.id}, {person.name}, {person.gender}, {person.education}")
+            print()
+    else:
+        print("No groups formed. Check sorting and distribution logic.")
+    
 if __name__ == "__main__":
     main()
