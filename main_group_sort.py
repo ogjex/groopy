@@ -1,4 +1,4 @@
-from group_sorter import GroupingModule
+from group_sorter import GroupSorter
 from person import Person
 from person_editor import PersonEditor
 from group import Group
@@ -13,63 +13,33 @@ def main():
     max_groups_per_person = 1
     max_total_groups = 10
 
-    grouping_module = GroupingModule()
-    # following sorts by 1 parameter
-    '''grouping_module.init_group_sort(people, min_group_size, max_group_size, max_groups_per_person, max_total_groups)
-    optimal_num_groups = grouping_module.calculate_optimal_num_groups()
-    
-    target_parameter = 'gender'
-    parameter_counts = grouping_module.count_parameter_occurrences(target_parameter)
-    most_frequent_parameter_value = grouping_module.find_most_frequent_parameter_value(parameter_counts)
-    
-    filtered_people_list = grouping_module.filter_people_by_parameter(target_parameter, most_frequent_parameter_value)
-    remainder_list = grouping_module.find_remainder(people, filtered_people_list)
-    
-    group_list = grouping_module.create_groups(optimal_num_groups)
-    
-    group_list = grouping_module.distribute_people_to_groups(filtered_people_list, group_list)
-    
-    #second_target_parameter = 'education'
-    #parameter_counts = grouping_module.count_parameter_occurrences(second_target_parameter)
-    #most_frequent_parameter_value = grouping_module.find_most_frequent_parameter_value(second_target_parameter)
 
-    group_list = grouping_module.distribute_people_to_groups(remainder_list, group_list)'''
+    # Create an instance of GroupSorter
+    grouping_module = GroupSorter(
+        min_group_size=min_group_size,
+        max_group_size=max_group_size,
+        max_groups_per_person=max_groups_per_person,
+        max_num_groups=max_total_groups
+    )
 
-    # following sorts by 2 parameters
-    grouping_module.init_group_sort(people, min_group_size, max_group_size, max_groups_per_person, max_total_groups)
-    optimal_num_groups = grouping_module.calculate_optimal_num_groups()
-    
-    #create empty group list
-    group_list = grouping_module.create_groups(optimal_num_groups)
+    # Set the people to the GroupSorter
+    grouping_module.set_people_to_sort(people)
 
-    target_parameter = 'gender'
-    parameter_counts = grouping_module.count_parameter_occurrences(target_parameter)
-    most_frequent_parameter_value = grouping_module.find_most_frequent_parameter_value(parameter_counts)
-    
-    A_filtered_people = grouping_module.filter_people_by_parameter(people, target_parameter, most_frequent_parameter_value)
-    B_remainder_people = grouping_module.find_remainder(people, A_filtered_people)
+    # Define sorting parameters and strategies
+    sorting_parameters = ['gender', 'education']
+    strategies = {'gender': 'heterogeneous', 'education': 'homogeneous'}
 
+    # Sort people based on the parameters
+    sorted_people = grouping_module.sort_people_by_parameters(sorting_parameters)
 
-    # find the parameter value that is most frequent to sort both lists from
-    second_target_parameter = 'education'
-    parameter_counts = grouping_module.count_parameter_occurrences(second_target_parameter)    
-    most_frequent_second_target_parameter_value = grouping_module.find_most_frequent_parameter_value(parameter_counts)
-    
-    A1_filtered_people = grouping_module.filter_people_by_parameter(A_filtered_people, second_target_parameter, most_frequent_second_target_parameter_value)
-    A2_remainder_people = grouping_module.find_remainder(A_filtered_people, A1_filtered_people)
+    # Distribute sorted people into groups based on the strategies
+    groups = grouping_module.distribute_people_to_groups(sorted_people, strategies)
 
-    B1_filtered_people = grouping_module.filter_people_by_parameter(B_remainder_people, second_target_parameter, most_frequent_second_target_parameter_value)
-    B2_remainder_people = grouping_module.find_remainder(B_remainder_people, B1_filtered_people)
-
-    group_list = grouping_module.distribute_people_to_groups(A1_filtered_people, group_list)
-    group_list = grouping_module.distribute_people_to_groups(B1_filtered_people, group_list)
-    group_list = grouping_module.distribute_people_to_groups(A2_remainder_people, group_list)
-    group_list = grouping_module.distribute_people_to_groups(B2_remainder_people, group_list)
-    
-
-    # Print groups    
-    for group in group_list:
-        print(group)
+    # Print the groups and their members for verification
+    for group in groups:
+        print(f"\n{group.name} (ID: {group.id}):")
+        for member in group.members:
+            print(f"- {member.name}, {member.gender}, {member.education}")
 
 if __name__ == "__main__":
     main()

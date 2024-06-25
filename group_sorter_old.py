@@ -1,17 +1,18 @@
-from typing import List, Dict
+from typing import List
 from person import Person
 from group import Group
-from collections import defaultdict
-import itertools
 
 class GroupSorter:
     def __init__(self, min_group_size=2, max_group_size=5, max_groups_per_person=1, max_num_groups=10):
+        # Initialize default values
         self.min_group_size = min_group_size
         self.max_group_size = max_group_size
         self.max_groups_per_person = max_groups_per_person
         self.max_num_groups = max_num_groups
         self.people = []
         self.next_group_id = 1
+        self.current_group_index = 0
+        self.assigned_people = set()
 
     def set_min_group_size(self, min_group_size: int):
         self.min_group_size = min_group_size
@@ -27,76 +28,6 @@ class GroupSorter:
 
     def set_people_to_sort(self, people):
         self.people = people
-
-    def create_groups(self, groups_to_create:int) -> list[Group]:
-        """
-        Creates a list of groups based on the specified input parameter
-
-        Args:
-            groups_to_create (int): the amount of groups to create
-
-        Returns:
-            list[Group]: the list of groups that people can be added to
-        """
-        created_groups = []
-        for i in range(groups_to_create):
-            group_id = self.next_group_id
-            group_name = f"Group {group_id}"
-            created_groups.append(Group(id=group_id, name=group_name))
-            self.next_group_id += 1  # Increment the next group ID
-        return created_groups
-    
-    def sort_people_by_parameters(self, parameters: List[str]) -> List[Person]:
-        """
-        Sort people based on multiple parameters.
-
-        Args:
-            parameters (List[str]): List of parameter names to sort by in priority order.
-
-        Returns:
-            List[Person]: Sorted list of people.
-        """
-        return sorted(self.people, key=lambda person: tuple(getattr(person, param) for param in parameters))
-
-    def distribute_people_to_groups(self, people: List[Person], strategies: Dict[str, str]) -> List[Group]:
-        """
-        Distribute people into groups based on the sorted list and specified strategies.
-
-        Args:
-            people (List[Person]): List of sorted people.
-            strategies (Dict[str, str]): Strategies for each parameter ('heterogeneous' or 'homogeneous').
-
-        Returns:
-            List[Group]: List of groups after distribution.
-        """
-        optimal_num_groups = self.calculate_optimal_num_groups()
-        group_list = self.create_groups(optimal_num_groups)
-
-        group_iterators = [iter(group_list)] * len(group_list)
-        current_group_index = 0
-
-        for strategy in strategies.values():
-            if strategy == 'heterogeneous':
-                for person in people:
-                    group = next(itertools.cycle(group_list))
-                    group.add_member(person)
-            elif strategy == 'homogeneous':
-                while people:
-                    person = people.pop(0)
-                    group = group_list[current_group_index % len(group_list)]
-                    if len(group.members) < self.max_group_size:
-                        group.add_member(person)
-                    if len(group.members) == self.max_group_size:
-                        current_group_index += 1
-
-        # Handle remainder people
-        for person in people:
-            for group in group_list:
-                if len(group.members) < self.max_group_size:
-                    group.add_member(person)
-                    break
-
-        return group_list
 
     def calculate_optimal_num_groups(self) -> int:
         total_people = len(self.people)
@@ -125,6 +56,7 @@ class GroupSorter:
             param_value = getattr(person, target_parameter)
             if param_value in parameter_counts:
                 parameter_counts[param_value] += 1
+            else:
                 parameter_counts[param_value] = 1
         return parameter_counts
     
@@ -139,6 +71,24 @@ class GroupSorter:
         """
         most_frequent_param_value = max(parameter_counts, key=parameter_counts.get)
         return most_frequent_param_value
+
+    def create_groups(self, groups_to_create:int) -> list[Group]:
+        """
+        Creates a list of groups based on the specified input parameter
+
+        Args:
+            groups_to_create (int): the amount of groups to create
+
+        Returns:
+            list[Group]: the list of groups that people can be added to
+        """
+        created_groups = []
+        for i in range(groups_to_create):
+            group_id = self.next_group_id
+            group_name = f"Group {group_id}"
+            created_groups.append(Group(id=group_id, name=group_name))
+            self.next_group_id += 1  # Increment the next group ID
+        return created_groups
     
     def filter_people_by_parameter(self, people_list:list[Person], parameter:str, value:str) -> list[Person]:
         """
