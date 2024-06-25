@@ -1,8 +1,6 @@
-from typing import List, Dict
+from typing import List
 from person import Person
 from group import Group
-from collections import defaultdict
-import itertools
 
 class GroupSorter:
     def __init__(self, min_group_size=2, max_group_size=5, max_groups_per_person=1, max_num_groups=10):
@@ -12,6 +10,7 @@ class GroupSorter:
         self.max_num_groups = max_num_groups
         self.people = []
         self.next_group_id = 1
+        self.groups = []
 
     def set_min_group_size(self, min_group_size: int):
         self.min_group_size = min_group_size
@@ -61,6 +60,7 @@ class GroupSorter:
             sorted_people.sort(key=lambda person: getattr(person, param))
         return sorted_people
         
+
     def distribute_people_to_groups(self, sorted_people: List[Person], strategies: dict[str, str]) -> List[Group]:
         """
         Distributes sorted people into groups based on the given strategies.
@@ -96,8 +96,11 @@ class GroupSorter:
             people_by_value = parameter_people_dict[param]
             
             if strategy == 'focused':
-                self.distribute_focused(people_by_value, assigned_people, current_group_index)
+                # Sort people by current parameter if strategy is 'focused'
+                sorted_by_param = self.sort_people_by_parameters([param])
+                self.distribute_focused(sorted_by_param, assigned_people, current_group_index)
             elif strategy == 'spread':
+                # Distribute people without sorting if strategy is 'spread'
                 self.distribute_spread(sorted_people, assigned_people, current_group_index)
         
         # Balance groups to ensure min_group_size
@@ -105,25 +108,24 @@ class GroupSorter:
         
         # Return only non-empty groups
         return [group for group in self.groups if group.members]
-
-    def distribute_focused(self, people_by_value: dict, assigned_people: set, current_group_index: int):
+    
+    def distribute_focused(self, sorted_people: List[Person], assigned_people: set, current_group_index: int):
         """
-        Distributes people into groups focused (homogeneously) based on the given people_by_value dictionary.
+        Distributes people into groups focused (homogeneously) based on the given sorted_people list.
 
         Args:
-            people_by_value (dict): Dictionary containing lists of people grouped by parameter values.
+            sorted_people (List[Person]): List of people sorted by the current parameter.
             assigned_people (set): Set of people who have already been assigned to a group.
             current_group_index (int): Current index of the group being processed.
         """
-        for value, people_list in people_by_value.items():
-            for person in people_list:
-                if person not in assigned_people:
-                    self.groups[current_group_index].add_member(person)
-                    assigned_people.add(person)
-                    if len(self.groups[current_group_index].members) >= self.max_group_size:
-                        current_group_index += 1
-                        if current_group_index >= len(self.groups):
-                            current_group_index = 0
+        for person in sorted_people:
+            if person not in assigned_people:
+                self.groups[current_group_index].add_member(person)
+                assigned_people.add(person)
+                if len(self.groups[current_group_index].members) >= self.max_group_size:
+                    current_group_index += 1
+                    if current_group_index >= len(self.groups):
+                        current_group_index = 0
 
     def distribute_spread(self, sorted_people: List[Person], assigned_people: set, current_group_index: int):
         """

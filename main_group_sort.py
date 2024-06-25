@@ -16,41 +16,32 @@ def main():
     max_num_groups = 10
     
     # Define sorting and grouping strategies
-    strategies = {'gender': 'focused'}  # 'focused' for homogeneous, 'spread' for heterogeneous
-    # Define sorting and grouping strategies
-    #strategies = {'gender': 'spread', 'education': 'focused'}
+    #strategies = {'gender': 'focused'}  # Example strategy, can be adjusted
     #strategies = {'gender': 'spread'}
     #strategies = {'gender': 'spread', 'education': 'focused'}
-    #strategies = {'gender': 'spread', 'education': 'focused'}
-
+    strategies = {'gender': 'focused', 'education': 'spread'}
+    
     # Create an instance of GroupSorter
     sorter = GroupSorter(min_group_size, max_group_size, max_groups_per_person, max_num_groups)
     
     # Set the people to be sorted
     sorter.set_people_to_sort(people)
     
-    # Sort people based on parameters (sorted by 'gender' in this case)
-    sorted_people = sorter.sort_people_by_parameters(list(strategies.keys()))
-    
-    # Debugging: Print sorted people
-    print("Sorted People:")
-    for person in sorted_people:
-        print(f"{person.id}, {person.name}, {person.gender}, {person.education}")
-    print()
+    # Sort people based on parameters if strategy is 'focused'
+    if any(strategy == 'focused' for strategy in strategies.values()):
+        sorted_people = sorter.sort_people_by_parameters(list(strategies.keys()))
+    else:
+        sorted_people = people  # No sorting if strategy is 'spread'
     
     # Distribute people into groups based on strategies
     groups = sorter.distribute_people_to_groups(sorted_people, strategies)
     
-    # Debugging: Print groups
-    if groups:
-        print("Groups formed:")
-        for group in groups:
-            print(f"Group {group.id} ({len(group.members)} members):")
-            for person in group.members:
-                print(f"- {person.id}, {person.name}, {person.gender}, {person.education}")
-            print()
-    else:
-        print("No groups formed. Check sorting and distribution logic.")
-    
+    # Print out the groups
+    for group in groups:
+        print(f"Group {group.id} ({len(group.members)} members):")
+        for person in group.members:
+            print(f"- {person.id}, {person.name}, {person.gender}, {person.education}")
+        print()
+
 if __name__ == "__main__":
     main()
