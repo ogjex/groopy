@@ -29,11 +29,16 @@ class PersonEditor:
                 person_data['experience'] = int(person_data['experience'])  # Convert 'experience' to integer
                 person_data['desirables'] = person_data['desirables'].split(';') if person_data['desirables'] else []
                 person_data['undesirables'] = person_data['undesirables'].split(';') if person_data['undesirables'] else []
-                if has_id:
+                if 'id' in person_data and has_id:
                     person_data['id'] = int(person_data['id'])  # Convert 'id' to integer if present
                 else:
                     person_data['id'] = self.next_id  # Assign the next_id if 'id' is not present
-                persons.append(Person(**person_data))
+                
+                # Ensure 'location_preference' is present in person_data
+                if 'location_preference' not in person_data:
+                    raise ValueError("Missing required field: 'location_preference'")
+                
+                persons.append(Person(**person_data))  # Pass person_data as kwargs
                 self.next_id += 1  # Increment next_id for the next person
         self.persons = persons  # Update the persons list in the editor
         return persons
