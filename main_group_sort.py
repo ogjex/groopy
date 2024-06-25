@@ -19,11 +19,14 @@ def main():
     max_num_groups = 10
     
     # Define sorting and grouping strategies
-    strategies = {'gender': 'focused'}  # Example strategy, can be adjusted
+    #strategies = {'gender': 'focused'}  # Example strategy, can be adjusted
     #strategies = {'gender': 'spread'}
     #strategies = {'gender': 'spread', 'education': 'focused'}
     #strategies = {'gender': 'focused', 'education': 'spread'}
+    #strategies = {'gender': 'spread', 'education': 'spread'}
     #strategies = {'location_preference': 'focused', 'gender': 'spread'}
+    #strategies = {'location_preference': 'spread'}
+    strategies = {'location_preference': 'focused', 'gender': 'spread', 'education': 'spread'}
     # Create an instance of GroupSorter
     sorter = GroupSorter(min_group_size, max_group_size, max_groups_per_person, max_num_groups)
     

@@ -93,8 +93,7 @@ class GroupSorter:
         assigned_people = set()
         
         # Distribute people to groups based on strategies
-        for param in sorted(strategies.keys()):  # Sort keys to prioritize 'gender' over 'education'
-            strategy = strategies[param]
+        for param, strategy in strategies.items():
             people_by_value = parameter_people_dict[param]
             
             if strategy == 'focused':
