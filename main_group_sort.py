@@ -6,10 +6,9 @@ def main():
     person_editor = PersonEditor()
     
     # Read persons from CSV or create sample data
-    people = person_editor.create_persons_sample()
-    '''person_editor.save_csv(person_sample)
     filename = 'persons.csv'
-    people = person_editor.read_persons_from_csv(filename)'''
+    person_editor.save_csv(filename)
+    #people = person_editor.read_persons_from_csv(filename)
 
     
     # Initialize GroupSorter with parameters

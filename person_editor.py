@@ -7,6 +7,45 @@ class PersonEditor:
         self.persons = []
         self.reset_id()
 
+    def reset_id(self) -> None:
+        """
+        Reset the current_id attribute to 1.
+        """
+        self.current_id = 1
+
+    def next_id(self) -> int:
+        next_id = self.current_id
+        self.current_id += 1
+        return next_id
+
+    def add_person(self, person: Person):
+        self.persons.append(person)
+    
+    def save_csv(self, filename='persons.csv', persons=None):
+        if persons is not None:
+            self.write_to_csv(persons, filename)
+        else:
+            self.create_persons_sample()
+            self.write_to_csv(filename, self.persons)          
+
+    def write_to_csv(self, filename, person_list):
+        fieldnames = ['id', 'name', 'gender', 'education', 'experience', 'career_preference', 'location_preference', 'desirables', 'undesirables']
+        with open(filename, 'w', newline='') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+            writer.writeheader()
+            for person in person_list:
+                writer.writerow({
+                    'id': person.id,
+                    'name': person.name,
+                    'gender': person.gender,
+                    'education': person.education,
+                    'experience': person.experience,
+                    'career_preference': person.career_preference,
+                    'location_preference': person.location_preference,
+                    'desirables': ','.join(person.desirables),
+                    'undesirables': ','.join(person.undesirables)
+                })
+
     def read_persons_from_csv(self, filename: str) -> List[Person]:
         """
         Read a list of persons from a CSV file.
@@ -32,14 +71,9 @@ class PersonEditor:
                 if 'id' in person_data and has_id:
                     person_data['id'] = int(person_data['id'])  # Convert 'id' to integer if present
                 else:
-                    person_data['id'] = self.next_id  # Assign the next_id if 'id' is not present
-                
-                # Ensure 'location_preference' is present in person_data
-                if 'location_preference' not in person_data:
-                    raise ValueError("Missing required field: 'location_preference'")
-                
+                    person_data['id'] = self.next_id()  # Assign the current_id if 'id' is not present
+                                
                 persons.append(Person(**person_data))  # Pass person_data as kwargs
-                self.next_id += 1  # Increment next_id for the next person
         self.persons = persons  # Update the persons list in the editor
         return persons
 
@@ -95,29 +129,6 @@ class PersonEditor:
             persons_data.append(person_data)
         return persons_data
 
-    def save_csv(self, persons=None, filename='persons.csv'):
-        if persons is not None:
-            self._save_persons_to_csv(persons, filename)
-        else:
-            persons_sample = self.create_persons_sample()
-            self._save_persons_to_csv(persons_sample, filename)
-
-    def _save_persons_to_csv(self, persons: List[Person], filename: str):
-        """
-        Save the list of persons to a CSV file.
-
-        Args:
-        - persons: A list of Person objects.
-        - filename: The filename of the CSV file.
-        """
-        with open(filename, 'w', newline='') as csv_file:
-            fieldnames = self._get_csv_fieldnames()
-            csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            csv_writer.writeheader()
-            for person in persons:
-                row_data = {fieldname: getattr(person, fieldname.lower()) for fieldname in fieldnames}
-                csv_writer.writerow(row_data)
-
     def _get_csv_fieldnames(self, with_id=True) -> List[str]:
         """
         Get the fieldnames structure of the CSV file.
@@ -128,7 +139,7 @@ class PersonEditor:
         Returns:
         A list of fieldnames.
         """
-        base_fieldnames = ['name', 'gender', 'education', 'experience', 'career_preference', 'desirables', 'undesirables']
+        base_fieldnames = ['name', 'gender', 'education', 'experience', 'career_preference', 'location_preference','desirables', 'undesirables']
         if with_id:
             return ['id'] + base_fieldnames
         return base_fieldnames
@@ -148,39 +159,37 @@ class PersonEditor:
                 return person
         return None
 
-    def reset_id(self) -> None:
-        """
-        Reset the next_id attribute to 1.
-        """
-        self.next_id = 1
-
-    def create_persons_sample(self) -> List[Person]:
+    def create_persons_sample(self):
         self.persons.clear()
         self.reset_id()
         persons = [
-        Person(id=self.next_id, name="Alice A.", gender="Female", education="Engineering", experience=3, career_preference="Software Development", location_preference="Zealand", desirables=["Bob", "Charlie"]),
-        Person(id=self.next_id + 1, name="Bob", gender="Male", education="Software Engineering", experience=5, career_preference="Software Engineering", location_preference="Zealand", desirables=["Alice"]),
-        Person(id=self.next_id + 2, name="Charlie", gender="Male", education="Mathematics", experience=2, career_preference="Finance", location_preference="Zealand", desirables=["Alice"]),
-        Person(id=self.next_id + 3, name="Eve", gender="Female", education="Engineering", experience=4, career_preference="Software Development", location_preference="Zealand", desirables=["Alice", "Bob"]),
-        Person(id=self.next_id + 4, name="Alice B.", gender="Male", education="Engineering", experience=6, career_preference="Data Science", location_preference="Zealand", desirables=["Alice"]),
-        Person(id=self.next_id + 5, name="Frank", gender="Male", education="Mathematics", experience=1, career_preference="Software Development", location_preference="Jutland"),
-        Person(id=self.next_id + 6, name="Grace", gender="Female", education="Computer Science", experience=4, career_preference="Finance", location_preference="Zealand", desirables=["Bob"]),
-        Person(id=self.next_id + 7, name="Harry", gender="Male", education="Engineering", experience=3, career_preference="Data Science", location_preference="Zealand", desirables=["Alice"]),
-        Person(id=self.next_id + 8, name="Isabel", gender="Female", education="Mathematics", experience=2, career_preference="Software Development", location_preference="Zealand", desirables=["Bob"]),
-        Person(id=self.next_id + 9, name="Jack", gender="Male", education="Engineering", experience=5, career_preference="Finance", location_preference="Zealand", desirables=["Alice"]),
-        Person(id=self.next_id + 10, name="Karen", gender="Female", education="Computer Science", experience=3, career_preference="Data Science", location_preference="Zealand", desirables=["Alice"]),
-        Person(id=self.next_id + 11, name="Liam", gender="Male", education="Engineering", experience=4, career_preference="Software Development", location_preference="Jutland"),
-        Person(id=self.next_id + 12, name="Mia", gender="Female", education="Mathematics", experience=5, career_preference="Data Science", location_preference="Zealand", desirables=["Charlie"]),
-        Person(id=self.next_id + 13, name="Nathan", gender="Male", education="Engineering", experience=3, career_preference="Finance", location_preference="Zealand", desirables=["Alice"]),
-        Person(id=self.next_id + 14, name="Olivia", gender="Female", education="Computer Science", experience=2, career_preference="Software Development", location_preference="Zealand", desirables=["Bob"]),
-        Person(id=self.next_id + 15, name="Peter", gender="Male", education="Mathematics", experience=4, career_preference="Data Science", location_preference="Zealand", desirables=["Alice"]),
-        Person(id=self.next_id + 16, name="Quinn", gender="Female", education="Engineering", experience=3, career_preference="Finance", location_preference="Zealand", desirables=["Alice"]),
-        Person(id=self.next_id + 17, name="Robert", gender="Male", education="Computer Science", experience=2, career_preference="Software Development", location_preference="Zealand", desirables=["Alice"]),
-        Person(id=self.next_id + 18, name="Sophia", gender="Female", education="Mathematics", experience=4, career_preference="Data Science", location_preference="Zealand", desirables=["Charlie"]),
-        Person(id=self.next_id + 19, name="Thomas", gender="Male", education="Engineering", experience=5, career_preference="Finance", location_preference="Virtual"),
-        Person(id=self.next_id + 20, name="Hortensia", gender="Female", education="Economics", experience=5, career_preference="Finance", location_preference="Virtual")
+            Person(id=self.next_id(), name="Alice A.", gender="Female", education="Engineering", experience=3, career_preference="Software Development", location_preference="Zealand", desirables=["Bob", "Charlie"]),
+            Person(id=self.next_id(), name="Bob", gender="Male", education="Software Engineering", experience=5, career_preference="Software Engineering", location_preference="Zealand", desirables=["Alice"]),
+            Person(id=self.next_id(), name="Charlie", gender="Male", education="Mathematics", experience=2, career_preference="Finance", location_preference="Zealand", desirables=["Alice"]),
+            Person(id=self.next_id(), name="Eve", gender="Female", education="Engineering", experience=4, career_preference="Software Development", location_preference="Zealand", desirables=["Alice", "Bob"]),
+            Person(id=self.next_id(), name="Alice B.", gender="Male", education="Engineering", experience=6, career_preference="Data Science", location_preference="Zealand", desirables=["Alice"]),
+            Person(id=self.next_id(), name="Frank", gender="Male", education="Mathematics", experience=1, career_preference="Software Development", location_preference="Jutland"),
+            Person(id=self.next_id(), name="Grace", gender="Female", education="Computer Science", experience=4, career_preference="Finance", location_preference="Zealand", desirables=["Bob"]),
+            Person(id=self.next_id(), name="Harry", gender="Male", education="Engineering", experience=3, career_preference="Data Science", location_preference="Zealand", desirables=["Alice"]),
+            Person(id=self.next_id(), name="Isabel", gender="Female", education="Mathematics", experience=2, career_preference="Software Development", location_preference="Zealand", desirables=["Bob"]),
+            Person(id=self.next_id(), name="Jack", gender="Male", education="Engineering", experience=5, career_preference="Finance", location_preference="Zealand", desirables=["Alice"]),
+            Person(id=self.next_id(), name="Karen", gender="Female", education="Computer Science", experience=3, career_preference="Data Science", location_preference="Zealand", desirables=["Alice"]),
+            Person(id=self.next_id(), name="Liam", gender="Male", education="Engineering", experience=4, career_preference="Software Development", location_preference="Jutland"),
+            Person(id=self.next_id(), name="Mia", gender="Female", education="Mathematics", experience=5, career_preference="Data Science", location_preference="Zealand", desirables=["Charlie"]),
+            Person(id=self.next_id(), name="Nathan", gender="Male", education="Engineering", experience=3, career_preference="Finance", location_preference="Zealand", desirables=["Alice"]),
+            Person(id=self.next_id(), name="Olivia", gender="Female", education="Computer Science", experience=2, career_preference="Software Development", location_preference="Zealand", desirables=["Bob"]),
+            Person(id=self.next_id(), name="Peter", gender="Male", education="Mathematics", experience=4, career_preference="Data Science", location_preference="Zealand", desirables=["Alice"]),
+            Person(id=self.next_id(), name="Quinn", gender="Female", education="Engineering", experience=3, career_preference="Finance", location_preference="Zealand", desirables=["Alice"]),
+            Person(id=self.next_id(), name="Robert", gender="Male", education="Computer Science", experience=2, career_preference="Software Development", location_preference="Zealand", desirables=["Alice"]),
+            Person(id=self.next_id(), name="Sophia", gender="Female", education="Mathematics", experience=4, career_preference="Data Science", location_preference="Zealand", desirables=["Charlie"]),
+            Person(id=self.next_id(), name="Thomas", gender="Male", education="Engineering", experience=5, career_preference="Finance", location_preference="Virtual"),
+            Person(id=self.next_id(), name="Hortensia", gender="Female", education="Economics", experience=5, career_preference="Finance", location_preference="Virtual")
         ]
-
-        self.next_id += len(persons)  # Increment next_id by the number of persons added
-        self.persons = persons
-        return persons
+        for person in persons: 
+                self.add_person(person)
+    
+    # Example usage
+if __name__ == "__main__":
+    editor = PersonEditor()
+    editor.save_csv("persons.csv")
+    
