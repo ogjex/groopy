@@ -30,7 +30,7 @@ def main():
     sorter = GroupSorter(min_group_size, max_group_size, max_groups_per_person, max_num_groups)
     
     # Set the people to be sorted
-    sorter.set_people_to_sort(people)
+    sorter.set_people_to_sort(person_editor.persons)
         
     # Distribute people into groups based on strategies
     groups = sorter.distribute_people_to_groups(strategies)
