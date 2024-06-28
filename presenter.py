@@ -43,13 +43,8 @@ class Presenter(object):
 
     def handle_save_workspace(self, file_path):
         raise NotImplementedError("This function is not yet implemented.")
-        #groups_data = self.main_window.get_groups_data()
-        #self.group_editor.create_groups_from_data(groups_data)
-        #self.group_editor.save_groups_to_json(file_path)
 
     def handle_save_group_file(self, file_path):
-        groups_data = self.main_window.get_groups_data()
-        self.group_editor.create_groups_from_data(groups_data)
         self.group_editor.save_groups_to_json(file_path, self.person_editor.person_csv_filename)
 
     def handle_import_group_widgets(self):

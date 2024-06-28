@@ -1,0 +1,86 @@
+{
+    "number_of_groups": 10,
+    "groups": {
+        "group1": {
+            "id": 1,
+            "name": "Group 1",
+            "participants": [
+                3
+            ]
+        },
+        "group2": {
+            "id": 2,
+            "name": "Group 2",
+            "participants": [
+                4,
+                5,
+                6
+            ]
+        },
+        "group3": {
+            "id": 3,
+            "name": "Group 3",
+            "participants": [
+                7,
+                8,
+                9
+            ]
+        },
+        "group4": {
+            "id": 4,
+            "name": "Group 4",
+            "participants": [
+                10,
+                11,
+                12
+            ]
+        },
+        "group5": {
+            "id": 5,
+            "name": "Group 5",
+            "participants": [
+                13,
+                14,
+                15
+            ]
+        },
+        "group6": {
+            "id": 6,
+            "name": "Group 6",
+            "participants": [
+                16,
+                17,
+                18
+            ]
+        },
+        "group7": {
+            "id": 7,
+            "name": "Group 7",
+            "participants": [
+                19,
+                20,
+                21
+            ]
+        },
+        "group8": {
+            "id": 8,
+            "name": "Group 8",
+            "participants": []
+        },
+        "group9": {
+            "id": 9,
+            "name": "Group 9",
+            "participants": [
+                1
+            ]
+        },
+        "group10": {
+            "id": 10,
+            "name": "Group 10",
+            "participants": [
+                2
+            ]
+        }
+    },
+    "persons_csv_path": "persons.csv"
+}

@@ -12,7 +12,8 @@ class GroupEditor:
     
     def load_group(self, group_id, group_info):
         group_name = group_info["name"]
-        participants = group_info["participants"]
+        #participants = group_info["participants"]
+        participants = [(person_id, "") for person_id in group_info["participants"]]  # Placeholder for person_name
         return (group_id, group_name, participants)
 
     def read_groups_from_json(self, filename):
