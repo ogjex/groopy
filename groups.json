@@ -2,84 +2,83 @@
     "number_of_groups": 10,
     "groups": {
         "group1": {
+            "id": 1,
             "name": "Group 1",
             "participants": [
-                "Alice",
-                "Bob",
-                "Charlie"
+                1,
+                2,
+                3
             ]
         },
         "group2": {
+            "id": 2,
             "name": "Group 2",
             "participants": [
-                "David",
-                "Eve",
-                "Frank",
-                "Henry",
-                "Ivy"
+                4,
+                5,
+                6
             ]
         },
         "group3": {
+            "id": 3,
             "name": "Group 3",
             "participants": [
-                "Grace"
+                7,
+                8,
+                9
             ]
         },
         "group4": {
+            "id": 4,
             "name": "Group 4",
             "participants": [
-                "Jack",
-                "Kate",
-                "Liam",
-                "Nathan",
-                "Olivia"
+                10,
+                11,
+                12
             ]
         },
         "group5": {
+            "id": 5,
             "name": "Group 5",
             "participants": [
-                "Mary"
+                13,
+                14,
+                15
             ]
         },
         "group6": {
+            "id": 6,
             "name": "Group 6",
             "participants": [
-                "Peter",
-                "Queen",
-                "Robert"
+                16,
+                17,
+                18
             ]
         },
         "group7": {
+            "id": 7,
             "name": "Group 7",
             "participants": [
-                "Henry",
-                "Norton",
-                "Moose"
+                19,
+                20,
+                21
             ]
         },
         "group8": {
+            "id": 8,
             "name": "Group 8",
-            "participants": [
-                "Stan",
-                "Chao",
-                "Missy"
-            ]
+            "participants": []
         },
         "group9": {
+            "id": 9,
             "name": "Group 9",
-            "participants": [
-                "Helle",
-                "Finn",
-                "Dave"
-            ]
+            "participants": []
         },
         "group10": {
+            "id": 10,
             "name": "Group 10",
-            "participants": [
-                "John",
-                "Jane",
-                "Hunny"
-            ]
+            "participants": []
         }
-    }
+    },
+    "persons_csv_path": "persons.csv"
 }

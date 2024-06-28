@@ -20,6 +20,7 @@ class GroupWindow(QWidget):
         self.setLayout(self.grid_layout)
 
     def import_group_widgets(self, groups_data):
+        print(f"{groups_data}")
         for group_id, title, participants in groups_data:
             new_group = GroupWidget(group_id, title, participants, self.presenter)
             self.grid_layout.addWidget(new_group)

@@ -10,19 +10,10 @@ class GroupEditor:
         self.person_editor = person_editor
         self.next_id = 1  # Initialize the next_id to 1
     
-    def load_group(self, group_info):
-        """
-        Load a group from JSON data.
-        
-        Args:
-        - group_info: A dictionary containing information about a group.
-        
-        Returns:
-        A list containing the group name and a list of participants.
-        """
+    def load_group(self, group_id, group_info):
         group_name = group_info["name"]
         participants = group_info["participants"]
-        return [group_name, participants]
+        return (group_id, group_name, participants)
 
     def read_groups_from_json(self, filename):
         """
@@ -37,8 +28,8 @@ class GroupEditor:
         with open(filename, 'r') as json_file:
             data = json.load(json_file)
 
-        groups = [self.load_group(group_info) for group_info in data["groups"].values()]
-
+        groups = [self.load_group(int(group_id.lstrip("group")), group_info) for group_id, group_info in data["groups"].items()]
+        self.create_groups_from_data(groups)
         return groups
 
     def get_group_names(self) -> List[str]:
@@ -81,18 +72,14 @@ class GroupEditor:
         - groups_data: A list of tuples where each tuple contains group data (ID, name, participants).
           The participants are IDs referencing Person objects.
         """
-        self.groups.clear()  # Clear existing groups
-
-        # Iterate over the provided group data to create and populate Group objects
+        self.groups.clear()
         for group_id, group_name, participant_ids in groups_data:
-            group = Group(id=group_id, name=group_name)  # Create a new Group object
+            group = Group(id=group_id, name=group_name)
             for person_id in participant_ids:
-                person = self.person_editor.get_person_by_id(person_id)  # Get Person object using PersonEditor
+                person = self.person_editor.get_person_by_id(person_id)
                 if person:
-                    group.add_member(person)  # Add Person object to the Group
-            self.groups.append(group)  # Add the populated Group to the list of groups
-
-            # Ensure next_id is always greater than the highest current ID
+                    group.add_member(person)
+            self.groups.append(group)
             self.next_id = max(self.next_id, group_id + 1)
 
     def move_person_to_group(self, person_id: int, target_group_id: int) -> bool:
@@ -198,3 +185,30 @@ class GroupEditor:
     def print_groups(self):
         for g in self.groups:
             print(g)
+
+if __name__ == "__main__":
+    # Initialize PersonEditor
+    person_editor = PersonEditor()
+    
+    # Create sample persons
+    person_editor.create_persons_sample()
+    
+    # Save sample persons to CSV
+    persons_csv_path = "persons.csv"
+    person_editor.save_csv(persons_csv_path)
+    
+    # Initialize GroupEditor with PersonEditor
+    group_editor = GroupEditor(person_editor)
+    
+    # Create sample groups using persons from PersonEditor
+    group_editor.create_group_data_sample()
+    
+    # Save sample groups to JSON
+    groups_json_path = "groups.json"
+    group_editor.save_groups_to_json(groups_json_path, persons_csv_path)
+    
+    # Read groups back from JSON
+    groups = group_editor.read_groups_from_json(groups_json_path)
+    
+    # Print the loaded groups
+    group_editor.print_groups()

@@ -3,6 +3,8 @@ from typing import List, Optional
 from person import Person
 
 class PersonEditor:
+    person_csv_filename = 'persons.csv'
+
     def __init__(self):
         self.persons = []
         self.reset_id()
@@ -21,7 +23,7 @@ class PersonEditor:
     def add_person(self, person: Person):
         self.persons.append(person)
     
-    def save_csv(self, filename='persons.csv', persons=None):
+    def save_csv(self, filename=person_csv_filename, persons=None):
         if persons is not None:
             self.write_to_csv(persons, filename)
         else:
