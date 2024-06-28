@@ -12,9 +12,9 @@ class GroupEditor:
     
     def load_group(self, group_id, group_info):
         group_name = group_info["name"]
-        #participants = group_info["participants"]
-        participants = [(person_id, "") for person_id in group_info["participants"]]  # Placeholder for person_name
+        participants = group_info["participants"]
         return (group_id, group_name, participants)
+
 
     def read_groups_from_json(self, filename):
         """
@@ -24,15 +24,20 @@ class GroupEditor:
         - filename: The filename of the JSON file.
         
         Returns:
-        A list of lists where each inner list contains the group name and a list of participants.
+        A list of tuples where each tuple contains the group ID, name, and participants.
         """
         with open(filename, 'r') as json_file:
             data = json.load(json_file)
 
-        groups = [self.load_group(int(group_id.lstrip("group")), group_info) for group_id, group_info in data["groups"].items()]
-        self.create_groups_from_data(groups)
-        return groups
+        groups_data = [
+            self.load_group(int(group_id.lstrip("group")), group_info)
+            for group_id, group_info in data["groups"].items()
+        ]
 
+        self.create_groups_from_data(groups_data)
+        
+        return groups_data
+    
     def get_group_names(self) -> List[str]:
         """
         Get the list of group names.
@@ -53,6 +58,7 @@ class GroupEditor:
 
         # Create a list of dictionaries containing group id, name, and participants (with IDs only)
         groups_data = [{"id": group.id, "name": group.name, "participants": [person.id for person in group.members]} for group in self.groups]
+        
 
         # Create a dictionary to store the number of groups, groups' data, and the persons CSV path
         data = {
@@ -164,7 +170,7 @@ class GroupEditor:
 
         # Get the sample persons created by PersonEditor
         persons = self.person_editor.get_persons()
-
+        
         # Create groups using the sample persons created by PersonEditor
         groups_data = [
             ("Group 1", [person.id for person in persons[:3]]),  # Assign IDs from first 3 persons to Group 1
@@ -181,6 +187,7 @@ class GroupEditor:
 
         # Add group IDs to each group data tuple
         groups_data_with_ids = [(i + 1, title, participants) for i, (title, participants) in enumerate(groups_data)]
+    
         self.create_groups_from_data(groups_data_with_ids)
     
     def print_groups(self):
