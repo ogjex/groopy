@@ -38,8 +38,7 @@ class Presenter(object):
     def handle_open_group_file(self, file_path):
         self.main_window.clear_group_widgets()
         groups_data = self.group_editor.read_groups_from_json(file_path)
-        self.main_window.import_group_widgets(groups_data)
-        #self.main_window.import_group_widgets(new_groups)
+        self.handle_import_group_widgets()
 
     def handle_save_workspace(self, file_path):
         raise NotImplementedError("This function is not yet implemented.")
