@@ -66,13 +66,17 @@ class PersonEditor:
             for row in csv_reader:
                 person_data = {fieldname: row[fieldname] for fieldname in fieldnames}
                 person_data['experience'] = int(person_data['experience'])  # Convert 'experience' to integer
-                person_data['desirables'] = person_data['desirables'].split(';') if person_data['desirables'] else []
-                person_data['undesirables'] = person_data['undesirables'].split(';') if person_data['undesirables'] else []
+                person_data['desirables'] = person_data['desirables'].split(',') if person_data['desirables'] else []
+                person_data['undesirables'] = person_data['undesirables'].split(',') if person_data['undesirables'] else []
                 if 'id' in person_data and has_id:
                     person_data['id'] = int(person_data['id'])  # Convert 'id' to integer if present
                 else:
-                    person_data['id'] = self.next_id()  # Assign the current_id if 'id' is not present
-                                
+                    person_data['id'] = self.next_id()  # Assign the next_id if 'id' is not present
+                
+                # Ensure 'location_preference' is present in person_data
+                if 'location_preference' not in person_data:
+                    raise ValueError("Missing required field: 'location_preference'")
+                
                 persons.append(Person(**person_data))  # Pass person_data as kwargs
         self.persons = persons  # Update the persons list in the editor
         return persons
@@ -192,4 +196,10 @@ class PersonEditor:
 if __name__ == "__main__":
     editor = PersonEditor()
     editor.save_csv("persons.csv")
+    # Read the persons from the CSV file
+    persons_from_csv = editor.read_persons_from_csv("persons.csv")
+
+    # Print out the persons read from the CSV to verify
+    for person in persons_from_csv:
+        print(person)
     
