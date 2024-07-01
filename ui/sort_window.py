@@ -19,6 +19,8 @@ class Presenter(Protocol):
         ...
     def load_initial_max_total_groups_value(self) -> int:
         ...
+    def handle_sort_groups(self) -> None:
+        ...
 class SortWindow(QWidget):
     def __init__(self, presenter: Presenter):
         super().__init__()
@@ -66,8 +68,9 @@ class SortWindow(QWidget):
         self.layout.addWidget(self.sl_widget)
         # Create the buttons
         self.btn_sort = QPushButton("Sort Groups")
-        self.btn_clear_group = QPushButton("Clear Groups")
         self.layout.addWidget(self.btn_sort)
+
+        self.btn_sort.connect(self.sort_groups)
 
         # Set the layout
         self.setLayout(self.layout)
@@ -102,10 +105,10 @@ class SortWindow(QWidget):
         self.inp_max_total_groups.setCurrentIndex(max_total_groups - 1)
 
     def sort_groups(self):
-        pass
-        # Send the ordered checkbox states to the Presenter
-        #ordered_checkbox_states = self.get_checkbox_values()
-        #self.presenter.process_checkbox_order(ordered_checkbox_states)
+        # extract the current sort order as a dict
+        #ordered_sort_priority = dict
+        # send sort order as dict to presenter
+        #self.presenter.handle_sort_groups(ordered_priority)
 
     def get_min_group_size(self) -> int:
         """
