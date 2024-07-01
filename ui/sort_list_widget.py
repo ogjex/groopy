@@ -126,13 +126,20 @@ class SortListWidget(DragWidgetContainer):
         for index in range(self.dragwidget_layout.count()):
             widget = self.get_drag_sort_widget_at_index(index)
             if widget and widget.is_checked():
-                checked_data.append(widget.get_data())
+                checked_data.append((widget.label.text(), widget.checkbox.isChecked(), widget.get_selected_radio()))
+                # Debugging: Print each checked widget data
+                print("Checked widget:", widget.label.text(), widget.checkbox.isChecked(), widget.get_selected_radio())
         return checked_data
 
-    def get_drag_sort_widget_at_index(self, index) -> list:
+    def get_drag_sort_widget_at_index(self, index) -> DragSortWidget:
         widget_item = self.dragwidget_layout.itemAt(index)
         if widget_item:
-            widget = widget_item.widget()
-            if isinstance(widget, DragSortWidget):
-                return widget
+            frame_widget = widget_item.widget()
+            if isinstance(frame_widget, QFrame):
+                frame_layout = frame_widget.layout()
+                if frame_layout:
+                    for i in range(frame_layout.count()):
+                        widget = frame_layout.itemAt(i).widget()
+                        if isinstance(widget, DragSortWidget):
+                            return widget
         return None

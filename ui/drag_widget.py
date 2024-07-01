@@ -88,7 +88,7 @@ class DragSortWidget(DragWidget):
         
         self.setLayout(main_layout)
     
-    def is_checked(self):
+    def is_checked(self) -> bool:
         return self.checkbox.isChecked()
     
     def get_label_text(self):

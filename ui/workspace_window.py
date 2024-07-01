@@ -1,8 +1,5 @@
-from PyQt6.QtGui import QColor, QFont
-from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QLabel,
-    QHBoxLayout,
     QSpacerItem,
     QSizePolicy,
     QFileDialog,
@@ -12,7 +9,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QMessageBox
 )
-from typing import Protocol, List
+from typing import Protocol
 class Presenter(Protocol):
     def handle_open_workspace(self, filename):
         ...

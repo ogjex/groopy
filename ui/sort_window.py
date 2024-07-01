@@ -1,9 +1,14 @@
 import sys
 from PyQt6.QtWidgets import (
-    QApplication, QComboBox, QLabel, QWidget, QVBoxLayout, QMessageBox, QPushButton
+    QApplication, 
+    QComboBox, 
+    QLabel, 
+    QWidget, 
+    QVBoxLayout, 
+    QPushButton
 )
 
-from typing import Protocol
+from typing import Protocol, Dict
 from ui.sort_list_widget import SortListWidget
 
 class Presenter(Protocol):
@@ -19,7 +24,7 @@ class Presenter(Protocol):
         ...
     def load_initial_max_total_groups_value(self) -> int:
         ...
-    def handle_sort_groups(self) -> None:
+    def handle_sort_groups(self, strategies: dict[str, str]) -> None:
         ...
 class SortWindow(QWidget):
     def __init__(self, presenter: Presenter):
@@ -70,7 +75,7 @@ class SortWindow(QWidget):
         self.btn_sort = QPushButton("Sort Groups")
         self.layout.addWidget(self.btn_sort)
 
-        self.btn_sort.connect(self.sort_groups)
+        self.btn_sort.clicked.connect(self.sort_groups)
 
         # Set the layout
         self.setLayout(self.layout)
@@ -85,8 +90,7 @@ class SortWindow(QWidget):
             self.inp_maximum_group_size,
             self.inp_max_total_groups,
             #self.top_checkbox,
-            self.btn_sort,
-            self.btn_clear_group,
+            self.btn_sort
         ])
         #total_height += sum(checkbox.sizeHint().height() for checkbox in self.checkbox_dict.values())
 
@@ -105,11 +109,17 @@ class SortWindow(QWidget):
         self.inp_max_total_groups.setCurrentIndex(max_total_groups - 1)
 
     def sort_groups(self):
-        # extract the current sort order as a dict
-        #ordered_sort_priority = dict
-        # send sort order as dict to presenter
-        #self.presenter.handle_sort_groups(ordered_priority)
+        strategies = self.gather_strategies()
+        self.presenter.handle_sort_groups(strategies)
 
+    def gather_strategies(self) -> Dict[str, str]:
+        checked_data = self.sl_widget.get_checked_sort_list_data()
+        strategies = {}
+        for label, checkbox_state, radio_option in checked_data:
+            if checkbox_state:  # Optional: Ensure checkbox is checked, though it should always be true here
+                strategies[label] = radio_option
+        return strategies
+        
     def get_min_group_size(self) -> int:
         """
         Return the minimum group size entered by the user.

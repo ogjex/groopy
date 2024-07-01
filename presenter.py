@@ -109,6 +109,11 @@ class Presenter(object):
     def update_sort_window_values(self):
         self.main_window.update_sort_window_values()
 
+    def handle_sort_groups(self, strategies: dict[str, str]) -> None:
+        
+        # Debugging: Print the gathered strategies
+        print("Gathered strategies:", strategies)
+        
     def run(self) -> None:
         # Load preferences
         self.handler.load_preferences()
