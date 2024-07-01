@@ -96,7 +96,6 @@ class WorkspaceWindow(QWidget):
         save_button.clicked.connect(self.save_workspace)
         save_as_button.clicked.connect(self.save_as_workspace)
         import_group_button.clicked.connect(self.open_group)        
-        clear_group_layout_button.clicked.connect(self.open_clear_group_layout)
         new_group_layout_button.clicked.connect(self.new_group_layout)
 
     def set_workspace_path(self, file_path: str):
@@ -127,18 +126,5 @@ class WorkspaceWindow(QWidget):
             # Load new groups from file
             self.presenter.handle_open_group_file(file_path)
     
-    def open_clear_group_layout(self) -> None:
-        reply = QMessageBox.warning(
-            self,
-            'Warning',
-            'This clears your current layout. Do you wish to proceed?',
-            QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel
-        )
-
-        if reply == QMessageBox.StandardButton.Ok:
-            self.presenter.handle_clear_group_layout()
-        else:
-            return
-
     def new_group_layout(self):
         raise NotImplementedError("This function is not yet implemented.")

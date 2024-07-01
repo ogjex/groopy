@@ -1,9 +1,7 @@
 import sys
 from PyQt6.QtWidgets import (
-    QApplication, QComboBox, QLabel, QWidget, QVBoxLayout, QCheckBox, QPushButton, QListWidget, QListWidgetItem
+    QApplication, QComboBox, QLabel, QWidget, QVBoxLayout, QMessageBox, QPushButton
 )
-from PyQt6.QtCore import Qt
-from collections import OrderedDict
 
 from typing import Protocol
 from ui.sort_list_widget import SortListWidget
@@ -13,7 +11,9 @@ class Presenter(Protocol):
         ...
     def handle_max_group_size_changed(self, new_value: int) -> None:
         ...
-    def handle_max_total_groups_changed(self, new_value: int) -> None:
+    def handle_max_total_groups_changed(self, new_value: int) -> None:        
+        ...
+    def handle_clear_group_layout(self) -> None:
         ...
     def load_initial_min_group_size_value(self) -> int:
         ...
@@ -29,33 +29,33 @@ class SortWindow(QWidget):
         self.presenter = presenter
 
         # Set up the main layout
-        self.sort_label = QLabel("Sort Groups")
-        self.sort_label.setMaximumHeight(50)
+        self.lbl_sort = QLabel("Sort Groups")
+        self.lbl_sort.setMaximumHeight(50)
         self.layout = QVBoxLayout()
-        self.layout.addWidget(self.sort_label)
+        self.layout.addWidget(self.lbl_sort)
 
         # Add dropdowns for minimum group size, maximum group size, and max total number of groups
-        self.minimum_group_size_input = QComboBox()
-        self.maximum_group_size_input = QComboBox()
-        self.max_total_groups_input = QComboBox()
+        self.inp_minimum_group_size = QComboBox()
+        self.inp_maximum_group_size = QComboBox()
+        self.inp_max_total_groups = QComboBox()
         for i in range(1, 41):
-            self.minimum_group_size_input.addItem(str(i))
-            self.maximum_group_size_input.addItem(str(i))
-            self.max_total_groups_input.addItem(str(i))
+            self.inp_minimum_group_size.addItem(str(i))
+            self.inp_maximum_group_size.addItem(str(i))
+            self.inp_max_total_groups.addItem(str(i))
         self.layout.addWidget(QLabel("Minimum group size:"))
-        self.layout.addWidget(self.minimum_group_size_input)
+        self.layout.addWidget(self.inp_minimum_group_size)
         self.layout.addWidget(QLabel("Maximum group size:"))
-        self.layout.addWidget(self.maximum_group_size_input)
+        self.layout.addWidget(self.inp_maximum_group_size)
         self.layout.addWidget(QLabel("Max total number of groups:"))
-        self.layout.addWidget(self.max_total_groups_input)
+        self.layout.addWidget(self.inp_max_total_groups)
 
         # Load initial values from presenter
         self.set_combobox_values()
 
         # Connect the combo boxes to their respective slots
-        self.minimum_group_size_input.currentIndexChanged.connect(self.on_min_group_size_changed)
-        self.maximum_group_size_input.currentIndexChanged.connect(self.on_max_group_size_changed)
-        self.max_total_groups_input.currentIndexChanged.connect(self.on_max_total_groups_changed)
+        self.inp_minimum_group_size.currentIndexChanged.connect(self.on_min_group_size_changed)
+        self.inp_maximum_group_size.currentIndexChanged.connect(self.on_max_group_size_changed)
+        self.inp_max_total_groups.currentIndexChanged.connect(self.on_max_total_groups_changed)
 
         # create the SortListWidget
         drag_widget_dict = {
@@ -67,11 +67,12 @@ class SortWindow(QWidget):
         self.sl_widget = SortListWidget("Sort Priority", presenter, drag_widget_dict)
         self.layout.addWidget(self.sl_widget)
         # Create the buttons
-        self.sort_button = QPushButton("Sort Groups")
-        self.clear_button = QPushButton("Clear Groups")
-        self.layout.addWidget(self.sort_button)
-        self.layout.addWidget(self.clear_button)
+        self.btn_sort = QPushButton("Sort Groups")
+        self.btn_clear_group = QPushButton("Clear Groups")
+        self.layout.addWidget(self.btn_sort)
+        self.layout.addWidget(self.btn_clear_group)
 
+        self.btn_clear_group.clicked.connect(self.open_clear_group_layout)
         # Connect the buttons to their functions
         #self.sort_button.clicked.connect(self.set_checkboxes_test)
         #self.clear_button.clicked.connect(self.clear_checkboxes)
@@ -85,12 +86,12 @@ class SortWindow(QWidget):
     def adjust_max_height(self):
         # Calculate the required height
         total_height = sum(widget.sizeHint().height() for widget in [
-            self.minimum_group_size_input,
-            self.maximum_group_size_input,
-            self.max_total_groups_input,
+            self.inp_minimum_group_size,
+            self.inp_maximum_group_size,
+            self.inp_max_total_groups,
             #self.top_checkbox,
-            self.sort_button,
-            self.clear_button,
+            self.btn_sort,
+            self.btn_clear_group,
         ])
         #total_height += sum(checkbox.sizeHint().height() for checkbox in self.checkbox_dict.values())
 
@@ -104,9 +105,9 @@ class SortWindow(QWidget):
         max_group_size = self.presenter.load_initial_max_group_size_value()
         max_total_groups = self.presenter.load_initial_max_total_groups_value()
 
-        self.minimum_group_size_input.setCurrentIndex(min_group_size - 1)
-        self.maximum_group_size_input.setCurrentIndex(max_group_size - 1)
-        self.max_total_groups_input.setCurrentIndex(max_total_groups - 1)
+        self.inp_minimum_group_size.setCurrentIndex(min_group_size - 1)
+        self.inp_maximum_group_size.setCurrentIndex(max_group_size - 1)
+        self.inp_max_total_groups.setCurrentIndex(max_total_groups - 1)
 
     def sort_groups(self):
         pass
@@ -118,19 +119,19 @@ class SortWindow(QWidget):
         """
         Return the minimum group size entered by the user.
         """
-        return int(self.minimum_group_size_input.currentText())
+        return int(self.inp_minimum_group_size.currentText())
 
     def get_max_group_size(self) -> int:
         """
         Return the maximum group size entered by the user.
         """
-        return int(self.maximum_group_size_input.currentText())
+        return int(self.inp_maximum_group_size.currentText())
 
     def get_max_total_groups(self) -> int:
         """
         Return the maximum total number of groups entered by the user.
         """
-        return int(self.max_total_groups_input.currentText())
+        return int(self.inp_max_total_groups.currentText())
 
     def on_min_group_size_changed(self):
         min_group_size = self.get_min_group_size()
@@ -143,6 +144,19 @@ class SortWindow(QWidget):
     def on_max_total_groups_changed(self):
         max_total_groups = self.get_max_total_groups()
         self.presenter.handle_max_total_groups_changed(max_total_groups)
+
+    def open_clear_group_layout(self) -> None:
+        reply = QMessageBox.warning(
+            self,
+            'Warning',
+            'This clears your current layout. Do you wish to proceed?',
+            QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel
+        )
+
+        if reply == QMessageBox.StandardButton.Ok:
+            self.presenter.handle_clear_group_layout()
+        else:
+            return
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
