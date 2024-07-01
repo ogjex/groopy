@@ -24,11 +24,10 @@ class Presenter(Protocol):
         ...
     def handle_save_group_file(self, filename):
         ...
-    def handle_clear_group_layout(self):
+    def handle_clear_group_layout(self) -> None:
         ...
     def handle_new_group_layout(self):
         ...
-
 class WorkspaceWindow(QWidget):
     def __init__(self, presenter=None):
         super().__init__()
@@ -77,9 +76,9 @@ class WorkspaceWindow(QWidget):
         import_group_button.setFixedSize(workspace_button_width, workspace_button_height)
         buttons_layout.addWidget(import_group_button)
 
-        clear_group_layout_button = QPushButton("Clear layout", self)
-        clear_group_layout_button.setFixedSize(workspace_button_width, workspace_button_height)
-        buttons_layout.addWidget(clear_group_layout_button)
+        btn_clear_groups = QPushButton("Clear groups", self)
+        btn_clear_groups.setFixedSize(workspace_button_width, workspace_button_height)
+        buttons_layout.addWidget(btn_clear_groups)
 
         new_group_layout_button = QPushButton("New layout", self)
         new_group_layout_button.setFixedSize(workspace_button_width, workspace_button_height)
@@ -97,6 +96,7 @@ class WorkspaceWindow(QWidget):
         save_as_button.clicked.connect(self.save_as_workspace)
         import_group_button.clicked.connect(self.open_group)        
         new_group_layout_button.clicked.connect(self.new_group_layout)
+        btn_clear_groups.clicked.connect(self.open_clear_group_layout)
 
     def set_workspace_path(self, file_path: str):
         self.workspace_path = file_path
@@ -125,6 +125,19 @@ class WorkspaceWindow(QWidget):
         if file_path:
             # Load new groups from file
             self.presenter.handle_open_group_file(file_path)
+    
+    def open_clear_group_layout(self) -> None:
+        reply = QMessageBox.warning(
+            self,
+            'Warning',
+            'This clears your current layout. Do you wish to proceed?',
+            QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel
+        )
+
+        if reply == QMessageBox.StandardButton.Ok:
+            self.presenter.handle_clear_group_layout()
+        else:
+            return
     
     def new_group_layout(self):
         raise NotImplementedError("This function is not yet implemented.")

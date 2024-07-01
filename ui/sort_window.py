@@ -13,8 +13,6 @@ class Presenter(Protocol):
         ...
     def handle_max_total_groups_changed(self, new_value: int) -> None:        
         ...
-    def handle_clear_group_layout(self) -> None:
-        ...
     def load_initial_min_group_size_value(self) -> int:
         ...
     def load_initial_max_group_size_value(self) -> int:
@@ -70,12 +68,6 @@ class SortWindow(QWidget):
         self.btn_sort = QPushButton("Sort Groups")
         self.btn_clear_group = QPushButton("Clear Groups")
         self.layout.addWidget(self.btn_sort)
-        self.layout.addWidget(self.btn_clear_group)
-
-        self.btn_clear_group.clicked.connect(self.open_clear_group_layout)
-        # Connect the buttons to their functions
-        #self.sort_button.clicked.connect(self.set_checkboxes_test)
-        #self.clear_button.clicked.connect(self.clear_checkboxes)
 
         # Set the layout
         self.setLayout(self.layout)
@@ -144,19 +136,6 @@ class SortWindow(QWidget):
     def on_max_total_groups_changed(self):
         max_total_groups = self.get_max_total_groups()
         self.presenter.handle_max_total_groups_changed(max_total_groups)
-
-    def open_clear_group_layout(self) -> None:
-        reply = QMessageBox.warning(
-            self,
-            'Warning',
-            'This clears your current layout. Do you wish to proceed?',
-            QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel
-        )
-
-        if reply == QMessageBox.StandardButton.Ok:
-            self.presenter.handle_clear_group_layout()
-        else:
-            return
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
