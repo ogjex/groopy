@@ -34,21 +34,15 @@ def main():
     presenter = Presenter(group_sorter, group_editor, person_editor, main_window, ws_handler)
     
     # Prepare sample data as dictionaries for details window
-    #sample_persons = person_editor.create_persons_sample()
+    sample_persons = person_editor.create_persons_sample()
     #sample_persons_data = person_editor.get_persons_data_as_dict(sample_persons)
     
-    persons = person_editor.read_persons_from_csv("persons.csv")
-    persons_as_dict = person_editor.get_persons_data_as_dict(persons)
-    person_editor.save_csv()
+    #persons = person_editor.read_persons_from_csv("persons.csv")
+    #persons_as_dict = person_editor.get_persons_data_as_dict(persons)
+    #person_editor.save_csv()
 
     presenter.run()
-    presenter.handle_set_field_values(persons_as_dict)
-
-    # can the groups_data also be used for grouping_module?
-    group_editor.create_group_data_sample()
-    presenter.handle_import_group_widgets()
-    #groups_data = group_editor.groups
-    #main_window.import_group_widgets(groups_data)
+    # presenter.handle_set_field_values(persons_as_dict)
 
     sys.exit(app.exec())
 

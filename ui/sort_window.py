@@ -67,7 +67,8 @@ class SortWindow(QWidget):
         "Gender": (True, "Spread"),
         "Education": (False, "Spread"),
         "Experience": (True, "Spread"),
-        "Location": (True, "Focus")
+        "Career_preference": (True, "Focus"),
+        "Location_preference": (True, "Focus")
         }
         self.sl_widget = SortListWidget("Sort Priority", presenter, drag_widget_dict)
         self.layout.addWidget(self.sl_widget)
@@ -113,11 +114,13 @@ class SortWindow(QWidget):
         self.presenter.handle_sort_groups(strategies)
 
     def gather_strategies(self) -> Dict[str, str]:
-        checked_data = self.sl_widget.get_checked_sort_list_data()
         strategies = {}
-        for label, checkbox_state, radio_option in checked_data:
-            if checkbox_state:  # Optional: Ensure checkbox is checked, though it should always be true here
-                strategies[label] = radio_option
+        for index in range(self.sl_widget.dragwidget_layout.count()):
+            widget = self.sl_widget.get_drag_sort_widget_at_index(index)
+            if widget and widget.is_checked():
+                label = widget.label.text()
+                radio_option = widget.get_selected_radio()
+                strategies[label.lower()] = radio_option.lower() if radio_option else None
         return strategies
         
     def get_min_group_size(self) -> int:

@@ -27,13 +27,6 @@ class Presenter(object):
         self.person_editor = person_editor
         self.main_window = main_window
         self.handler = handler
-        self.group_sort_methods = {
-            "Option 1": self.method1,
-            "Option 2": self.method2,
-            "Option 3": self.method3,
-            "Option 4": self.method4,
-            "Option 5": self.method5
-        }
         
     def handle_open_group_file(self, file_path):
         self.main_window.clear_group_widgets()
@@ -55,29 +48,6 @@ class Presenter(object):
 
     def handle_set_field_values(self, data):
         self.main_window.update_details_window(data)
-
-    def handle_checkbox_order(self, checkbox_states):
-        print("Processing checkbox order:")
-        for label, state in checkbox_states:
-            print(f"{label}: {'Checked' if state else 'Unchecked'}")
-            if state:
-                # Call the corresponding method if the checkbox is checked
-                self.group_sort_methods[label]()
-
-    def method1(self):
-        print("Executing Method 1")
-
-    def method2(self):
-        print("Executing Method 2")
-
-    def method3(self):
-        print("Executing Method 3")
-
-    def method4(self):
-        print("Executing Method 4")
-
-    def method5(self):
-        print("Executing Method 5")
 
     def handle_print_group_widget_data(self, list):
         print(f"{list}")
@@ -110,10 +80,13 @@ class Presenter(object):
         self.main_window.update_sort_window_values()
 
     def handle_sort_groups(self, strategies: dict[str, str]) -> None:
-        
-        # Debugging: Print the gathered strategies
         print("Gathered strategies:", strategies)
-        
+        self.group_sorter.set_people_to_sort(self.person_editor.persons)
+        self.group_sorter.distribute_people_to_groups(strategies)
+        self.handle_clear_group_layout()
+        self.handle_import_group_widgets
+        # Debugging: Print the gathered strategies
+
     def run(self) -> None:
         # Load preferences
         self.handler.load_preferences()
