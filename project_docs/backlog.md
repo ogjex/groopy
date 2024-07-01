@@ -9,7 +9,7 @@ GETTING GROOPY
 - doc strings for all functions
 - check up on conversions of int and strings in person_editor
 - create exceptions and trys to handle wrong inputs without crashing
-    - 
+- set all minor windows with own reference to Presenter from main window or parent (saves time on pathfinding method calls)
     
 ## bugs:
 - visual location and size of groups are jumpy on update
